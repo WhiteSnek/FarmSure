@@ -1,0 +1,74 @@
+{
+  "Healthy": {
+    "description": "The plant is healthy with no visible disease symptoms.",
+    "preventive_measures": [
+      "Maintain balanced watering and nutrition.",
+      "Inspect crops regularly for early symptoms.",
+      "Use disease-free certified seeds.",
+      "Ensure proper soil health with organic manure."
+    ]
+  },
+  "Powdery": {
+    "description": "Powdery mildew is a fungal disease appearing as white or gray powdery spots on leaves and stems.",
+    "preventive_measures": [
+      "Avoid overcrowding to improve air circulation.",
+      "Spray neem oil or sulfur-based fungicides.",
+      "Water plants at the base, not on leaves.",
+      "Remove and destroy infected leaves early."
+    ]
+  },
+  "Rust": {
+    "description": "Rust disease causes orange, yellow, or brown pustules on leaves and stems, weakening the plant.",
+    "preventive_measures": [
+      "Avoid overhead irrigation to reduce leaf wetness.",
+      "Apply copper or sulfur-based fungicides.",
+      "Remove and burn infected leaves.",
+      "Practice crop rotation with non-host crops."
+    ]
+  },
+  "Leaf Blight": {
+    "description": "Leaf blight causes brown or black streaks and spots on leaves, leading to premature drying.",
+    "preventive_measures": [
+      "Use resistant crop varieties.",
+      "Spray mancozeb or copper oxychloride fungicides.",
+      "Avoid excessive nitrogen fertilizers.",
+      "Destroy crop residues after harvest."
+    ]
+  },
+  "Leaf Spot": {
+    "description": "Leaf spot diseases cause small, circular dark spots on leaves which may merge and kill leaf tissue.",
+    "preventive_measures": [
+      "Ensure proper plant spacing for ventilation.",
+      "Apply fungicides like chlorothalonil or mancozeb.",
+      "Remove diseased plant debris promptly.",
+      "Rotate crops to break the disease cycle."
+    ]
+  },
+  "Mosaic Virus": {
+    "description": "Mosaic virus causes mottled, yellow-green patches on leaves and stunted plant growth.",
+    "preventive_measures": [
+      "Use virus-free seeds and seedlings.",
+      "Control insect vectors like aphids and whiteflies.",
+      "Remove and destroy infected plants immediately.",
+      "Plant resistant crop varieties when available."
+    ]
+  },
+  "Bacterial Wilt": {
+    "description": "Bacterial wilt causes sudden wilting and yellowing of plants, often leading to plant death.",
+    "preventive_measures": [
+      "Use resistant crop varieties.",
+      "Ensure proper soil drainage to prevent waterlogging.",
+      "Apply crop rotation with cereals and non-susceptible crops.",
+      "Disinfect tools to avoid spreading bacteria."
+    ]
+  },
+  "Downy Mildew": {
+    "description": "Downy mildew appears as yellow patches on upper leaf surfaces with grayish mold underneath.",
+    "preventive_measures": [
+      "Improve field drainage and reduce humidity.",
+      "Spray fungicides like metalaxyl or fosetyl-Al.",
+      "Avoid excessive irrigation.",
+      "Plant resistant varieties where possible."
+    ]
+  }
+}
