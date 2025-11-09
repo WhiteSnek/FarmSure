@@ -1,4 +1,4 @@
-labels = {
+disease_labels = {
     0: "American Bollworm On Cotton",
     1: "Anthracnose On Cotton",
     2: "Army Worm",
@@ -41,4 +41,37 @@ labels = {
     39: "Wheat Stem Fly",
     40: "Wilt",
     41: "Yellow Rust Sugarcane",
+}
+
+crop_labels = {
+    0: "Cherry",
+    1: "Coffee Plant",
+    2: "Cucumber",
+    3: "Fox Nut(makhana)",
+    4: "Lemon",
+    5: "Olive Tree",
+    6: "Pearl Millet(bajra)",
+    7: "Tobacco Plant",
+    8: "Almond",
+    9: "Banana",
+    10: "Cardamom",
+    11: "Chilli",
+    12: "Clove",
+    13: "Coconut",
+    14: "Cotton",
+    15: "Gram",
+    16: "Jowar",
+    17: "Jute",
+    18: "Maize",
+    19: "Mustard Oil",
+    20: "Papaya",
+    21: "Pineapple",
+    22: "Rice",
+    23: "Soyabean",
+    24: "Sugarcane",
+    25: "Sunflower",
+    26: "Tea",
+    27: "Tomato",
+    28: "Vigna Radiati(mung)",
+    29: "Wheat"
 }

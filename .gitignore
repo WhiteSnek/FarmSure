@@ -3,4 +3,4 @@ __pycache__/
 .env
 *.csv
 dataset/
-model.h5 
+*_model.h5 

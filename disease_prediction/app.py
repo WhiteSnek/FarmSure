@@ -10,14 +10,15 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from tensorflow.keras.models import load_model
 from tensorflow.keras.preprocessing.image import img_to_array
-from constants.labels import labels
-# Disable GPU (optional)
+from constants.labels import crop_labels,disease_labels
+
+# --- Optional: Disable GPU ---
 os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 logging.getLogger('tensorflow').setLevel(logging.ERROR)
 
-app = FastAPI()
+app = FastAPI(title="Crop and Disease Prediction API")
 
-# Enable CORS
+# --- Enable CORS ---
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -26,57 +27,77 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-MODEL_PATH = 'model.h5'
+CROP_MODEL_PATH = "crop_model.h5"
+DISEASE_MODEL_PATH = "disease_model.h5"
 
-# Load disease knowledge base (optional)
 if os.path.exists("disease_kb.json"):
     with open("disease_kb.json", "r") as f:
         knowledge_base = json.load(f)
 else:
     knowledge_base = {}
 
-# Load trained model
-if not os.path.exists(MODEL_PATH):
-    raise RuntimeError("Model file not found. Train it first using train_model.py")
+# --- Load Models ---
+if not os.path.exists(CROP_MODEL_PATH):
+    raise RuntimeError(f"Crop model not found at {CROP_MODEL_PATH}")
+if not os.path.exists(DISEASE_MODEL_PATH):
+    raise RuntimeError(f"Disease model not found at {DISEASE_MODEL_PATH}")
 
-model = load_model(MODEL_PATH)
-print(f"✅ Loaded model from {MODEL_PATH}")
+crop_model = load_model(CROP_MODEL_PATH)
+disease_model = load_model(DISEASE_MODEL_PATH)
+
+print(f"Loaded crop model from {CROP_MODEL_PATH}")
+print(f"Loaded disease model from {DISEASE_MODEL_PATH}")
 
 # --- Helper Function ---
-def getResult(img):
+def prepare_image(image: Image.Image, target_size=(225, 225)):
+    img = image.convert("RGB").resize(target_size)
     x = img_to_array(img)
-    x = x.astype('float32') / 255.
-    x = np.expand_dims(x, axis=0)
-    predictions = model.predict(x)[0]
-    return predictions
+    x = x.astype("float32") / 255.0
+    return np.expand_dims(x, axis=0)
+
+def predict(model, img_array, labels_dict):
+    preds = model.predict(img_array)[0]
+    idx = int(np.argmax(preds))
+    label = labels_dict.get(idx, "Unknown")
+    confidence = round(float(preds[idx]) * 100, 2)
+    return label, confidence
 
 # --- API Routes ---
-@app.post('/model/train')
-async def process(data: dict):
+@app.post('/model/predict')
+async def predict_crop_and_disease(data: dict):
+    print("Received prediction request")
     if 'data' not in data or 'name' not in data:
-        raise HTTPException(status_code=400, detail="Missing 'data' or 'name'")
+        raise HTTPException(status_code=400, detail="Missing 'data' or 'name' in request")
 
     try:
         image_bytes = base64.b64decode(data['data'])
         with BytesIO(image_bytes) as buffer:
             img = Image.open(buffer).convert("RGB")
-            img = img.resize((225, 225))
     except Exception:
         raise HTTPException(status_code=400, detail="Invalid image data")
 
-    predictions = getResult(img)
-    predicted_index = int(np.argmax(predictions))
-    predicted_label = labels.get(predicted_index, "Unknown Disease")
-
-    disease_info = knowledge_base.get(predicted_label, {
+    # Preprocess image
+    img_array = prepare_image(img)
+    print("Image preprocessed successfully")
+    # --- Crop Prediction ---
+    crop_label, crop_conf = predict(crop_model, img_array, crop_labels)
+    print(f"Predicted Crop: {crop_label} with confidence {crop_conf}%")
+    # --- Disease Prediction ---
+    disease_label, disease_conf = predict(disease_model, img_array, disease_labels)
+    print(f"Predicted Disease: {disease_label} with confidence {disease_conf}%")
+    # --- Get Disease Info ---
+    disease_info = knowledge_base.get(disease_label, {
         "description": "No information available.",
         "preventive_measures": []
     })
 
+    # --- Response ---
     response_data = {
         "file_name": data['name'],
-        "predicted_label": predicted_label,
-        "percentage": round(predictions[predicted_index] * 100, 2),
+        "predicted_crop": crop_label,
+        "crop_confidence": crop_conf,
+        "predicted_disease": disease_label,
+        "disease_confidence": disease_conf,
         "description": disease_info["description"],
         "preventive_measures": disease_info["preventive_measures"]
     }
@@ -84,4 +105,4 @@ async def process(data: dict):
     print(response_data)
     return JSONResponse(content=response_data)
 
-# Run: uvicorn app:app --reload
+# Run with: uvicorn app:app --reload
