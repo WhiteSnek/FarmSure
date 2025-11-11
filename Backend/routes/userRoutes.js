@@ -1,7 +1,7 @@
 const express = require('express');
 
 //Controller Functions
-const {signup, login} = require('../controllers/controller');
+const {signup, login, getCropPrices} = require('../controllers/controller');
 
 const router = express.Router();
 
@@ -10,5 +10,7 @@ router.post('/login', login);
 
 //Signup route
 router.post('/signup', signup);
+
+router.post('/crop-prices', getCropPrices);
 
 module.exports = router
