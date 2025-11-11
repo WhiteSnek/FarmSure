@@ -31,19 +31,24 @@ const App = () => {
           {/* Protected routes */}
           <Route
             path="/"
-            element={user ? <Home /> : <Navigate to="/login" />}
+            element={<Home /> }
+            //element={user ? <Home /> : <Navigate to="/login" />}
           />
           <Route
             path="/crop"
-            element={user ? <Crop /> : <Navigate to="/login" />}
+            element={<Crop />}
+            //element={user ? <Crop /> : <Navigate to="/login" />}
           />
           <Route
             path="/fertilizer"
-            element={user ? <Fertilizer /> : <Navigate to="/login" />}
+           // element={user ? <Fertilizer /> : <Navigate to="/login" />}
+           element={<Fertilizer />}
           />
           <Route
             path="/yield"
-            element={user ? <Yield /> : <Navigate to="/login" />}
+           // element={user ? <Yield /> : <Navigate to="/login" />}
+           element={<Yield />}
+
           />
           <Route path="*" element={<Navigate to={user ? "/" : "/login"} />} />
         </Routes>
