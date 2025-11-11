@@ -13,35 +13,32 @@ import pickle
 
 # %%
 # Load dataset
-data = pd.read_csv('f2.csv')
-data.rename(columns={
-    'Humidity ': 'Humidity',
-    'Soil Type': 'Soil_Type',
-    'Crop Type': 'Crop_Type',
-    'Fertilizer Name': 'Fertilizer'
-}, inplace=True)
+data = pd.read_csv('crop.csv')
+
+# Check data columns
+print("Columns:", data.columns.tolist())
+
+# Expected columns:
+# N, P, K, temperature, humidity, ph, rainfall, label
 
 # %%
-# Encode categorical variables
-encode_soil = LabelEncoder()
-encode_crop = LabelEncoder()
-encode_ferti = LabelEncoder()
-
-data['Soil_Type'] = encode_soil.fit_transform(data['Soil_Type'])
-data['Crop_Type'] = encode_crop.fit_transform(data['Crop_Type'])
-data['Fertilizer'] = encode_ferti.fit_transform(data['Fertilizer'])
+# Encode target label (crop name)
+label_encoder = LabelEncoder()
+data['label'] = label_encoder.fit_transform(data['label'])
 
 # %%
-# Train-test split
-x = data.drop('Fertilizer', axis=1)
-y = data['Fertilizer']
+# Features & target
+X = data.drop('label', axis=1)
+y = data['label']
 
+# %%
+# Split into train and test sets
 x_train, x_test, y_train, y_test = train_test_split(
-    x, y, test_size=0.2, random_state=1
+    X, y, test_size=0.2, random_state=42
 )
 
 # %%
-# Models
+# Define models
 results = {}
 models = {
     "Decision Tree": DecisionTreeClassifier(criterion="entropy", random_state=2, max_depth=5),
@@ -52,7 +49,7 @@ models = {
 }
 
 # %%
-# Train & evaluate
+# Train and evaluate models
 for name, clf in models.items():
     if name == "SVM":
         scaler = MinMaxScaler().fit(x_train)
@@ -67,35 +64,37 @@ for name, clf in models.items():
     print(classification_report(y_test, y_pred))
 
 # %%
-# Choose best model (highest accuracy)
+# Select best model
 best_model_name = max(results, key=results.get)
 best_model = models[best_model_name]
 print(f"\nBest Model: {best_model_name} with Accuracy = {results[best_model_name]:.4f}")
 
 # %%
-# Save the best model
-with open('classifier.pkl', 'wb') as f:
+# Save best model
+with open('crop_classifier.pkl', 'wb') as f:
     pickle.dump(best_model, f)
 
-# Save the fertilizer label encoder
-with open('fertilizer.pkl', 'wb') as f:
-    pickle.dump(encode_ferti, f)
+# Save label encoder
+with open('crop_label_encoder.pkl', 'wb') as f:
+    pickle.dump(label_encoder, f)
 
 # %%
 # Test prediction
-model = pickle.load(open('classifier.pkl', 'rb'))
-test_input_1 = np.array([[34, 67, 62, 0, 1, 7, 0, 30]])  # example values
-test_input_2 = np.array([[25, 78, 43, 4, 1, 22, 26, 38]])
+model = pickle.load(open('crop_classifier.pkl', 'rb'))
+encoder = pickle.load(open('crop_label_encoder.pkl', 'rb'))
 
-pred_1 = model.predict(test_input_1)[0]
-pred_2 = model.predict(test_input_2)[0]
+# Example test inputs: [N, P, K, temperature, humidity, ph, rainfall]
+sample_1 = np.array([[90, 42, 43, 20.87, 82.00, 6.50, 202.9]])
+sample_2 = np.array([[40, 60, 60, 25.00, 80.00, 6.8, 100.0]])
 
-ferti = pickle.load(open('fertilizer.pkl', 'rb'))
+pred_1 = model.predict(sample_1)[0]
+pred_2 = model.predict(sample_2)[0]
 
-print("Prediction 1:", ferti.inverse_transform([pred_1])[0])
-print("Prediction 2:", ferti.inverse_transform([pred_2])[0])
+print("\nPredicted Crops:")
+print("Sample 1:", encoder.inverse_transform([pred_1])[0])
+print("Sample 2:", encoder.inverse_transform([pred_2])[0])
 
 # %%
-# View fertilizer classes
-print("\nAvailable Fertilizer Classes:")
-print(list(ferti.classes_))
+# View all possible crop labels
+print("\nAvailable Crop Labels:")
+print(list(encoder.classes_))

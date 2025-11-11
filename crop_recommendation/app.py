@@ -26,8 +26,8 @@ app.add_middleware(
 # Load Models
 # -------------------------
 try:
-    model = pickle.load(open("classifier.pkl", "rb"))
-    ferti = pickle.load(open("fertilizer.pkl", "rb"))
+    model = pickle.load(open("crop_classifier.pkl", "rb"))
+    ferti = pickle.load(open("crop_label_encoder.pkl", "rb"))
     print("Models loaded successfully")
 except Exception as e:
     print("Error loading models:", str(e))
@@ -38,7 +38,7 @@ except Exception as e:
 # -------------------------
 @app.post("/predict")
 async def predict(data: dict):
-    required_fields = ["location", "mois", "soil", "crop", "nitro", "pota", "phos"]
+    required_fields = ["location","rainfall", "pH", "nitro", "pota", "phos"]
 
     # Check missing fields
     for field in required_fields:
@@ -60,14 +60,13 @@ async def predict(data: dict):
     try:
         # Convert to integers
         input_data = [
+            int(data['nitro']),
+            int(data['phos']),
+            int(data['pota']),
             int(temp),
             int(humid),
-            int(data["mois"]),
-            int(data["soil"]),
-            int(data["crop"]),
-            int(data["nitro"]),
-            int(data["pota"]),
-            int(data["phos"])
+            float(data['pH']),
+            int(data['rainfall'])
         ]
 
         # Predict fertilizer
