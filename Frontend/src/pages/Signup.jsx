@@ -1,16 +1,18 @@
 import { useState } from "react";
-import { useSignup } from "../hooks/useSignup";
-import { Link } from "react-router-dom";
-import farmersImage from "../assets/farmer2.jpeg";
+import { User, Mail, Phone, Lock } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    contact: '',
-    password: '',
+    username: "",
+    email: "",
+    contact: "",
+    password: "",
   });
-  const { signup, error, isLoading } = useSignup();
+  const [focusedField, setFocusedField] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     setFormData({
@@ -19,96 +21,218 @@ const Signup = () => {
     });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    await signup(
-      formData.username,
-      formData.email,
-      formData.contact,
-      formData.password
-    );
+  const handleSubmit = async () => {
+    setIsLoading(true);
+    setError("");
+    
+    // Simulate signup
+    setTimeout(() => {
+      if (formData.username && formData.email && formData.contact && formData.password) {
+        alert("Account Created Successfully! 🎉");
+        setIsLoading(false);
+      } else {
+        setError("Please fill all fields");
+        setIsLoading(false);
+      }
+    }, 1500);
   };
 
   const isFormValid = () => {
     return formData.username && formData.email && formData.contact && formData.password;
   };
 
+  const farmersImage = "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=800&q=80";
+
   return (
     <div style={{
       minHeight: '100vh',
-      backgroundColor: '#f8fafc',
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+      background: 'linear-gradient(135deg, #0a0e27 0%, #1a1d3a 50%, #0f1729 100%)',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      padding: '40px 20px'
+      padding: '40px 20px',
+      position: 'relative',
+      overflow: 'hidden'
     }}>
+      {/* Animated Background Elements */}
+      <div style={{
+        position: 'absolute',
+        top: '15%',
+        right: '5%',
+        width: '350px',
+        height: '350px',
+        background: 'radial-gradient(circle, rgba(34, 197, 94, 0.15) 0%, transparent 70%)',
+        borderRadius: '50%',
+        filter: 'blur(60px)',
+        animation: 'float 8s ease-in-out infinite'
+      }}></div>
+      <div style={{
+        position: 'absolute',
+        bottom: '10%',
+        left: '8%',
+        width: '400px',
+        height: '400px',
+        background: 'radial-gradient(circle, rgba(168, 85, 247, 0.15) 0%, transparent 70%)',
+        borderRadius: '50%',
+        filter: 'blur(70px)',
+        animation: 'float 10s ease-in-out infinite reverse'
+      }}></div>
+
       <div style={{
         width: '100%',
-        maxWidth: '1000px'
+        maxWidth: '1100px',
+        position: 'relative',
+        zIndex: 1
       }}>
         <div style={{
-          backgroundColor: 'white',
-          borderRadius: '16px',
-          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
-          overflow: 'hidden'
+          background: 'rgba(255, 255, 255, 0.03)',
+          backdropFilter: 'blur(20px)',
+          borderRadius: '24px',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+          overflow: 'hidden',
+          animation: 'slideUp 0.6s ease-out'
         }}>
           <div style={{
             display: 'flex',
-            minHeight: '600px',
+            minHeight: '700px',
             flexWrap: 'wrap'
           }}>
             {/* Left Side - Hero Section */}
             <div style={{
               flex: '1',
-              minWidth: '400px',
+              minWidth: '450px',
               display: 'flex',
-              position: 'relative'
+              position: 'relative',
+              overflow: 'hidden'
             }}>
               <div style={{
                 flex: '1',
                 backgroundImage: `url(${farmersImage})`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
-                position: 'relative'
+                position: 'relative',
+                transform: 'scale(1.1)',
+                transition: 'transform 0.3s ease'
               }}>
                 <div style={{
                   position: 'absolute',
                   inset: 0,
-                  background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.3) 100%)'
+                  background: 'linear-gradient(135deg, rgba(10, 14, 39, 0.95) 0%, rgba(26, 29, 58, 0.85) 50%, rgba(15, 23, 41, 0.9) 100%)',
+                  backdropFilter: 'blur(2px)'
                 }}></div>
               </div>
+              
+              {/* Decorative Elements */}
+              <div style={{
+                position: 'absolute',
+                bottom: '20px',
+                right: '20px',
+                width: '60px',
+                height: '60px',
+                border: '2px solid rgba(168, 85, 247, 0.3)',
+                borderRadius: '12px',
+                transform: 'rotate(45deg)',
+                animation: 'pulse 3s ease-in-out infinite'
+              }}></div>
               
               <div style={{
                 position: 'absolute',
                 inset: 0,
                 display: 'flex',
                 alignItems: 'center',
-                padding: '40px',
+                padding: '60px 50px',
                 zIndex: 1
               }}>
                 <div style={{
                   color: 'white',
-                  maxWidth: '400px'
+                  maxWidth: '450px'
                 }}>
-                  <h1 style={{
-                    fontSize: '32px',
-                    fontWeight: '700',
-                    lineHeight: '1.2',
-                    margin: '0 0 16px 0',
-                    textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'
+                  {/* Logo/Brand */}
+                  <div style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    marginBottom: '32px',
+                    padding: '12px 20px',
+                    background: 'rgba(34, 197, 94, 0.15)',
+                    backdropFilter: 'blur(10px)',
+                    borderRadius: '12px',
+                    border: '1px solid rgba(34, 197, 94, 0.2)'
                   }}>
-                    Join <span style={{ color: '#4ade80' }}>FarmAssist</span> today
+                    <div style={{
+                      width: '10px',
+                      height: '10px',
+                      background: '#22c55e',
+                      borderRadius: '50%',
+                      boxShadow: '0 0 20px #22c55e',
+                      animation: 'glow 2s ease-in-out infinite'
+                    }}></div>
+                    <span style={{
+                      fontSize: '20px',
+                      fontWeight: '700',
+                      letterSpacing: '0.5px'
+                    }}>FarmAssist</span>
+                  </div>
+
+                  <h1 style={{
+                    fontSize: '48px',
+                    fontWeight: '800',
+                    lineHeight: '1.1',
+                    margin: '0 0 24px 0',
+                    background: 'linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    animation: 'fadeInLeft 0.8s ease-out'
+                  }}>
+                    Start Your Smart Farming Journey
                   </h1>
                   <p style={{
                     fontSize: '18px',
                     margin: 0,
-                    opacity: 0.9,
-                    lineHeight: '1.4',
-                    textShadow: '0 1px 2px rgba(0, 0, 0, 0.5)'
+                    color: 'rgba(255, 255, 255, 0.8)',
+                    lineHeight: '1.6',
+                    animation: 'fadeInLeft 0.8s ease-out 0.2s backwards'
                   }}>
-                    Start your journey with <span style={{ color: '#4ade80' }}>smart farming solutions</span> and expert recommendations
+                    Join thousands of farmers using <span style={{ 
+                      color: '#22c55e', 
+                      fontWeight: '600',
+                      textShadow: '0 0 20px rgba(34, 197, 94, 0.5)'
+                    }}>AI-powered insights</span> for smarter crop management and higher yields
                   </p>
+
+                  {/* Features */}
+                  <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '16px',
+                    marginTop: '40px',
+                    animation: 'fadeInLeft 0.8s ease-out 0.4s backwards'
+                  }}>
+                    {[
+                      { icon: '🌾', text: 'Real-time crop monitoring' },
+                      { icon: '🌤️', text: 'Weather forecasts & alerts' },
+                      { icon: '📊', text: 'Data-driven recommendations' }
+                    ].map((feature, i) => (
+                      <div key={i} style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '12px',
+                        padding: '12px 16px',
+                        background: 'rgba(255, 255, 255, 0.05)',
+                        backdropFilter: 'blur(10px)',
+                        borderRadius: '12px',
+                        border: '1px solid rgba(255, 255, 255, 0.1)'
+                      }}>
+                        <span style={{ fontSize: '24px' }}>{feature.icon}</span>
+                        <span style={{
+                          fontSize: '15px',
+                          color: 'rgba(255, 255, 255, 0.9)'
+                        }}>{feature.text}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -116,200 +240,387 @@ const Signup = () => {
             {/* Right Side - Form Section */}
             <div style={{
               flex: '1',
-              minWidth: '400px',
-              padding: '60px 40px',
-              backgroundColor: 'white',
+              minWidth: '450px',
+              padding: '60px 50px',
+              background: 'rgba(15, 23, 41, 0.6)',
+              backdropFilter: 'blur(10px)',
               display: 'flex',
               flexDirection: 'column',
-              justifyContent: 'center'
+              justifyContent: 'center',
+              position: 'relative',
+              maxHeight: '700px',
+              overflowY: 'auto'
             }}>
-              <div>
+              {/* Decorative corner element */}
+              <div style={{
+                position: 'absolute',
+                top: '30px',
+                right: '30px',
+                width: '80px',
+                height: '80px',
+                border: '2px solid rgba(168, 85, 247, 0.2)',
+                borderRadius: '50%',
+                animation: 'rotate 20s linear infinite'
+              }}>
+                <div style={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  width: '40px',
+                  height: '40px',
+                  border: '2px solid rgba(34, 197, 94, 0.3)',
+                  borderRadius: '50%'
+                }}></div>
+              </div>
+
+              <div style={{ animation: 'fadeIn 0.8s ease-out 0.3s backwards' }}>
                 <h2 style={{
-                  fontSize: '28px',
-                  fontWeight: '700',
-                  color: '#1f2937',
-                  margin: '0 0 8px 0'
+                  fontSize: '36px',
+                  fontWeight: '800',
+                  background: 'linear-gradient(135deg, #ffffff 0%, #a0a0a0 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  margin: '0 0 12px 0',
+                  letterSpacing: '-0.5px'
                 }}>
-                  Create Your Account
+                  Create Account
                 </h2>
                 <p style={{
-                  fontSize: '16px',
-                  color: '#6b7280',
-                  margin: '0 0 32px 0'
+                  fontSize: '15px',
+                  color: 'rgba(255, 255, 255, 0.5)',
+                  margin: '0 0 32px 0',
+                  fontWeight: '400'
                 }}>
                   Fill in your details to get started
                 </p>
 
-                <form onSubmit={handleSubmit} style={{
+                <div style={{
                   display: 'flex',
                   flexDirection: 'column',
-                  gap: '18px'
+                  gap: '20px'
                 }}>
+                  {/* Username Field */}
                   <div>
                     <label style={{
                       display: 'block',
-                      fontSize: '14px',
+                      fontSize: '13px',
                       fontWeight: '600',
-                      color: '#374151',
-                      marginBottom: '6px'
+                      color: 'rgba(255, 255, 255, 0.8)',
+                      marginBottom: '10px',
+                      textTransform: 'uppercase',
+                      letterSpacing: '1px'
                     }}>
                       Username
                     </label>
-                    <input
-                      type="text"
-                      name="username"
-                      placeholder="Enter your username"
-                      value={formData.username}
-                      onChange={handleChange}
-                      required
-                      style={{
-                        width: '100%',
-                        padding: '12px 14px',
-                        border: '1px solid #d1d5db',
-                        borderRadius: '6px',
-                        fontSize: '14px',
-                        transition: 'border-color 0.2s',
-                        boxSizing: 'border-box'
-                      }}
-                    />
+                    <div style={{ position: 'relative' }}>
+                      <User style={{
+                        position: 'absolute',
+                        left: '16px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        width: '18px',
+                        height: '18px',
+                        color: focusedField === 'username' ? '#22c55e' : 'rgba(255, 255, 255, 0.4)',
+                        transition: 'color 0.3s ease'
+                      }} />
+                      <input
+                        type="text"
+                        name="username"
+                        placeholder="Enter your username"
+                        value={formData.username}
+                        onChange={handleChange}
+                        onFocus={() => setFocusedField('username')}
+                        onBlur={() => setFocusedField(null)}
+                        style={{
+                          width: '100%',
+                          padding: '14px 20px 14px 48px',
+                          background: 'rgba(255, 255, 255, 0.05)',
+                          border: `2px solid ${focusedField === 'username' ? '#22c55e' : 'rgba(255, 255, 255, 0.1)'}`,
+                          borderRadius: '12px',
+                          fontSize: '15px',
+                          color: '#ffffff',
+                          transition: 'all 0.3s ease',
+                          boxSizing: 'border-box',
+                          outline: 'none'
+                        }}
+                      />
+                      {focusedField === 'username' && (
+                        <div style={{
+                          position: 'absolute',
+                          bottom: '-2px',
+                          left: '0',
+                          right: '0',
+                          height: '2px',
+                          background: 'linear-gradient(90deg, transparent, #22c55e, transparent)',
+                          animation: 'shimmer 2s ease-in-out infinite'
+                        }}></div>
+                      )}
+                    </div>
                   </div>
 
+                  {/* Email Field */}
                   <div>
                     <label style={{
                       display: 'block',
-                      fontSize: '14px',
+                      fontSize: '13px',
                       fontWeight: '600',
-                      color: '#374151',
-                      marginBottom: '6px'
+                      color: 'rgba(255, 255, 255, 0.8)',
+                      marginBottom: '10px',
+                      textTransform: 'uppercase',
+                      letterSpacing: '1px'
                     }}>
                       Email Address
                     </label>
-                    <input
-                      type="email"
-                      name="email"
-                      placeholder="Enter your email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      required
-                      style={{
-                        width: '100%',
-                        padding: '12px 14px',
-                        border: '1px solid #d1d5db',
-                        borderRadius: '6px',
-                        fontSize: '14px',
-                        transition: 'border-color 0.2s',
-                        boxSizing: 'border-box'
-                      }}
-                    />
+                    <div style={{ position: 'relative' }}>
+                      <Mail style={{
+                        position: 'absolute',
+                        left: '16px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        width: '18px',
+                        height: '18px',
+                        color: focusedField === 'email' ? '#22c55e' : 'rgba(255, 255, 255, 0.4)',
+                        transition: 'color 0.3s ease'
+                      }} />
+                      <input
+                        type="email"
+                        name="email"
+                        placeholder="Enter your email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        onFocus={() => setFocusedField('email')}
+                        onBlur={() => setFocusedField(null)}
+                        style={{
+                          width: '100%',
+                          padding: '14px 20px 14px 48px',
+                          background: 'rgba(255, 255, 255, 0.05)',
+                          border: `2px solid ${focusedField === 'email' ? '#22c55e' : 'rgba(255, 255, 255, 0.1)'}`,
+                          borderRadius: '12px',
+                          fontSize: '15px',
+                          color: '#ffffff',
+                          transition: 'all 0.3s ease',
+                          boxSizing: 'border-box',
+                          outline: 'none'
+                        }}
+                      />
+                      {focusedField === 'email' && (
+                        <div style={{
+                          position: 'absolute',
+                          bottom: '-2px',
+                          left: '0',
+                          right: '0',
+                          height: '2px',
+                          background: 'linear-gradient(90deg, transparent, #22c55e, transparent)',
+                          animation: 'shimmer 2s ease-in-out infinite'
+                        }}></div>
+                      )}
+                    </div>
                   </div>
 
+                  {/* Contact Field */}
                   <div>
                     <label style={{
                       display: 'block',
-                      fontSize: '14px',
+                      fontSize: '13px',
                       fontWeight: '600',
-                      color: '#374151',
-                      marginBottom: '6px'
+                      color: 'rgba(255, 255, 255, 0.8)',
+                      marginBottom: '10px',
+                      textTransform: 'uppercase',
+                      letterSpacing: '1px'
                     }}>
                       Contact Number
                     </label>
-                    <input
-                      type="text"
-                      name="contact"
-                      placeholder="Enter your contact number"
-                      value={formData.contact}
-                      onChange={handleChange}
-                      required
-                      style={{
-                        width: '100%',
-                        padding: '12px 14px',
-                        border: '1px solid #d1d5db',
-                        borderRadius: '6px',
-                        fontSize: '14px',
-                        transition: 'border-color 0.2s',
-                        boxSizing: 'border-box'
-                      }}
-                    />
+                    <div style={{ position: 'relative' }}>
+                      <Phone style={{
+                        position: 'absolute',
+                        left: '16px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        width: '18px',
+                        height: '18px',
+                        color: focusedField === 'contact' ? '#22c55e' : 'rgba(255, 255, 255, 0.4)',
+                        transition: 'color 0.3s ease'
+                      }} />
+                      <input
+                        type="text"
+                        name="contact"
+                        placeholder="Enter your contact number"
+                        value={formData.contact}
+                        onChange={handleChange}
+                        onFocus={() => setFocusedField('contact')}
+                        onBlur={() => setFocusedField(null)}
+                        style={{
+                          width: '100%',
+                          padding: '14px 20px 14px 48px',
+                          background: 'rgba(255, 255, 255, 0.05)',
+                          border: `2px solid ${focusedField === 'contact' ? '#22c55e' : 'rgba(255, 255, 255, 0.1)'}`,
+                          borderRadius: '12px',
+                          fontSize: '15px',
+                          color: '#ffffff',
+                          transition: 'all 0.3s ease',
+                          boxSizing: 'border-box',
+                          outline: 'none'
+                        }}
+                      />
+                      {focusedField === 'contact' && (
+                        <div style={{
+                          position: 'absolute',
+                          bottom: '-2px',
+                          left: '0',
+                          right: '0',
+                          height: '2px',
+                          background: 'linear-gradient(90deg, transparent, #22c55e, transparent)',
+                          animation: 'shimmer 2s ease-in-out infinite'
+                        }}></div>
+                      )}
+                    </div>
                   </div>
 
+                  {/* Password Field */}
                   <div>
                     <label style={{
                       display: 'block',
-                      fontSize: '14px',
+                      fontSize: '13px',
                       fontWeight: '600',
-                      color: '#374151',
-                      marginBottom: '6px'
+                      color: 'rgba(255, 255, 255, 0.8)',
+                      marginBottom: '10px',
+                      textTransform: 'uppercase',
+                      letterSpacing: '1px'
                     }}>
                       Password
                     </label>
-                    <input
-                      type="password"
-                      name="password"
-                      placeholder="Create a strong password"
-                      value={formData.password}
-                      onChange={handleChange}
-                      required
-                      style={{
-                        width: '100%',
-                        padding: '12px 14px',
-                        border: '1px solid #d1d5db',
-                        borderRadius: '6px',
-                        fontSize: '14px',
-                        transition: 'border-color 0.2s',
-                        boxSizing: 'border-box'
-                      }}
-                    />
+                    <div style={{ position: 'relative' }}>
+                      <Lock style={{
+                        position: 'absolute',
+                        left: '16px',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        width: '18px',
+                        height: '18px',
+                        color: focusedField === 'password' ? '#22c55e' : 'rgba(255, 255, 255, 0.4)',
+                        transition: 'color 0.3s ease'
+                      }} />
+                      <input
+                        type="password"
+                        name="password"
+                        placeholder="Create a strong password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        onFocus={() => setFocusedField('password')}
+                        onBlur={() => setFocusedField(null)}
+                        onKeyPress={(e) => {
+                          if (e.key === 'Enter' && isFormValid()) {
+                            handleSubmit();
+                          }
+                        }}
+                        style={{
+                          width: '100%',
+                          padding: '14px 20px 14px 48px',
+                          background: 'rgba(255, 255, 255, 0.05)',
+                          border: `2px solid ${focusedField === 'password' ? '#22c55e' : 'rgba(255, 255, 255, 0.1)'}`,
+                          borderRadius: '12px',
+                          fontSize: '15px',
+                          color: '#ffffff',
+                          transition: 'all 0.3s ease',
+                          boxSizing: 'border-box',
+                          outline: 'none'
+                        }}
+                      />
+                      {focusedField === 'password' && (
+                        <div style={{
+                          position: 'absolute',
+                          bottom: '-2px',
+                          left: '0',
+                          right: '0',
+                          height: '2px',
+                          background: 'linear-gradient(90deg, transparent, #22c55e, transparent)',
+                          animation: 'shimmer 2s ease-in-out infinite'
+                        }}></div>
+                      )}
+                    </div>
                   </div>
 
                   {error && (
                     <div style={{
-                      padding: '12px 16px',
-                      backgroundColor: '#fee2e2',
-                      border: '1px solid #fecaca',
-                      borderRadius: '6px',
-                      color: '#dc2626',
+                      padding: '14px 18px',
+                      background: 'rgba(239, 68, 68, 0.15)',
+                      border: '1px solid rgba(239, 68, 68, 0.3)',
+                      borderRadius: '12px',
+                      color: '#fca5a5',
                       fontSize: '14px',
-                      fontWeight: '500'
+                      fontWeight: '500',
+                      animation: 'shake 0.5s ease-in-out'
                     }}>
                       {error}
                     </div>
                   )}
 
                   <button
-                    type="submit"
+                    onClick={handleSubmit}
                     disabled={!isFormValid() || isLoading}
                     style={{
                       width: '100%',
-                      padding: '12px 24px',
-                      backgroundColor: !isFormValid() || isLoading ? '#d1d5db' : '#16a34a',
-                      color: 'white',
+                      padding: '16px 28px',
+                      background: !isFormValid() || isLoading 
+                        ? 'rgba(255, 255, 255, 0.1)' 
+                        : 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+                      color: !isFormValid() || isLoading ? 'rgba(255, 255, 255, 0.3)' : '#ffffff',
                       border: 'none',
-                      borderRadius: '8px',
+                      borderRadius: '12px',
                       fontSize: '16px',
-                      fontWeight: '600',
+                      fontWeight: '700',
                       cursor: !isFormValid() || isLoading ? 'not-allowed' : 'pointer',
                       transition: 'all 0.3s ease',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      gap: '8px',
-                      marginTop: '4px'
+                      gap: '10px',
+                      textTransform: 'uppercase',
+                      letterSpacing: '1px',
+                      boxShadow: !isFormValid() || isLoading ? 'none' : '0 0 30px rgba(34, 197, 94, 0.4)',
+                      position: 'relative',
+                      overflow: 'hidden'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (isFormValid() && !isLoading) {
+                        e.target.style.transform = 'translateY(-2px)';
+                        e.target.style.boxShadow = '0 0 40px rgba(34, 197, 94, 0.6)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      e.target.style.transform = 'translateY(0)';
+                      e.target.style.boxShadow = !isFormValid() || isLoading ? 'none' : '0 0 30px rgba(34, 197, 94, 0.4)';
                     }}
                   >
+                    {!isFormValid() || isLoading ? null : (
+                      <div style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: '-100%',
+                        width: '100%',
+                        height: '100%',
+                        background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent)',
+                        animation: 'slideRight 3s ease-in-out infinite'
+                      }}></div>
+                    )}
                     {isLoading ? (
                       <>
                         <div style={{
-                          width: '16px',
-                          height: '16px',
-                          border: '2px solid #ffffff',
-                          borderTop: '2px solid transparent',
+                          width: '18px',
+                          height: '18px',
+                          border: '3px solid rgba(255, 255, 255, 0.3)',
+                          borderTop: '3px solid #ffffff',
                           borderRadius: '50%',
-                          animation: 'spin 1s linear infinite'
+                          animation: 'spin 0.8s linear infinite'
                         }}></div>
-                        Creating account...
+                        Creating Account...
                       </>
                     ) : (
-                      'Sign Up'
+                      <>
+                        Sign Up
+                        <span style={{ fontSize: '18px' }}>→</span>
+                      </>
                     )}
                   </button>
 
@@ -319,38 +630,108 @@ const Signup = () => {
                   }}>
                     <p style={{
                       fontSize: '14px',
-                      color: '#6b7280',
+                      color: 'rgba(255, 255, 255, 0.5)',
                       margin: 0
                     }}>
                       Already have an account?{' '}
-                      <Link to="/login" style={{
-                        color: '#16a34a',
-                        textDecoration: 'none',
-                        fontWeight: '600',
-                        transition: 'color 0.2s'
-                      }}>
+                      <span
+                        onClick={() => navigate("/login")}
+                        style={{
+                          color: '#22c55e',
+                          fontWeight: '700',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.color = '#4ade80';
+                          e.target.style.textShadow = '0 0 20px rgba(34, 197, 94, 0.5)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.color = '#22c55e';
+                          e.target.style.textShadow = 'none';
+                        }}
+                      >
                         Login
-                      </Link>
+                      </span>
                     </p>
                   </div>
-                </form>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <style jsx>{`
+      <style>{`
         @keyframes spin {
           0% { transform: rotate(0deg); }
           100% { transform: rotate(360deg); }
         }
-        input:focus {
-          outline: none;
-          border-color: #16a34a !important;
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-20px); }
         }
-        a:hover {
-          color: #15803d !important;
+        @keyframes slideUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes fadeInLeft {
+          from {
+            opacity: 0;
+            transform: translateX(-20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+        @keyframes pulse {
+          0%, 100% {
+            opacity: 0.3;
+            transform: rotate(45deg) scale(1);
+          }
+          50% {
+            opacity: 0.6;
+            transform: rotate(45deg) scale(1.1);
+          }
+        }
+        @keyframes glow {
+          0%, 100% {
+            box-shadow: 0 0 20px #22c55e;
+          }
+          50% {
+            box-shadow: 0 0 30px #22c55e, 0 0 40px #22c55e;
+          }
+        }
+        @keyframes shimmer {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100%); }
+        }
+        @keyframes rotate {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        @keyframes slideRight {
+          0% { left: -100%; }
+          100% { left: 200%; }
+        }
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          25% { transform: translateX(-10px); }
+          75% { transform: translateX(10px); }
+        }
+        input::placeholder {
+          color: rgba(255, 255, 255, 0.3);
         }
       `}</style>
     </div>
