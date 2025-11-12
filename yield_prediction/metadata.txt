@@ -1,0 +1,11 @@
+
+    Crop: The name of the crop cultivated.
+    Crop_Year: The year in which the crop was grown.
+    Season: The specific cropping season (e.g., Kharif, Rabi, Whole Year).
+    State: The Indian state where the crop was cultivated.
+    Area: The total land area (in hectares) under cultivation for the specific crop.
+    Production: The quantity of crop production (in metric tons).
+    Annual_Rainfall: The annual rainfall received in the crop-growing region (in mm).
+    Fertilizer: The total amount of fertilizer used for the crop (in kilograms).
+    Pesticide: The total amount of pesticide used for the crop (in kilograms).
+    Yield: The calculated crop yield (production per unit area).

@@ -22,12 +22,20 @@ const userSchema = new Schema({
     password: {
         type: String,
         required: true
+    },
+    area: {
+        type: Number,
+        required: true
+    },
+    location: {
+        type: String,
+        required: true
     }
 })
 
 //Static signup method
-userSchema.statics.signup = async function (userName, email, contact, password) {
-    if (!userName || !email || !contact || !password) {
+userSchema.statics.signup = async function (userName, email, contact, password, location, area) {
+    if (!userName || !email || !contact || !password || !location || !area) {
         throw new Error('All fields are required')
     }
     if (!validator.isEmail(email)) {
@@ -50,7 +58,9 @@ userSchema.statics.signup = async function (userName, email, contact, password) 
         userName,
         email,
         contact,
-        password: hashedPassword
+        password: hashedPassword,
+        location,
+        area
     })
 
     return newUser

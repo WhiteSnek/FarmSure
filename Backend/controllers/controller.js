@@ -24,10 +24,10 @@ const login = async (req, res) => {
 
 //Signup User
 const signup = async (req, res) => {
-  const { userName, email, contact, password } = req.body;
+  const { userName, email, contact, password, area, location } = req.body;
 
   try {
-    const user = await User.signup(userName, email, contact, password);
+    const user = await User.signup(userName, email, contact, password, area, location);
 
     //Create Token
     const token = createToken(user._id);
@@ -54,7 +54,7 @@ const getCropPrices = async (req, res) => {
     if (state) params.append("filters[state.keyword]", state);
     if (district) params.append("filters[district]", district);
     if (market) params.append("filters[market]", market);
-    if (commodity) params.append("filters[commodity]", commodity);
+    if (commodity) params.append("filters[state.keyword]", commodity);
 
     const requestUrl = `${baseUrl}?${params.toString()}`;
 

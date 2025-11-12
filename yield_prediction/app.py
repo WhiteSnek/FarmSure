@@ -1,14 +1,15 @@
 import os
 import pandas as pd
+import joblib
+from datetime import datetime
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder
-import joblib
-
-app = FastAPI()
+import requests
+from dotenv import load_dotenv
+import os
+load_dotenv()
+app = FastAPI(title="Crop Yield Prediction API")
 
 # Enable CORS
 app.add_middleware(
@@ -19,63 +20,123 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Paths
 MODEL_PATH = "crop_yield_model.pkl"
 ENCODERS_PATH = "crop_yield_encoders.pkl"
 
-# Load and preprocess dataset
-crop_data = pd.read_csv("crop_production.csv").dropna()
-crop_data['Yield'] = crop_data['Production'] / crop_data['Area']
+# Load model and encoders
+if not (os.path.exists(MODEL_PATH) and os.path.exists(ENCODERS_PATH)):
+    raise FileNotFoundError("Model or encoders not found. Please train the model first.")
 
-categorical_cols = ['State_Name', 'Crop_Year', 'Season', 'Crop']
-encoders = {}
+model = joblib.load(MODEL_PATH)
+encoders = joblib.load(ENCODERS_PATH)
 
-for col in categorical_cols:
-    le = LabelEncoder()
-    crop_data[col] = le.fit_transform(crop_data[col])
-    encoders[col] = le
+# Columns used in model
+categorical_cols = ['Crop', 'Crop_Year', 'Season', 'State']
+numeric_cols = ['Area', 'Annual_Rainfall', 'Fertilizer', 'Pesticide']
 
-X = crop_data[categorical_cols + ['Area']]
-y = crop_data['Yield']
+# Helper: predict yield
+def predict_yield(crop, season, state, area, rainfall, fertilizer, pesticide, crop_year=None):
+    if crop_year is None:
+        crop_year = datetime.now().year  # Automatically use current year
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.25, random_state=5)
+    # Create dataframe for prediction
+    input_data = pd.DataFrame([[crop, crop_year, season, state, area, rainfall, fertilizer, pesticide]],
+                              columns=categorical_cols + numeric_cols)
 
-# Train or load model
-if os.path.exists(MODEL_PATH) and os.path.exists(ENCODERS_PATH):
-    model = joblib.load(MODEL_PATH)
-    encoders = joblib.load(ENCODERS_PATH)
-else:
-    model = RandomForestRegressor(n_estimators=20, max_depth=12, random_state=5)
-    model.fit(X_train, y_train)
-    joblib.dump(model, MODEL_PATH)
-    joblib.dump(encoders, ENCODERS_PATH)
-
-# Predict yield helper
-def predict_yield(state, year, season, crop, area):
-    input_data = pd.DataFrame([[state, year, season, crop, area]], columns=categorical_cols + ['Area'])
-    
+    # Encode categorical columns
     for col in categorical_cols:
         le = encoders[col]
         val = input_data[col][0]
         if val in le.classes_:
             input_data[col] = le.transform([val])
         else:
-            input_data[col] = [-1]  # unseen labels
-    
-    return model.predict(input_data)[0]
+            # Handle unseen category
+            input_data[col] = [-1]
 
-# API endpoint
+    # Predict yield
+    prediction = model.predict(input_data)[0]
+    return prediction
+
+def find_total_revenue(state=None, commodity=None, total_yield=0):
+    baseUrl = os.getenv("MARKET_API_URL")
+    api_key = os.getenv("MARKET_API_KEY")
+
+    if not baseUrl or not api_key:
+        raise ValueError("Missing MARKET_API_URL or MARKET_API_KEY environment variables.")
+
+    params = {
+        "api-key": api_key,
+        "format": "json",
+        "limit": "10",
+        "offset": "0",
+        "sort": "created_date",
+        "order": "desc"
+    }
+
+    if state:
+        params["filters[state.keyword]"] = state
+    if commodity:
+        params["filters[commodity]"] = commodity 
+
+    try:
+        response = requests.get(baseUrl, params=params, timeout=10)
+        response.raise_for_status()
+
+        data = response.json()
+        records = data.get("records", [])
+        print(records)
+        filtered_data = [
+            {
+                "district": r.get("district"),
+                "market": r.get("market"),
+                "min_price_per_quintal": r.get("min_price"),
+                "min_price": int(r.get("min_price") or 0)*total_yield,
+                "max_price_per_quintal": r.get("max_price"),
+                "max_price": int(r.get("max_price") or 0)*total_yield,
+                "modal_price_per_quintal": r.get("modal_price"),
+                "modal_price": int(r.get("modal_price") or 0)*total_yield
+            }
+            for r in records
+        ]
+
+        return filtered_data
+
+    except requests.exceptions.RequestException as e:
+        print(f"Request failed: {e}")
+        return {"error": str(e)}
+    except ValueError:
+        print("Invalid JSON response")
+        return {"error": "Invalid JSON response"}
+
+# API Endpoint
 @app.post("/predict_yield")
 async def yield_prediction(data: dict):
-    required_keys = ['State_Name', 'Crop_Year', 'Season', 'Crop', 'Area']
-    if not all(key in data for key in required_keys):
-        raise HTTPException(status_code=400, detail=f"Missing one of required keys: {required_keys}")
+    required_keys = ['Crop', 'Season', 'State', 'Area', 'Annual_Rainfall', 'Fertilizer', 'Pesticide']
+    missing = [key for key in required_keys if key not in data]
+    if missing:
+        raise HTTPException(status_code=400, detail=f"Missing required keys: {missing}")
 
     predicted = predict_yield(
-        state=data['State_Name'],
-        year=int(data['Crop_Year']),
-        season=data['Season'],
         crop=data['Crop'],
-        area=int(data['Area'])
+        season=data['Season'],
+        state=data['State'],
+        area=float(data['Area']),
+        rainfall=float(data['Annual_Rainfall']),
+        fertilizer=float(data['Fertilizer']),
+        pesticide=float(data['Pesticide']),
+        crop_year=int(data['Crop_Year']) if 'Crop_Year' in data else None
     )
+    yield_per_unit_area = round(float(predicted), 2)
+    total_yield = round(float(predicted) * float(data['Area']), 2)
+    market_data = find_total_revenue(data['State'],data['Crop'],total_yield)
+    response = {
+        "yield_per_unit_area": yield_per_unit_area,
+        "total_yield": total_yield,
+        "market_data": market_data
+    }
+    return JSONResponse(content=response)
 
-    return JSONResponse(content={"predicted_yield": round(float(predicted), 2)})
+@app.get("/")
+def home():
+    return {"message": "Crop Yield Prediction API is running!"}
