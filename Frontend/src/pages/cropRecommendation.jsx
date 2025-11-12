@@ -1,49 +1,69 @@
 import React, { useState } from "react";
-import FertilizerPrediction from "../components/FertilizerPrediction";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 
-const Fertilizer = () => {
-  const fertilizerImage="https://plus.unsplash.com/premium_photo-1680125265832-ffaf364a8aca?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8ZmVydGlsaXplcnN8ZW58MHx8MHx8fDA%3D";
+// Fix Leaflet default icon issue
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png",
+  iconUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+  shadowUrl:
+    "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png",
+});
+
+const CropRecommendation = () => {
   const [formData, setFormData] = useState({
-    temp: "",
-    humid: "",
-    mois: "",
-    soil: "0",
-    crop: "0",
-    nitro: "",
-    pota: "",
-    phos: ""
+    location: null,
+    rainfall: "",
+    ph: "",
+    nitrogen: "",
+    potassium: "",
+    fieldSize: ""
   });
   const [prediction, setPrediction] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [focusedField, setFocusedField] = useState(null);
+  const [mapCenter, setMapCenter] = useState([20.5937, 78.9629]); // India center
+  const [markerPosition, setMarkerPosition] = useState(null);
 
-  const soilTypes = [
-    { value: "0", label: "Black" },
-    { value: "1", label: "Clayey" },
-    { value: "2", label: "Loamy" },
-    { value: "3", label: "Red" },
-    { value: "4", label: "Sandy" }
+  // Sample cities with coordinates
+  const cities = [
+    { name: "Delhi", coords: [28.6139, 77.2090] },
+    { name: "Mumbai", coords: [19.0760, 72.8777] },
+    { name: "Bangalore", coords: [12.9716, 77.5946] },
+    { name: "Chennai", coords: [13.0827, 80.2707] },
+    { name: "Kolkata", coords: [22.5726, 88.3639] },
+    { name: "Hyderabad", coords: [17.3850, 78.4867] },
+    { name: "Pune", coords: [18.5204, 73.8567] },
+    { name: "Jaipur", coords: [26.9124, 75.7873] },
+    { name: "Lucknow", coords: [26.8467, 80.9462] },
+    { name: "Patna", coords: [25.5941, 85.1376] },
+    { name: "Bhopal", coords: [23.2599, 77.4126] },
+    { name: "Chandigarh", coords: [30.7333, 76.7794] },
+    { name: "Indore", coords: [22.7196, 75.8577] },
+    { name: "Nagpur", coords: [21.1458, 79.0882] },
+    { name: "Coimbatore", coords: [11.0168, 76.9558] },
+    { name: "Ludhiana", coords: [30.9010, 75.8573] },
+    { name: "Kanpur", coords: [26.4499, 80.3319] },
+    { name: "Ahmedabad", coords: [23.0225, 72.5714] },
+    { name: "Visakhapatnam", coords: [17.6868, 83.2185] },
+    { name: "Thiruvananthapuram", coords: [8.5241, 76.9366] }
   ];
 
-  const cropTypes = [
-    { value: "0", label: "Barley" },
-    { value: "1", label: "Cotton" },
-    { value: "2", label: "Ground Nuts" },
-    { value: "3", label: "Maize" },
-    { value: "4", label: "Millets" },
-    { value: "5", label: "Oil Seeds" },
-    { value: "6", label: "Paddy" },
-    { value: "7", label: "Pulses" },
-    { value: "8", label: "Sugarcane" },
-    { value: "9", label: "Tobacco" },
-    { value: "10", label: "Wheat" },
-    { value: "11", label: "Coffee" },
-    { value: "12", label: "Kidney Beans" },
-    { value: "13", label: "Orange" },
-    { value: "14", label: "Pomegranate" },
-    { value: "15", label: "Rice" },
-    { value: "16", label: "Watermelon" }
-  ];
+  const handleLocationChange = (e) => {
+    const selectedCity = cities.find(city => city.name === e.target.value);
+    if (selectedCity) {
+      setFormData(prev => ({ ...prev, location: selectedCity.name }));
+      setMapCenter(selectedCity.coords);
+      setMarkerPosition(selectedCity.coords);
+    } else {
+      setFormData(prev => ({ ...prev, location: null }));
+      setMarkerPosition(null);
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -59,34 +79,32 @@ const Fertilizer = () => {
     setPrediction(null);
 
     try {
-      const res = await fetch(`${process.env.FERTILIZER_MODEL_URI}/predict`, {
+      const res = await fetch(`${process.env.CROP_MODEL_URI}/predict_crop`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          temp: parseFloat(formData.temp),
-          humid: parseFloat(formData.humid),
-          mois: parseFloat(formData.mois),
-          soil: parseInt(formData.soil),
-          crop: parseInt(formData.crop),
-          nitro: parseFloat(formData.nitro),
-          pota: parseFloat(formData.pota),
-          phos: parseFloat(formData.phos)
+          rainfall: parseFloat(formData.rainfall),
+          ph: parseFloat(formData.ph),
+          nitrogen: parseFloat(formData.nitrogen),
+          potassium: parseFloat(formData.potassium),
+          field_size: parseFloat(formData.fieldSize),
+          location: formData.location
         })
       });
 
       const result = await res.json();
-      setPrediction(result.fertilizer || result.recommendation);
+      setPrediction(result.recommended_crops || result.prediction);
     } catch (err) {
       console.error("Prediction error:", err);
-      setPrediction("Error getting prediction. Please try again.");
+      setPrediction(["Error getting recommendation. Please try again."]);
     } finally {
       setIsLoading(false);
     }
   };
 
   const isFormValid = () => {
-    return formData.temp && formData.humid && formData.mois && 
-           formData.nitro && formData.pota && formData.phos;
+    return formData.location && formData.rainfall && formData.ph &&
+           formData.nitrogen && formData.potassium && formData.fieldSize;
   };
 
   return (
@@ -127,7 +145,7 @@ const Fertilizer = () => {
 
       <div style={{
         width: '100%',
-        maxWidth: '1200px',
+        maxWidth: '1400px',
         position: 'relative',
         zIndex: 1
       }}>
@@ -142,34 +160,50 @@ const Fertilizer = () => {
         }}>
           <div style={{
             display: 'flex',
-            minHeight: '680px',
+            minHeight: '720px',
             flexWrap: 'wrap'
           }}>
-            {/* Left Side - Hero Section */}
+            {/* Left Side - Hero Section with Map */}
             <div style={{
               flex: '1',
-              minWidth: '450px',
+              minWidth: '500px',
               display: 'flex',
               position: 'relative',
               overflow: 'hidden'
             }}>
               <div style={{
-                flex: '1',
-                backgroundImage: `url(${fertilizerImage})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                position: 'relative',
-                transform: 'scale(1.1)',
-                transition: 'transform 0.3s ease'
+                position: 'absolute',
+                inset: 0,
+                background: 'linear-gradient(135deg, rgba(10, 14, 39, 0.48) 0%, rgba(48, 51, 76, 0.58) 50%, rgba(0, 0, 0, 0.59) 100%)',
+                backdropFilter: 'blur(2px)',
+                zIndex: 1
+              }}></div>
+
+              {/* Map Container */}
+              <div style={{
+                position: 'absolute',
+                inset: 0,
+                zIndex: 0
               }}>
-                <div style={{
-                  position: 'absolute',
-                  inset: 0,
-                  background: 'linear-gradient(135deg, rgba(10, 14, 39, 0.95) 0%, rgba(80, 83, 117, 0.39) 50%, rgba(0, 0, 0, 0.38) 100%)',
-                  backdropFilter: 'blur(2px)'
-                }}></div>
+                <MapContainer
+                    center={mapCenter}
+                    zoom={5}
+                    style={{ height: "100%", width: "100%" }}
+                    scrollWheelZoom={false}
+                    >
+                    <TileLayer
+                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    />
+                    {markerPosition && (
+                        <Marker position={markerPosition}>
+                        <Popup>{formData.location || "Selected Location"}</Popup>
+                        </Marker>
+                    )}
+                    </MapContainer>
+
               </div>
-              
+
               {/* Decorative Elements */}
               <div style={{
                 position: 'absolute',
@@ -180,47 +214,23 @@ const Fertilizer = () => {
                 border: '2px solid rgba(34, 197, 94, 0.3)',
                 borderRadius: '12px',
                 transform: 'rotate(45deg)',
-                animation: 'pulse 3s ease-in-out infinite'
+                animation: 'pulse 3s ease-in-out infinite',
+                zIndex: 2
               }}></div>
-              
+
               <div style={{
                 position: 'absolute',
                 inset: 0,
                 display: 'flex',
                 alignItems: 'center',
                 padding: '60px 50px',
-                zIndex: 1
+                zIndex: 2
               }}>
                 <div style={{
                   color: 'white',
-                  maxWidth: '450px'
+                  maxWidth: '500px'
                 }}>
-                  {/* Logo/Brand */}
-                  <div style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '12px',
-                    marginBottom: '32px',
-                    padding: '12px 20px',
-                    background: 'rgba(34, 197, 94, 0.15)',
-                    backdropFilter: 'blur(10px)',
-                    borderRadius: '12px',
-                    border: '1px solid rgba(34, 197, 94, 0.2)'
-                  }}>
-                    <div style={{
-                      width: '10px',
-                      height: '10px',
-                      background: '#22c55e',
-                      borderRadius: '50%',
-                      boxShadow: '0 0 20px #22c55e',
-                      animation: 'glow 2s ease-in-out infinite'
-                    }}></div>
-                    <span style={{
-                      fontSize: '20px',
-                      fontWeight: '700',
-                      letterSpacing: '0.5px'
-                    }}>FarmSure</span>
-                  </div>
+                  {/* Logo/Brand ,,hta dia hai mgr yahan se*/}
 
                   <h1 style={{
                     fontSize: '48px',
@@ -232,7 +242,7 @@ const Fertilizer = () => {
                     WebkitTextFillColor: 'transparent',
                     animation: 'fadeInLeft 0.8s ease-out'
                   }}>
-                    Precision Nutrient Intelligence
+                    Smart Crop Selector
                   </h1>
                   <p style={{
                     fontSize: '18px',
@@ -241,11 +251,11 @@ const Fertilizer = () => {
                     lineHeight: '1.6',
                     animation: 'fadeInLeft 0.8s ease-out 0.2s backwards'
                   }}>
-                    Get <span style={{ 
-                      color: '#22c55e', 
+                    Discover the <span style={{
+                      color: '#22c55e',
                       fontWeight: '600',
                       textShadow: '0 0 20px rgba(34, 197, 94, 0.5)'
-                    }}>AI-powered</span> fertilizer recommendations tailored to your soil, crop, and climate
+                    }}>perfect crops</span> for your land using AI & real-time soil data
                   </p>
 
                   {/* Stats */}
@@ -256,11 +266,12 @@ const Fertilizer = () => {
                     animation: 'fadeInLeft 0.8s ease-out 0.4s backwards'
                   }}>
                     {[
-                      { label: 'Crops Supported', value: '17+' },
-                      { label: 'Soil Types', value: '5' },
-                      { label: 'Accuracy', value: '99.2%' }
+                      { label: 'Crops Analyzed', value: '50+' },
+                      { label: 'Parameters', value: '6' },
+                      { label: 'Accuracy', value: '98.7%' }
                     ].map((stat, i) => (
                       <div key={i} style={{
+                        
                         padding: '16px 20px',
                         background: 'rgba(255, 255, 255, 0.05)',
                         backdropFilter: 'blur(10px)',
@@ -272,6 +283,7 @@ const Fertilizer = () => {
                           fontWeight: '700',
                           color: '#22c55e',
                           marginBottom: '4px'
+                          
                         }}>{stat.value}</div>
                         <div style={{
                           fontSize: '12px',
@@ -289,7 +301,7 @@ const Fertilizer = () => {
             {/* Right Side - Form Section */}
             <div style={{
               flex: '1',
-              minWidth: '450px',
+              minWidth: '500px',
               padding: '70px 50px',
               background: 'rgba(15, 23, 41, 0.6)',
               backdropFilter: 'blur(10px)',
@@ -331,7 +343,7 @@ const Fertilizer = () => {
                   margin: '0 0 12px 0',
                   letterSpacing: '-0.5px'
                 }}>
-                  Smart Fertilizer Advisor
+                  Crop Recommendation Engine
                 </h2>
                 <p style={{
                   fontSize: '15px',
@@ -339,7 +351,7 @@ const Fertilizer = () => {
                   margin: '0 0 40px 0',
                   fontWeight: '400'
                 }}>
-                  Enter soil & climate data for instant AI recommendations
+                  Enter your field data for AI-powered crop suggestions
                 </p>
 
                 <form onSubmit={handleSubmit} style={{
@@ -347,7 +359,53 @@ const Fertilizer = () => {
                   flexDirection: 'column',
                   gap: '20px'
                 }}>
-                  {/* Environmental Conditions */}
+                  {/* Location with Map */}
+                  <div>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '13px',
+                      fontWeight: '600',
+                      color: 'rgba(255, 255, 255, 0.8)',
+                      marginBottom: '10px',
+                      textTransform: 'uppercase',
+                      letterSpacing: '1px'
+                    }}>
+                      Location (City)
+                    </label>
+                    <select
+                      name="location"
+                      value={formData.location || ""}
+                      onChange={handleLocationChange}
+                      onFocus={() => setFocusedField('location')}
+                      onBlur={() => setFocusedField(null)}
+                      required
+                      style={{
+                        width: '100%',
+                        padding: '16px 20px',
+                        background: 'rgba(255, 255, 255, 0.05)',
+                        border: `2px solid ${focusedField === 'location' ? '#22c55e' : 'rgba(255, 255, 255, 0.1)'}`,
+                        borderRadius: '12px',
+                        fontSize: '15px',
+                        color: 'rgba(255, 255, 255, 0.8)',
+                        transition: 'all 0.3s ease',
+                        outline: 'none',
+                        appearance: 'none',
+                        backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='rgba(255,255,255,0.5)' height='24' viewBox='0 0 24 24' width='24'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e")`,
+                        backgroundRepeat: 'no-repeat',
+                        backgroundPosition: 'right 16px center',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      <option value="">Select City</option>
+                      {cities.map(city => (
+                        <option key={city.name} value={city.name} style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+                          {city.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Rainfall and pH */}
                   <div style={{
                     display: 'grid',
                     gridTemplateColumns: '1fr 1fr',
@@ -363,24 +421,24 @@ const Fertilizer = () => {
                         textTransform: 'uppercase',
                         letterSpacing: '1px'
                       }}>
-                        Temperature (°C)
+                        Rainfall (mm/year)
                       </label>
                       <div style={{ position: 'relative' }}>
                         <input
                           type="number"
-                          name="temp"
-                          value={formData.temp}
+                          name="rainfall"
+                          value={formData.rainfall}
                           onChange={handleInputChange}
-                          onFocus={() => setFocusedField('temp')}
+                          onFocus={() => setFocusedField('rainfall')}
                           onBlur={() => setFocusedField(null)}
                           required
                           step="0.1"
-                          placeholder="e.g. 28.5"
+                          placeholder="e.g. 1200"
                           style={{
                             width: '100%',
                             padding: '16px 20px',
                             background: 'rgba(255, 255, 255, 0.05)',
-                            border: `2px solid ${focusedField === 'temp' ? '#22c55e' : 'rgba(255, 255, 255, 0.1)'}`,
+                            border: `2px solid ${focusedField === 'rainfall' ? '#22c55e' : 'rgba(255, 255, 255, 0.1)'}`,
                             borderRadius: '12px',
                             fontSize: '15px',
                             color: '#ffffff',
@@ -389,7 +447,7 @@ const Fertilizer = () => {
                             outline: 'none'
                           }}
                         />
-                        {focusedField === 'temp' && (
+                        {focusedField === 'rainfall' && (
                           <div style={{
                             position: 'absolute',
                             bottom: '-2px',
@@ -413,24 +471,26 @@ const Fertilizer = () => {
                         textTransform: 'uppercase',
                         letterSpacing: '1px'
                       }}>
-                        Humidity (%)
+                        Soil pH
                       </label>
                       <div style={{ position: 'relative' }}>
                         <input
                           type="number"
-                          name="humid"
-                          value={formData.humid}
+                          name="ph"
+                          value={formData.ph}
                           onChange={handleInputChange}
-                          onFocus={() => setFocusedField('humid')}
+                          onFocus={() => setFocusedField('ph')}
                           onBlur={() => setFocusedField(null)}
                           required
                           step="0.1"
-                          placeholder="e.g. 65.2"
+                          min="0"
+                          max="14"
+                          placeholder="e.g. 6.5"
                           style={{
                             width: '100%',
                             padding: '16px 20px',
                             background: 'rgba(255, 255, 255, 0.05)',
-                            border: `2px solid ${focusedField === 'humid' ? '#22c55e' : 'rgba(255, 255, 255, 0.1)'}`,
+                            border: `2px solid ${focusedField === 'ph' ? '#22c55e' : 'rgba(255, 255, 255, 0.1)'}`,
                             borderRadius: '12px',
                             fontSize: '15px',
                             color: '#ffffff',
@@ -439,7 +499,7 @@ const Fertilizer = () => {
                             outline: 'none'
                           }}
                         />
-                        {focusedField === 'humid' && (
+                        {focusedField === 'ph' && (
                           <div style={{
                             position: 'absolute',
                             bottom: '-2px',
@@ -454,6 +514,114 @@ const Fertilizer = () => {
                     </div>
                   </div>
 
+                  {/* Nitrogen and Potassium */}
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr',
+                    gap: '20px'
+                  }}>
+                    <div>
+                      <label style={{
+                        display: 'block',
+                        fontSize: '13px',
+                        fontWeight: '600',
+                        color: 'rgba(255, 255, 255, 0.8)',
+                        marginBottom: '10px',
+                        textTransform: 'uppercase',
+                        letterSpacing: '1px'
+                      }}>
+                        Nitrogen (N) ppm
+                      </label>
+                      <div style={{ position: 'relative' }}>
+                        <input
+                          type="number"
+                          name="nitrogen"
+                          value={formData.nitrogen}
+                          onChange={handleInputChange}
+                          onFocus={() => setFocusedField('nitrogen')}
+                          onBlur={() => setFocusedField(null)}
+                          required
+                          step="0.1"
+                          placeholder="e.g. 45"
+                          style={{
+                            width: '100%',
+                            padding: '16px 20px',
+                            background: 'rgba(255, 255, 255, 0.05)',
+                            border: `2px solid ${focusedField === 'nitrogen' ? '#22c55e' : 'rgba(255, 255, 255, 0.1)'}`,
+                            borderRadius: '12px',
+                            fontSize: '15px',
+                            color: '#ffffff',
+                            transition: 'all 0.3s ease',
+                            boxSizing: 'border-box',
+                            outline: 'none'
+                          }}
+                        />
+                        {focusedField === 'nitrogen' && (
+                          <div style={{
+                            position: 'absolute',
+                            bottom: '-2px',
+                            left: '0',
+                            right: '0',
+                            height: '2px',
+                            background: 'linear-gradient(90deg, transparent, #22c55e, transparent)',
+                            animation: 'shimmer 2s ease-in-out infinite'
+                          }}></div>
+                        )}
+                      </div>
+                    </div>
+
+                    <div>
+                      <label style={{
+                        display: 'block',
+                        fontSize: '13px',
+                        fontWeight: '600',
+                        color: 'rgba(255, 255, 255, 0.8)',
+                        marginBottom: '10px',
+                        textTransform: 'uppercase',
+                        letterSpacing: '1px'
+                      }}>
+                        Potassium (K) ppm
+                      </label>
+                      <div style={{ position: 'relative' }}>
+                        <input
+                          type="number"
+                          name="potassium"
+                          value={formData.potassium}
+                          onChange={handleInputChange}
+                          onFocus={() => setFocusedField('potassium')}
+                          onBlur={() => setFocusedField(null)}
+                          required
+                          step="0.1"
+                          placeholder="e.g. 30"
+                          style={{
+                            width: '100%',
+                            padding: '16px 20px',
+                            background: 'rgba(255, 255, 255, 0.05)',
+                            border: `2px solid ${focusedField === 'potassium' ? '#22c55e' : 'rgba(255, 255, 255, 0.1)'}`,
+                            borderRadius: '12px',
+                            fontSize: '15px',
+                            color: '#ffffff',
+                            transition: 'all 0.3s ease',
+                            boxSizing: 'border-box',
+                            outline: 'none'
+                          }}
+                        />
+                        {focusedField === 'potassium' && (
+                          <div style={{
+                            position: 'absolute',
+                            bottom: '-2px',
+                            left: '0',
+                            right: '0',
+                            height: '2px',
+                            background: 'linear-gradient(90deg, transparent, #22c55e, transparent)',
+                            animation: 'shimmer 2s ease-in-out infinite'
+                          }}></div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Field Size */}
                   <div>
                     <label style={{
                       display: 'block',
@@ -464,24 +632,25 @@ const Fertilizer = () => {
                       textTransform: 'uppercase',
                       letterSpacing: '1px'
                     }}>
-                      Soil Moisture (%)
+                      Field Size (hectares)
                     </label>
                     <div style={{ position: 'relative' }}>
                       <input
                         type="number"
-                        name="mois"
-                        value={formData.mois}
+                        name="fieldSize"
+                        value={formData.fieldSize}
                         onChange={handleInputChange}
-                        onFocus={() => setFocusedField('mois')}
+                        onFocus={() => setFocusedField('fieldSize')}
                         onBlur={() => setFocusedField(null)}
                         required
-                        step="0.1"
-                        placeholder="e.g. 45.8"
+                        min="0.1"
+                        step="0.01"
+                        placeholder="e.g. 5.5"
                         style={{
                           width: '100%',
                           padding: '16px 20px',
                           background: 'rgba(255, 255, 255, 0.05)',
-                          border: `2px solid ${focusedField === 'mois' ? '#22c55e' : 'rgba(255, 255, 255, 0.1)'}`,
+                          border: `2px solid ${focusedField === 'fieldSize' ? '#22c55e' : 'rgba(255, 255, 255, 0.1)'}`,
                           borderRadius: '12px',
                           fontSize: '15px',
                           color: '#ffffff',
@@ -490,7 +659,7 @@ const Fertilizer = () => {
                           outline: 'none'
                         }}
                       />
-                      {focusedField === 'mois' && (
+                      {focusedField === 'fieldSize' && (
                         <div style={{
                           position: 'absolute',
                           bottom: '-2px',
@@ -504,264 +673,14 @@ const Fertilizer = () => {
                     </div>
                   </div>
 
-                  {/* Soil and Crop Type */}
-                  <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: '1fr 1fr',
-                    gap: '20px'
-                  }}>
-                    <div>
-                      <label style={{
-                        display: 'block',
-                        fontSize: '13px',
-                        fontWeight: '600',
-                        color: 'rgba(255, 255, 255, 0.8)',
-                        marginBottom: '10px',
-                        textTransform: 'uppercase',
-                        letterSpacing: '1px'
-                      }}>
-                        Soil Type
-                      </label>
-                      <select
-                        name="soil"
-                        value={formData.soil}
-                        onChange={handleInputChange}
-                        style={{
-                          width: '100%',
-                          padding: '16px 20px',
-                          background: 'rgba(255, 255, 255, 0.05)',
-                          border: '2px solid rgba(255, 255, 255, 0.1)',
-                          borderRadius: '12px',
-                          fontSize: '15px',
-                          color: '#ffffff',
-                          transition: 'all 0.3s ease',
-                          outline: 'none',
-                          appearance: 'none',
-                          backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='rgba(255,255,255,0.5)' height='24' viewBox='0 0 24 24' width='24'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e")`,
-                          backgroundRepeat: 'no-repeat',
-                          backgroundPosition: 'right 16px center',
-                          cursor: 'pointer'
-                        }}
-                        onFocus={(e) => e.target.style.borderColor = '#22c55e'}
-                        onBlur={(e) => e.target.style.borderColor = 'rgba(255, 255, 255, 0.1)'}
-                      >
-                        {soilTypes.map(soil => (
-                          <option key={soil.value} value={soil.value} style={{ color: 'rgba(255, 255, 255, 0.8)'}}>
-                            {soil.label}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div>
-                      <label style={{
-                        display: 'block',
-                        fontSize: '13px',
-                        fontWeight: '600',
-                        color: 'rgba(255, 255, 255, 0.8)',
-                        marginBottom: '10px',
-                        textTransform: 'uppercase',
-                        letterSpacing: '1px'
-                      }}>
-                        Crop Type
-                      </label>
-                      <select
-                        name="crop"
-                        value={formData.crop}
-                        onChange={handleInputChange}
-                        style={{
-                          width: '100%',
-                          padding: '16px 20px',
-                          background: 'rgba(255, 255, 255, 0.05)',
-                          border: '2px solid rgba(255, 255, 255, 0.1)',
-                          borderRadius: '12px',
-                          fontSize: '15px',
-                          color: '#ffffff',
-                          transition: 'all 0.3s ease',
-                          outline: 'none',
-                          appearance: 'none',
-                          backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='rgba(255,255,255,0.5)' height='24' viewBox='0 0 24 24' width='24'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e")`,
-                          backgroundRepeat: 'no-repeat',
-                          backgroundPosition: 'right 16px center',
-                          cursor: 'pointer'
-                        }}
-                        onFocus={(e) => e.target.style.borderColor = '#22c55e'}
-                        onBlur={(e) => e.target.style.borderColor = 'rgba(255, 255, 255, 0.1)'}
-                      >
-                        {cropTypes.map(crop => (
-                          <option key={crop.value} value={crop.value} style={{ color: 'rgba(255, 255, 255, 0.8)'}}>
-                            {crop.label}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  </div>
-
-                  {/* NPK Values */}
-                  <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: '1fr 1fr 1fr',
-                    gap: '20px'
-                  }}>
-                    <div>
-                      <label style={{
-                        display: 'block',
-                        fontSize: '13px',
-                        fontWeight: '600',
-                        color: 'rgba(255, 255, 255, 0.8)',
-                        marginBottom: '10px',
-                        textTransform: 'uppercase',
-                        letterSpacing: '1px'
-                      }}>
-                        Nitrogen (N)
-                      </label>
-                      <div style={{ position: 'relative' }}>
-                        <input
-                          type="number"
-                          name="nitro"
-                          value={formData.nitro}
-                          onChange={handleInputChange}
-                          onFocus={() => setFocusedField('nitro')}
-                          onBlur={() => setFocusedField(null)}
-                          required
-                          step="0.1"
-                          placeholder="e.g. 45"
-                          style={{
-                            width: '100%',
-                            padding: '16px 20px',
-                            background: 'rgba(255, 255, 255, 0.05)',
-                            border: `2px solid ${focusedField === 'nitro' ? '#22c55e' : 'rgba(255, 255, 255, 0.1)'}`,
-                            borderRadius: '12px',
-                            fontSize: '15px',
-                            color: '#ffffff',
-                            transition: 'all 0.3s ease',
-                            boxSizing: 'border-box',
-                            outline: 'none'
-                          }}
-                        />
-                        {focusedField === 'nitro' && (
-                          <div style={{
-                            position: 'absolute',
-                            bottom: '-2px',
-                            left: '0',
-                            right: '0',
-                            height: '2px',
-                            background: 'linear-gradient(90deg, transparent, #22c55e, transparent)',
-                            animation: 'shimmer 2s ease-in-out infinite'
-                          }}></div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div>
-                      <label style={{
-                        display: 'block',
-                        fontSize: '13px',
-                        fontWeight: '600',
-                        color: 'rgba(255, 255, 255, 0.8)',
-                        marginBottom: '10px',
-                        textTransform: 'uppercase',
-                        letterSpacing: '1px'
-                      }}>
-                        Potassium (K)
-                      </label>
-                      <div style={{ position: 'relative' }}>
-                        <input
-                          type="number"
-                          name="pota"
-                          value={formData.pota}
-                          onChange={handleInputChange}
-                          onFocus={() => setFocusedField('pota')}
-                          onBlur={() => setFocusedField(null)}
-                          required
-                          step="0.1"
-                          placeholder="e.g. 30"
-                          style={{
-                            width: '100%',
-                            padding: '16px 20px',
-                            background: 'rgba(255, 255, 255, 0.05)',
-                            border: `2px solid ${focusedField === 'pota' ? '#22c55e' : 'rgba(255, 255, 255, 0.1)'}`,
-                            borderRadius: '12px',
-                            fontSize: '15px',
-                            color: '#ffffff',
-                            transition: 'all 0.3s ease',
-                            boxSizing: 'border-box',
-                            outline: 'none'
-                          }}
-                        />
-                        {focusedField === 'pota' && (
-                          <div style={{
-                            position: 'absolute',
-                            bottom: '-2px',
-                            left: '0',
-                            right: '0',
-                            height: '2px',
-                            background: 'linear-gradient(90deg, transparent, #22c55e, transparent)',
-                            animation: 'shimmer 2s ease-in-out infinite'
-                          }}></div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div>
-                      <label style={{
-                        display: 'block',
-                        fontSize: '13px',
-                        fontWeight: '600',
-                        color: 'rgba(255, 255, 255, 0.8)',
-                        marginBottom: '10px',
-                        textTransform: 'uppercase',
-                        letterSpacing: '1px'
-                      }}>
-                        Phosphorus (P)
-                      </label>
-                      <div style={{ position: 'relative' }}>
-                        <input
-                          type="number"
-                          name="phos"
-                          value={formData.phos}
-                          onChange={handleInputChange}
-                          onFocus={() => setFocusedField('phos')}
-                          onBlur={() => setFocusedField(null)}
-                          required
-                          step="0.1"
-                          placeholder="e.g. 25"
-                          style={{
-                            width: '100%',
-                            padding: '16px 20px',
-                            background: 'rgba(255, 255, 255, 0.05)',
-                            border: `2px solid ${focusedField === 'phos' ? '#22c55e' : 'rgba(255, 255, 255, 0.1)'}`,
-                            borderRadius: '12px',
-                            fontSize: '15px',
-                            color: '#ffffff',
-                            transition: 'all 0.3s ease',
-                            boxSizing: 'border-box',
-                            outline: 'none'
-                          }}
-                        />
-                        {focusedField === 'phos' && (
-                          <div style={{
-                            position: 'absolute',
-                            bottom: '-2px',
-                            left: '0',
-                            right: '0',
-                            height: '2px',
-                            background: 'linear-gradient(90deg, transparent, #22c55e, transparent)',
-                            animation: 'shimmer 2s ease-in-out infinite'
-                          }}></div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
                   <button
                     type="submit"
                     disabled={!isFormValid() || isLoading}
                     style={{
                       marginTop: '12px',
                       padding: '16px 32px',
-                      background: !isFormValid() || isLoading 
-                        ? 'rgba(255, 255, 255, 0.1)' 
+                      background: !isFormValid() || isLoading
+                        ? 'rgba(255, 255, 255, 0.1)'
                         : 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
                       color: !isFormValid() || isLoading ? 'rgba(255, 255, 255, 0.3)' : '#ffffff',
                       border: 'none',
@@ -782,13 +701,13 @@ const Fertilizer = () => {
                     }}
                     onMouseEnter={(e) => {
                       if (isFormValid() && !isLoading) {
-                        e.target.style.transform = 'translateY(-2px)';
-                        e.target.style.boxShadow = '0 0 40px rgba(34, 197, 94, 0.6)';
+                        e.currentTarget.style.transform = 'translateY(-2px)';
+                        e.currentTarget.style.boxShadow = '0 0 40px rgba(34, 197, 94, 0.6)';
                       }
                     }}
                     onMouseLeave={(e) => {
-                      e.target.style.transform = 'translateY(0)';
-                      e.target.style.boxShadow = !isFormValid() || isLoading ? 'none' : '0 0 30px rgba(34, 197, 94, 0.4)';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = !isFormValid() || isLoading ? 'none' : '0 0 30px rgba(34, 197, 94, 0.4)';
                     }}
                   >
                     {!isFormValid() || isLoading ? null : (
@@ -816,31 +735,31 @@ const Fertilizer = () => {
                       </>
                     ) : (
                       <>
-                        Get Recommendation
+                        Recommend Crops
                         <span style={{ fontSize: '18px' }}>→</span>
                       </>
                     )}
                   </button>
-                </form>
 
-                {/* Pro Tip */}
-                <div style={{
-                  marginTop: '32px',
-                  padding: '20px',
-                  background: 'rgba(34, 197, 94, 0.1)',
-                  border: '1px solid rgba(34, 197, 94, 0.2)',
-                  borderRadius: '12px',
-                  backdropFilter: 'blur(10px)'
-                }}>
-                  <p style={{
-                    margin: 0,
-                    fontSize: '14px',
-                    color: 'rgba(255, 255, 255, 0.8)',
-                    lineHeight: '1.6'
+                  {/* Pro Tip */}
+                  <div style={{
+                    marginTop: '32px',
+                    padding: '20px',
+                    background: 'rgba(34, 197, 94, 0.1)',
+                    border: '1px solid rgba(34, 197, 94, 0.2)',
+                    borderRadius: '12px',
+                    backdropFilter: 'blur(10px)'
                   }}>
-                    <strong style={{ color: '#22c55e' }}>Pro Tip:</strong> Use recent soil test results for the most accurate AI recommendations.
-                  </p>
-                </div>
+                    <p style={{
+                      margin: 0,
+                      fontSize: '14px',
+                      color: 'rgba(255, 255, 255, 0.8)',
+                      lineHeight: '1.6'
+                    }}>
+                      <strong style={{ color: '#22c55e' }}>Pro Tip:</strong> For best results, use soil test data from the past 6 months.
+                    </p>
+                  </div>
+                </form>
               </div>
             </div>
           </div>
@@ -852,8 +771,8 @@ const Fertilizer = () => {
             marginTop: '40px',
             animation: 'fadeInUp 0.8s ease-out'
           }}>
-            <div style={{ 
-              textAlign: "center", 
+            <div style={{
+              textAlign: "center",
               marginBottom: "40px",
               padding: '0 20px'
             }}>
@@ -866,15 +785,15 @@ const Fertilizer = () => {
                 margin: '0 0 12px 0',
                 letterSpacing: '-1px'
               }}>
-                AI Recommendation Ready
+                AI Crop Recommendations
               </h2>
-              <p style={{ 
-                fontSize: '18px', 
-                color: 'rgba(255, 255, 255, 0.7)', 
+              <p style={{
+                fontSize: '18px',
+                color: 'rgba(255, 255, 255, 0.7)',
                 margin: 0,
                 fontWeight: '500'
               }}>
-                Optimal fertilizer blend for maximum yield
+                {formData.location} • {formData.fieldSize} hectares
               </p>
             </div>
 
@@ -885,11 +804,76 @@ const Fertilizer = () => {
               border: '1px solid rgba(255, 255, 255, 0.1)',
               overflow: 'hidden',
               boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
-              padding: '40px',
+              padding: '50px 40px',
               margin: '0 20px',
               animation: 'fadeInUp 0.6s ease-out'
             }}>
-              <FertilizerPrediction fertilizer={prediction} />
+              {Array.isArray(prediction) ? (
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                  gap: '24px'
+                }}>
+                  {prediction.map((crop, index) => (
+                    <div key={index} style={{
+                      background: 'rgba(34, 197, 94, 0.1)',
+                      border: '1px solid rgba(34, 197, 94, 0.2)',
+                      borderRadius: '16px',
+                      padding: '24px',
+                      textAlign: 'center',
+                      backdropFilter: 'blur(10px)',
+                      transition: 'all 0.3s ease',
+                      cursor: 'pointer'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'translateY(-4px)';
+                      e.currentTarget.style.boxShadow = '0 10px 30px rgba(34, 197, 94, 0.2)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'translateY(0)';
+                      e.currentTarget.style.boxShadow = 'none';
+                    }}
+                    >
+                      <div style={{
+                        width: '60px',
+                        height: '60px',
+                        background: 'rgba(34, 197, 94, 0.2)',
+                        borderRadius: '50%',
+                        margin: '0 auto 16px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '28px'
+                      }}>
+                        {index === 0 ? '1st' : index === 1 ? '2nd' : index === 2 ? '3rd' : 'Alternative'}
+                      </div>
+                      <h4 style={{
+                        fontSize: '20px',
+                        fontWeight: '700',
+                        color: '#ffffff',
+                        margin: '0 0 8px 0'
+                      }}>
+                        {crop}
+                      </h4>
+                      <p style={{
+                        fontSize: '14px',
+                        color: 'rgba(255, 255, 255, 0.7)',
+                        margin: 0
+                      }}>
+                        {index === 0 ? 'Top Recommendation' : 'Strong Alternative'}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p style={{
+                  textAlign: 'center',
+                  color: 'rgba(255, 255, 255, 0.6)',
+                  fontSize: '18px'
+                }}>
+                  {prediction}
+                </p>
+              )}
             </div>
 
             {/* Action Buttons */}
@@ -915,15 +899,15 @@ const Fertilizer = () => {
                 letterSpacing: '0.5px'
               }}
               onMouseEnter={(e) => {
-                e.target.style.transform = 'translateY(-2px)';
-                e.target.style.boxShadow = '0 0 40px rgba(34, 197, 94, 0.6)';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 0 40px rgba(34, 197, 94, 0.6)';
               }}
               onMouseLeave={(e) => {
-                e.target.style.transform = 'translateY(0)';
-                e.target.style.boxShadow = '0 0 30px rgba(34, 197, 94, 0.4)';
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 0 30px rgba(34, 197, 94, 0.4)';
               }}
               >
-                Save Report
+                Save Plan
               </button>
               <button style={{
                 padding: '14px 32px',
@@ -938,12 +922,12 @@ const Fertilizer = () => {
                 backdropFilter: 'blur(10px)'
               }}
               onMouseEnter={(e) => {
-                e.target.style.background = 'rgba(255, 255, 255, 0.15)';
-                e.target.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
+                e.currentTarget.style.transform = 'translateY(-2px)';
               }}
               onMouseLeave={(e) => {
-                e.target.style.background = 'rgba(255, 255, 255, 0.1)';
-                e.target.style.transform = 'translateY(0)';
+                e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
+                e.currentTarget.style.transform = 'translateY(0)';
               }}
               >
                 New Analysis
@@ -1033,9 +1017,12 @@ const Fertilizer = () => {
           background: #1a1d3a;
           color: white;
         }
+        .leaflet-container {
+          border-radius: 16px;
+        }
       `}</style>
     </div>
   );
 };
 
-export default Fertilizer;
+export default CropRecommendation;

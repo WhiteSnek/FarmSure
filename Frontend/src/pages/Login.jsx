@@ -37,7 +37,7 @@ const Login = () => {
     return formData.contact && formData.password;
   };
 
-  const farmersImage = "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=800&q=80";
+  const farmersImage = "https://images.unsplash.com/photo-1523741543316-beb7fc7023d8?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fGNyb3BzfGVufDB8fDB8fHww?w=800&q=80";
 
   return (
     <div style={{
@@ -115,7 +115,7 @@ const Login = () => {
                 <div style={{
                   position: 'absolute',
                   inset: 0,
-                  background: 'linear-gradient(135deg, rgba(10, 14, 39, 0.95) 0%, rgba(26, 29, 58, 0.85) 50%, rgba(15, 23, 41, 0.9) 100%)',
+                  background: 'linear-gradient(135deg, rgba(10, 14, 39, 0.95) 0%, rgba(80, 83, 117, 0.39) 50%, rgba(0, 0, 0, 0.38) 100%)',
                   backdropFilter: 'blur(2px)'
                 }}></div>
               </div>
@@ -169,7 +169,7 @@ const Login = () => {
                       fontSize: '20px',
                       fontWeight: '700',
                       letterSpacing: '0.5px'
-                    }}>FarmAssist</span>
+                    }}>FarmSure</span>
                   </div>
 
                   <h1 style={{

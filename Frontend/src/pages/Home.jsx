@@ -56,13 +56,6 @@ const Home = () => {
         "Get customized fertilizer suggestions based on soil conditions and crop type",
       color: "#22c55e",
     },
-    // {
-    //   icon: "📊",
-    //   title: "Crop Analytics",
-    //   description:
-    //     "Access detailed insights and analytics to optimize your farming practices",
-    //   color: "#3b82f6",
-    // },
     {
       icon: "🌾",
       title: "Yield Optimization",
@@ -72,539 +65,489 @@ const Home = () => {
     },
   ];
 
-  return (
-    <div
-      style={{
-        fontFamily:
-          '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-        backgroundColor: "#f8fafc",
-      }}
-    >
-      {/* Hero Carousel Section */}
-      <div
-        style={{
-          position: "relative",
-          height: "600px",
-          overflow: "hidden",
-          backgroundColor: "#000",
-        }}
-      >
-        {/* Slides */}
-        {slides.map((slide, index) => (
-          <div
-            key={index}
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              width: "100%",
-              height: "100%",
-              opacity: currentSlide === index ? 1 : 0,
-              transition: "opacity 1s ease-in-out",
-              backgroundImage: `url(${slide.image})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
-          >
-            {/* Overlay */}
-            <div
-              style={{
-                position: "absolute",
-                inset: 0,
-                background:
-                  "linear-gradient(135deg, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.4) 100%)",
-              }}
-            ></div>
+  const farmersImage = "https://images.unsplash.com/photo-1505471768190-275e2ad7b3f9?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D?w=800&q=80";
 
-            {/* Content */}
-            <div
-              style={{
-                position: "relative",
-                height: "100%",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                textAlign: "center",
-                color: "white",
-                padding: "0 20px",
-                zIndex: 1,
-              }}
-            >
-              <h1
-                style={{
-                  fontSize: "56px",
-                  fontWeight: "700",
-                  margin: "0 0 20px 0",
-                  maxWidth: "800px",
-                  lineHeight: "1.2",
-                  textShadow: "0 4px 6px rgba(0, 0, 0, 0.5)",
-                  animation:
-                    currentSlide === index ? "fadeInUp 0.8s ease-out" : "none",
-                }}
-              >
-                {slide.title}
-              </h1>
-              <p
-                style={{
-                  fontSize: "24px",
-                  margin: "0 0 40px 0",
-                  maxWidth: "600px",
-                  opacity: 0.95,
-                  textShadow: "0 2px 4px rgba(0, 0, 0, 0.5)",
-                  animation:
-                    currentSlide === index
-                      ? "fadeInUp 0.8s ease-out 0.2s backwards"
-                      : "none",
-                }}
-              >
-                {slide.description}
-              </p>
-              <Link to={"/crop"}>
-                <button
-                  style={{
-                    padding: "16px 40px",
-                    fontSize: "18px",
-                    fontWeight: "600",
-                    color: "white",
-                    backgroundColor: "#22c55e",
-                    border: "none",
-                    borderRadius: "8px",
-                    cursor: "pointer",
-                    transition: "all 0.3s ease",
-                    boxShadow: "0 4px 12px rgba(34, 197, 94, 0.4)",
-                    animation:
-                      currentSlide === index
-                        ? "fadeInUp 0.8s ease-out 0.4s backwards"
-                        : "none",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.target.style.backgroundColor = "#16a34a";
-                    e.target.style.transform = "translateY(-2px)";
-                    e.target.style.boxShadow =
-                      "0 6px 16px rgba(34, 197, 94, 0.5)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.target.style.backgroundColor = "#22c55e";
-                    e.target.style.transform = "translateY(0)";
-                    e.target.style.boxShadow =
-                      "0 4px 12px rgba(34, 197, 94, 0.4)";
-                  }}
-                >
-                  Get Started
-                </button>
-              </Link>
+  return (
+    <div style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #0a0e27 0%, #1a1d3a 50%, #0f1729 100%)',
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '40px 20px',
+      position: 'relative',
+      overflow: 'hidden'
+    }}>
+      {/* Animated Background Elements */}
+      <div style={{
+        position: 'absolute',
+        top: '10%',
+        left: '5%',
+        width: '300px',
+        height: '300px',
+        background: 'radial-gradient(circle, rgba(34, 197, 94, 0.15) 0%, transparent 70%)',
+        borderRadius: '50%',
+        filter: 'blur(60px)',
+        animation: 'float 8s ease-in-out infinite'
+      }}></div>
+      <div style={{
+        position: 'absolute',
+        bottom: '15%',
+        right: '8%',
+        width: '400px',
+        height: '400px',
+        background: 'radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%)',
+        borderRadius: '50%',
+        filter: 'blur(70px)',
+        animation: 'float 10s ease-in-out infinite reverse'
+      }}></div>
+
+      <div style={{
+        width: '100%',
+        maxWidth: '1100px',
+        position: 'relative',
+        zIndex: 1
+      }}>
+        <div style={{
+          background: 'rgba(255, 255, 255, 0.03)',
+          backdropFilter: 'blur(20px)',
+          borderRadius: '24px',
+          border: '1px solid rgba(255, 255, 255, 0.1)',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+          overflow: 'hidden',
+          animation: 'slideUp 0.6s ease-out'
+        }}>
+          <div style={{
+            display: 'flex',
+            minHeight: '650px',
+            flexWrap: 'wrap'
+          }}>
+            {/* Left Side - Hero Section */}
+            <div style={{
+              flex: '1',
+              minWidth: '450px',
+              display: 'flex',
+              position: 'relative',
+              overflow: 'hidden'
+            }}>
+              <div style={{
+                flex: '1',
+                backgroundImage: `url(${farmersImage})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                position: 'relative',
+                transform: 'scale(1.1)',
+                transition: 'transform 0.3s ease'
+              }}>
+                <div style={{
+                  position: 'absolute',
+                  inset: 0,
+                  background: 'linear-gradient(135deg, rgba(10, 14, 39, 0.95) 0%, rgba(26, 29, 58, 0.85) 50%, rgba(15, 23, 41, 0.9) 100%)',
+                  backdropFilter: 'blur(2px)'
+                }}></div>
+              </div>
+              
+              {/* Decorative Elements */}
+              <div style={{
+                position: 'absolute',
+                top: '20px',
+                left: '20px',
+                width: '60px',
+                height: '60px',
+                border: '2px solid rgba(34, 197, 94, 0.3)',
+                borderRadius: '12px',
+                transform: 'rotate(45deg)',
+                animation: 'pulse 3s ease-in-out infinite'
+              }}></div>
+              
+              <div style={{
+                position: 'absolute',
+                inset: 0,
+                display: 'flex',
+                alignItems: 'center',
+                padding: '60px 50px',
+                zIndex: 1
+              }}>
+                <div style={{
+                  color: 'white',
+                  maxWidth: '450px'
+                }}>
+                  {/* Logo/Brand */}
+                  <div style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '12px',
+                    marginBottom: '32px',
+                    padding: '12px 20px',
+                    background: 'rgba(34, 197, 94, 0.15)',
+                    backdropFilter: 'blur(10px)',
+                    borderRadius: '12px',
+                    border: '1px solid rgba(34, 197, 94, 0.2)'
+                  }}>
+                    <div style={{
+                      width: '10px',
+                      height: '10px',
+                      background: '#22c55e',
+                      borderRadius: '50%',
+                      boxShadow: '0 0 20px #22c55e',
+                      animation: 'glow 2s ease-in-out infinite'
+                    }}></div>
+                    <span style={{
+                      fontSize: '20px',
+                      fontWeight: '700',
+                      letterSpacing: '0.5px'
+                    }}>FarmAssist</span>
+                  </div>
+
+                  <h1 style={{
+                    fontSize: '48px',
+                    fontWeight: '800',
+                    lineHeight: '1.1',
+                    margin: '0 0 24px 0',
+                    background: 'linear-gradient(135deg, #ffffff 0%, #e0e0e0 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    animation: 'fadeInLeft 0.8s ease-out'
+                  }}>
+                    Welcome to the Future of Farming
+                  </h1>
+                  <p style={{
+                    fontSize: '18px',
+                    margin: 0,
+                    color: 'rgba(255, 255, 255, 0.8)',
+                    lineHeight: '1.6',
+                    animation: 'fadeInLeft 0.8s ease-out 0.2s backwards'
+                  }}>
+                    Access <span style={{ 
+                      color: '#22c55e', 
+                      fontWeight: '600',
+                      textShadow: '0 0 20px rgba(34, 197, 94, 0.5)'
+                    }}>AI-powered</span> farming insights and data-driven tools for maximum productivity
+                  </p>
+
+                  {/* Stats */}
+                  <div style={{
+                    display: 'flex',
+                    gap: '24px',
+                    marginTop: '40px',
+                    animation: 'fadeInLeft 0.8s ease-out 0.4s backwards'
+                  }}>
+                    {[
+                      { label: 'Active Users', value: '50K+' },
+                      { label: 'Farms Connected', value: '30K+' }
+                    ].map((stat, i) => (
+                      <div key={i} style={{
+                        padding: '16px 20px',
+                        background: 'rgba(255, 255, 255, 0.05)',
+                        backdropFilter: 'blur(10px)',
+                        borderRadius: '12px',
+                        border: '1px solid rgba(255, 255, 255, 0.1)'
+                      }}>
+                        <div style={{
+                          fontSize: '24px',
+                          fontWeight: '700',
+                          color: '#22c55e',
+                          marginBottom: '4px'
+                        }}>{stat.value}</div>
+                        <div style={{
+                          fontSize: '12px',
+                          color: 'rgba(255, 255, 255, 0.6)',
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.5px'
+                        }}>{stat.label}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Side - Home Content Section */}
+            <div style={{
+              flex: '1',
+              minWidth: '450px',
+              padding: '70px 50px',
+              background: 'rgba(15, 23, 41, 0.6)',
+              backdropFilter: 'blur(10px)',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              position: 'relative'
+            }}>
+              {/* Decorative corner element */}
+              <div style={{
+                position: 'absolute',
+                top: '30px',
+                right: '30px',
+                width: '80px',
+                height: '80px',
+                border: '2px solid rgba(59, 130, 246, 0.2)',
+                borderRadius: '50%',
+                animation: 'rotate 20s linear infinite'
+              }}>
+                <div style={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  width: '40px',
+                  height: '40px',
+                  border: '2px solid rgba(34, 197, 94, 0.3)',
+                  borderRadius: '50%'
+                }}></div>
+              </div>
+
+              <div style={{ animation: 'fadeIn 0.8s ease-out 0.3s backwards' }}>
+                <h2 style={{
+                  fontSize: '36px',
+                  fontWeight: '800',
+                  background: 'linear-gradient(135deg, #ffffff 0%, #a0a0a0 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  margin: '0 0 12px 0',
+                  letterSpacing: '-0.5px'
+                }}>
+                  Welcome to FarmAssist
+                </h2>
+                <p style={{
+                  fontSize: '15px',
+                  color: 'rgba(255, 255, 255, 0.5)',
+                  margin: '0 0 40px 0',
+                  fontWeight: '400'
+                }}>
+                  Empowering farmers with cutting-edge AI technology
+                </p>
+
+                {/* Carousel Section */}
+                <div style={{
+                  position: 'relative',
+                  height: '300px',
+                  overflow: 'hidden',
+                  borderRadius: '16px',
+                  marginBottom: '40px',
+                  backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                  backdropFilter: 'blur(10px)',
+                  border: '1px solid rgba(255, 255, 255, 0.1)'
+                }}>
+                  {slides.map((slide, index) => (
+                    <div
+                      key={index}
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        opacity: currentSlide === index ? 1 : 0,
+                        transition: 'opacity 1s ease-in-out',
+                        backgroundImage: `url(${slide.image})`,
+                        backgroundSize: 'cover',
+                        backgroundPosition: 'center',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'flex-end',
+                        padding: '30px',
+                        color: 'white'
+                      }}
+                    >
+                      <div style={{
+                        position: 'absolute',
+                        inset: 0,
+                        background: 'linear-gradient(135deg, rgba(10, 14, 39, 0.7) 0%, rgba(15, 23, 41, 0.5) 100%)'
+                      }}></div>
+                      <div style={{ position: 'relative', zIndex: 1 }}>
+                        <h3 style={{
+                          fontSize: '24px',
+                          fontWeight: '700',
+                          margin: '0 0 8px 0'
+                        }}>{slide.title}</h3>
+                        <p style={{
+                          fontSize: '14px',
+                          margin: 0,
+                          opacity: 0.9
+                        }}>{slide.description}</p>
+                      </div>
+                    </div>
+                  ))}
+
+                  {/* Navigation Dots */}
+                  <div style={{
+                    position: 'absolute',
+                    bottom: '15px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    display: 'flex',
+                    gap: '8px'
+                  }}>
+                    {slides.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setCurrentSlide(index)}
+                        style={{
+                          width: currentSlide === index ? '24px' : '8px',
+                          height: '8px',
+                          borderRadius: '4px',
+                          border: 'none',
+                          backgroundColor: currentSlide === index ? '#22c55e' : 'rgba(255, 255, 255, 0.4)',
+                          cursor: 'pointer',
+                          transition: 'all 0.3s ease'
+                        }}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                {/* Features Grid */}
+                <div style={{
+                  display: 'grid',
+                  gridTemplateColumns: '1fr',
+                  gap: '16px',
+                  marginBottom: '40px'
+                }}>
+                  {features.map((feature, index) => (
+                    <div
+                      key={index}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '16px',
+                        padding: '16px',
+                        background: 'rgba(255, 255, 255, 0.05)',
+                        backdropFilter: 'blur(10px)',
+                        borderRadius: '12px',
+                        border: '1px solid rgba(255, 255, 255, 0.1)',
+                        transition: 'all 0.3s ease'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'translateX(4px)';
+                        e.currentTarget.style.boxShadow = '0 0 20px rgba(34, 197, 94, 0.2)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'translateX(0)';
+                        e.currentTarget.style.boxShadow = 'none';
+                      }}
+                    >
+                      <div style={{
+                        width: '50px',
+                        height: '50px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '24px',
+                        background: `${feature.color}20`,
+                        borderRadius: '50%',
+                        flexShrink: 0
+                      }}>
+                        {feature.icon}
+                      </div>
+                      <div>
+                        <h4 style={{
+                          fontSize: '16px',
+                          fontWeight: '600',
+                          color: '#ffffff',
+                          margin: '0 0 4px 0'
+                        }}>{feature.title}</h4>
+                        <p style={{
+                          fontSize: '13px',
+                          color: 'rgba(255, 255, 255, 0.7)',
+                          margin: 0,
+                          lineHeight: '1.5'
+                        }}>{feature.description}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* CTA Buttons */}
+                <div style={{
+                  display: 'flex',
+                  gap: '16px',
+                  justifyContent: 'center'
+                }}>
+                  <Link to="/crop">
+                    <button
+                      style={{
+                        padding: '14px 32px',
+                        background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+                        color: '#ffffff',
+                        border: 'none',
+                        borderRadius: '12px',
+                        fontSize: '15px',
+                        fontWeight: '700',
+                        cursor: 'pointer',
+                        transition: 'all 0.3s ease',
+                        boxShadow: '0 0 30px rgba(34, 197, 94, 0.4)',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px',
+                        position: 'relative',
+                        overflow: 'hidden'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.transform = 'translateY(-2px)';
+                        e.target.style.boxShadow = '0 0 40px rgba(34, 197, 94, 0.6)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.transform = 'translateY(0)';
+                        e.target.style.boxShadow = '0 0 30px rgba(34, 197, 94, 0.4)';
+                      }}
+                    >
+                      <div style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: '-100%',
+                        width: '100%',
+                        height: '100%',
+                        background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent)',
+                        animation: 'slideRight 3s ease-in-out infinite'
+                      }}></div>
+                      Get Started
+                    </button>
+                  </Link>
+
+                  <Link to="/login">
+                    <button
+                      style={{
+                        padding: '14px 32px',
+                        background: 'rgba(255, 255, 255, 0.1)',
+                        color: '#ffffff',
+                        border: '1px solid rgba(255, 255, 255, 0.2)',
+                        borderRadius: '12px',
+                        fontSize: '15px',
+                        fontWeight: '700',
+                        cursor: 'pointer',
+                        transition: 'all 0.3s ease',
+                        backdropFilter: 'blur(10px)'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.background = 'rgba(255, 255, 255, 0.15)';
+                        e.target.style.transform = 'translateY(-2px)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.background = 'rgba(255, 255, 255, 0.1)';
+                        e.target.style.transform = 'translateY(0)';
+                      }}
+                    >
+                      Sign In
+                    </button>
+                  </Link>
+                </div>
+              </div>
             </div>
           </div>
-        ))}
-
-        {/* Navigation Arrows */}
-        <button
-          onClick={prevSlide}
-          style={{
-            position: "absolute",
-            left: "20px",
-            top: "50%",
-            transform: "translateY(-50%)",
-            width: "50px",
-            height: "50px",
-            backgroundColor: "rgba(255, 255, 255, 0.2)",
-            border: "2px solid rgba(255, 255, 255, 0.5)",
-            borderRadius: "50%",
-            color: "white",
-            fontSize: "24px",
-            cursor: "pointer",
-            transition: "all 0.3s ease",
-            zIndex: 10,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            backdropFilter: "blur(4px)",
-          }}
-          onMouseEnter={(e) => {
-            e.target.style.backgroundColor = "rgba(255, 255, 255, 0.3)";
-            e.target.style.transform = "translateY(-50%) scale(1.1)";
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.backgroundColor = "rgba(255, 255, 255, 0.2)";
-            e.target.style.transform = "translateY(-50%) scale(1)";
-          }}
-        >
-          ‹
-        </button>
-
-        <button
-          onClick={nextSlide}
-          style={{
-            position: "absolute",
-            right: "20px",
-            top: "50%",
-            transform: "translateY(-50%)",
-            width: "50px",
-            height: "50px",
-            backgroundColor: "rgba(255, 255, 255, 0.2)",
-            border: "2px solid rgba(255, 255, 255, 0.5)",
-            borderRadius: "50%",
-            color: "white",
-            fontSize: "24px",
-            cursor: "pointer",
-            transition: "all 0.3s ease",
-            zIndex: 10,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            backdropFilter: "blur(4px)",
-          }}
-          onMouseEnter={(e) => {
-            e.target.style.backgroundColor = "rgba(255, 255, 255, 0.3)";
-            e.target.style.transform = "translateY(-50%) scale(1.1)";
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.backgroundColor = "rgba(255, 255, 255, 0.2)";
-            e.target.style.transform = "translateY(-50%) scale(1)";
-          }}
-        >
-          ›
-        </button>
-
-        {/* Dots Indicator */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: "30px",
-            left: "50%",
-            transform: "translateX(-50%)",
-            display: "flex",
-            gap: "12px",
-            zIndex: 10,
-          }}
-        >
-          {slides.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrentSlide(index)}
-              style={{
-                width: currentSlide === index ? "40px" : "12px",
-                height: "12px",
-                borderRadius: "6px",
-                border: "none",
-                backgroundColor:
-                  currentSlide === index
-                    ? "#22c55e"
-                    : "rgba(255, 255, 255, 0.5)",
-                cursor: "pointer",
-                transition: "all 0.3s ease",
-              }}
-            />
-          ))}
         </div>
       </div>
-      {/* Introduction Section */}
-      <div
-        style={{
-          maxWidth: "1200px",
-          margin: "0 auto",
-          padding: "80px 20px",
-          textAlign: "center",
-        }}
-      >
-        <h2
-          style={{
-            fontSize: "42px",
-            fontWeight: "700",
-            color: "#1f2937",
-            margin: "0 0 20px 0",
-          }}
-        >
-          Welcome to <span style={{ color: "#22c55e" }}>FarmSure</span>
-        </h2>
-        <p
-          style={{
-            fontSize: "20px",
-            color: "#6b7280",
-            maxWidth: "800px",
-            margin: "0 auto 60px auto",
-            lineHeight: "1.6",
-          }}
-        >
-          Empowering farmers with cutting-edge AI technology to detect crop
-          diseases, recommend optimal fertilizers, and maximize agricultural
-          productivity.
-        </p>
 
-        {/* Features Grid */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-            gap: "30px",
-            marginTop: "60px",
-          }}
-        >
-          {features.map((feature, index) => (
-            <div
-              key={index}
-              style={{
-                backgroundColor: "white",
-                padding: "40px 30px",
-                borderRadius: "16px",
-                boxShadow: "0 4px 20px rgba(0, 0, 0, 0.08)",
-                transition: "all 0.3s ease",
-                border: "1px solid #e5e7eb",
-                cursor: "pointer",
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "translateY(-8px)";
-                e.currentTarget.style.boxShadow =
-                  "0 12px 40px rgba(0, 0, 0, 0.12)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.boxShadow =
-                  "0 4px 20px rgba(0, 0, 0, 0.08)";
-              }}
-            >
-              <div
-                style={{
-                  width: "80px",
-                  height: "80px",
-                  margin: "0 auto 20px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "40px",
-                  backgroundColor: `${feature.color}15`,
-                  borderRadius: "50%",
-                }}
-              >
-                {feature.icon}
-              </div>
-              <h3
-                style={{
-                  fontSize: "22px",
-                  fontWeight: "600",
-                  color: "#1f2937",
-                  margin: "0 0 12px 0",
-                }}
-              >
-                {feature.title}
-              </h3>
-              <p
-                style={{
-                  fontSize: "16px",
-                  color: "#6b7280",
-                  margin: 0,
-                  lineHeight: "1.6",
-                }}
-              >
-                {feature.description}
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
-      {/* How It Works Section */}
-      <div
-        style={{
-          maxWidth: "1200px",
-          margin: "0 auto",
-          padding: "80px 20px",
-          textAlign: "center",
-        }}
-      >
-        <h2
-          style={{
-            fontSize: "42px",
-            fontWeight: "700",
-            color: "#1f2937",
-            margin: "0 0 40px 0",
-          }}
-        >
-          How <span style={{ color: "#22c55e" }}>FarmSure</span> Works
-        </h2>
-
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-            gap: "40px",
-            marginTop: "40px",
-          }}
-        >
-          {[
-            {
-              icon: "📸",
-              title: "Upload Crop Images",
-              description:
-                "Take photos of your crops to let AI analyze health and detect diseases.",
-            },
-            {
-              icon: "🧪",
-              title: "Get Recommendations",
-              description:
-                "Receive precise fertilizer and nutrient suggestions based on soil and crop type.",
-            },
-            {
-              icon: "📊",
-              title: "Monitor Progress",
-              description:
-                "Track your crop health and growth trends with real-time analytics.",
-            },
-          ].map((step, index) => (
-            <div
-              key={index}
-              style={{
-                backgroundColor: "white",
-                padding: "40px 30px",
-                borderRadius: "16px",
-                boxShadow: "0 4px 20px rgba(0, 0, 0, 0.08)",
-                transition: "all 0.3s ease",
-              }}
-            >
-              <div
-                style={{
-                  width: "80px",
-                  height: "80px",
-                  margin: "0 auto 20px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "40px",
-                  backgroundColor: "#22c55e15",
-                  borderRadius: "50%",
-                }}
-              >
-                {step.icon}
-              </div>
-              <h3
-                style={{
-                  fontSize: "22px",
-                  fontWeight: "600",
-                  color: "#1f2937",
-                  margin: "0 0 12px 0",
-                }}
-              >
-                {step.title}
-              </h3>
-              <p
-                style={{
-                  fontSize: "16px",
-                  color: "#6b7280",
-                  margin: 0,
-                  lineHeight: "1.6",
-                }}
-              >
-                {step.description}
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
-      {/* Platform Benefits Section */}
-      <div
-        style={{
-          backgroundColor: "#f0fdf4",
-          padding: "80px 20px",
-          textAlign: "center",
-        }}
-      >
-        <h2
-          style={{
-            fontSize: "42px",
-            fontWeight: "700",
-            color: "#1f2937",
-            margin: "0 0 40px 0",
-          }}
-        >
-          Why Choose <span style={{ color: "#22c55e" }}>FarmSure</span>
-        </h2>
-
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-            gap: "40px",
-            marginTop: "40px",
-          }}
-        >
-          {[
-            {
-              icon: "⚡",
-              title: "Fast & Accurate",
-              description:
-                "AI models deliver quick and precise disease detection for timely interventions.",
-            },
-            {
-              icon: "💹",
-              title: "Data-Driven",
-              description:
-                "Optimize yields and reduce losses with actionable insights based on real data.",
-            },
-            {
-              icon: "🌱",
-              title: "Sustainable Farming",
-              description:
-                "Recommendations focus on balanced fertilizer usage and eco-friendly practices.",
-            },
-            {
-              icon: "🤝",
-              title: "Farmer-Centric",
-              description:
-                "Designed to empower farmers with easy-to-use tools for better decision making.",
-            },
-          ].map((benefit, index) => (
-            <div
-              key={index}
-              style={{
-                backgroundColor: "white",
-                padding: "40px 30px",
-                borderRadius: "16px",
-                boxShadow: "0 4px 20px rgba(0, 0, 0, 0.08)",
-                transition: "all 0.3s ease",
-              }}
-            >
-              <div
-                style={{
-                  width: "80px",
-                  height: "80px",
-                  margin: "0 auto 20px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "40px",
-                  backgroundColor: "#22c55e15",
-                  borderRadius: "50%",
-                }}
-              >
-                {benefit.icon}
-              </div>
-              <h3
-                style={{
-                  fontSize: "22px",
-                  fontWeight: "600",
-                  color: "#1f2937",
-                  margin: "0 0 12px 0",
-                }}
-              >
-                {benefit.title}
-              </h3>
-              <p
-                style={{
-                  fontSize: "16px",
-                  color: "#6b7280",
-                  margin: 0,
-                  lineHeight: "1.6",
-                }}
-              >
-                {benefit.description}
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
-      {/* CSS Animations */}
       <style>{`
-        @keyframes fadeInUp {
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-20px); }
+        }
+        @keyframes slideUp {
           from {
             opacity: 0;
             transform: translateY(30px);
@@ -613,6 +556,58 @@ const Home = () => {
             opacity: 1;
             transform: translateY(0);
           }
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes fadeInLeft {
+          from {
+            opacity: 0;
+            transform: translateX(-20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+        @keyframes pulse {
+          0%, 100% {
+            opacity: 0.3;
+            transform: rotate(45deg) scale(1);
+          }
+          50% {
+            opacity: 0.6;
+            transform: rotate(45deg) scale(1.1);
+          }
+        }
+        @keyframes glow {
+          0%, 100% {
+            box-shadow: 0 0 20px #22c55e;
+          }
+          50% {
+            box-shadow: 0 0 30px #22c55e, 0 0 40px #22c55e;
+          }
+        }
+        @keyframes shimmer {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(100%); }
+        }
+        @keyframes rotate {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+        @keyframes slideRight {
+          0% { left: -100%; }
+          100% { left: 200%; }
+        }
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          25% { transform: translateX(-10px); }
+          75% { transform: translateX(10px); }
+        }
+        input::placeholder {
+          color: rgba(255, 255, 255, 0.3);
         }
       `}</style>
     </div>

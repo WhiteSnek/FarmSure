@@ -119,7 +119,7 @@ const Signup = () => {
                 <div style={{
                   position: 'absolute',
                   inset: 0,
-                  background: 'linear-gradient(135deg, rgba(10, 14, 39, 0.95) 0%, rgba(26, 29, 58, 0.85) 50%, rgba(15, 23, 41, 0.9) 100%)',
+                  background: 'linear-gradient(135deg, rgba(10, 14, 39, 0.95) 0%, rgba(80, 83, 117, 0.39) 50%, rgba(0, 0, 0, 0.38) 100%)',
                   backdropFilter: 'blur(2px)'
                 }}></div>
               </div>
@@ -173,7 +173,7 @@ const Signup = () => {
                       fontSize: '20px',
                       fontWeight: '700',
                       letterSpacing: '0.5px'
-                    }}>FarmAssist</span>
+                    }}>FarmSure</span>
                   </div>
 
                   <h1 style={{
