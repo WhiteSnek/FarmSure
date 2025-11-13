@@ -2,6 +2,8 @@ const User = require("../models/model");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 const axios = require("axios");
+const fs = require("fs");
+const path = require("path");
 dotenv.config();
 const createToken = (id) => {
   return jwt.sign({ id }, process.env.SECRET, { expiresIn: "1d" });
@@ -66,8 +68,30 @@ const getCropPrices = async (req, res) => {
   }
 };
 
+const getGovtSchemes = async (req, res) => {
+  try {
+    const filePath = path.join(process.cwd(), "constants", "schemes.json");
+    const data = fs.readFileSync(filePath, "utf-8");
+    const schemes = JSON.parse(data);
+
+    res.status(200).json({
+      success: true,
+      total: schemes.length,
+      data: schemes
+    });
+  } catch (error) {
+    console.error("Error reading schemes file:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch government schemes",
+      error: error.message
+    });
+  }
+};
+
 module.exports = {
   signup,
   login,
   getCropPrices,
+  getGovtSchemes
 };

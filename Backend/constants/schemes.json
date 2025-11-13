@@ -1,0 +1,122 @@
+[
+  {
+    "scheme_name": "Pradhan Mantri Kisan Samman Nidhi (PM-KISAN)",
+    "description": "Provides income support of ₹6,000 per year to all eligible farmer families across India, paid in three equal instalments.",
+    "eligibility_criteria": "All landholding farmer families with cultivable land. Excludes institutional landholders, income tax payers, and certain professionals.",
+    "benefits": "₹6,000 per year transferred directly to the beneficiary's bank account.",
+    "application_process": "Farmers can register through the local revenue office, agriculture department, or the PM-KISAN online portal.",
+    "required_documents": "Aadhaar card, bank account details, land ownership proof."
+  },
+  {
+    "scheme_name": "Pradhan Mantri Fasal Bima Yojana (PMFBY)",
+    "description": "Crop insurance scheme providing financial support to farmers in case of crop loss due to natural calamities, pests, or diseases.",
+    "eligibility_criteria": "All farmers growing notified crops in notified areas, including loanee and non-loanee farmers.",
+    "benefits": "Insurance coverage at a very low premium rate; balance premium shared by government.",
+    "application_process": "Apply through the Common Service Centre (CSC), bank branch, or PMFBY online portal before the cut-off date for each crop season.",
+    "required_documents": "Aadhaar card, land documents, bank account details, crop details."
+  },
+  {
+    "scheme_name": "Pradhan Mantri Kisan Maan-Dhan Yojana (PM-KMY)",
+    "description": "A pension scheme for small and marginal farmers providing a minimum pension of ₹3,000 per month after the age of 60.",
+    "eligibility_criteria": "Small and marginal farmers aged between 18 and 40 years with cultivable land up to 2 hectares.",
+    "benefits": "Monthly pension of ₹3,000 post-retirement, with government co-contributing equal premium.",
+    "application_process": "Enroll at CSC centers or through the official PM-KMY portal by paying the initial contribution.",
+    "required_documents": "Aadhaar card, bank account details, age proof, land ownership proof."
+  },
+  {
+    "scheme_name": "Pradhan Mantri Kisan Urja Suraksha Evam Utthaan Mahabhiyan (PM-KUSUM)",
+    "description": "Promotes installation of solar pumps and grid-connected solar power plants by farmers.",
+    "eligibility_criteria": "Individual farmers, cooperatives, and farmer producer organizations owning agricultural land or irrigation pumps.",
+    "benefits": "Subsidy up to 60% for solar pump installation, income from selling surplus power to grid.",
+    "application_process": "Apply through state renewable energy development agency or designated nodal agency.",
+    "required_documents": "Land ownership proof, Aadhaar card, bank details, electricity/pump connection proof."
+  },
+  {
+    "scheme_name": "Soil Health Card Scheme",
+    "description": "Provides soil health cards to farmers containing nutrient status of soil and fertilizer recommendations.",
+    "eligibility_criteria": "All farmers in India can avail this facility through state agricultural departments.",
+    "benefits": "Free soil testing and fertilizer usage recommendations for improved productivity.",
+    "application_process": "Submit soil samples to the nearest testing lab or agriculture office for analysis.",
+    "required_documents": "Land details, Aadhaar card, contact information."
+  },
+  {
+    "scheme_name": "Paramparagat Krishi Vikas Yojana (PKVY)",
+    "description": "Encourages organic farming through cluster-based development programs.",
+    "eligibility_criteria": "Farmers willing to adopt organic practices and form clusters or groups.",
+    "benefits": "Financial assistance per hectare for organic input, certification, and marketing support.",
+    "application_process": "Apply through state agriculture departments or participating organic farming clusters.",
+    "required_documents": "Farmer ID, Aadhaar card, land ownership documents."
+  },
+  {
+    "scheme_name": "Agriculture Infrastructure Fund (AIF)",
+    "description": "Provides medium and long-term loans for post-harvest management infrastructure and community farming assets.",
+    "eligibility_criteria": "Farmers, agri-entrepreneurs, cooperatives, and FPOs engaged in agriculture value chain.",
+    "benefits": "Interest subvention and credit guarantee coverage for eligible loans.",
+    "application_process": "Apply through participating banks or via the AIF online portal.",
+    "required_documents": "Project proposal, bank details, land or business registration proof."
+  },
+  {
+    "scheme_name": "Formation and Promotion of 10,000 Farmer Producer Organizations (FPOs)",
+    "description": "Supports formation and promotion of FPOs to enable collective farming and better market access.",
+    "eligibility_criteria": "Groups of small and marginal farmers forming registered FPOs or cooperatives.",
+    "benefits": "Financial assistance, equity grants, and credit guarantee support for three years.",
+    "application_process": "Apply through designated implementing agencies like NABARD, SFAC, or NCDC.",
+    "required_documents": "FPO registration certificate, member list, bank account details."
+  },
+  {
+    "scheme_name": "National Beekeeping and Honey Mission (NBHM)",
+    "description": "Promotes scientific beekeeping and honey production for increasing farmer income.",
+    "eligibility_criteria": "Farmers, beekeepers, FPOs, and SHGs involved in honey production or processing.",
+    "benefits": "Financial assistance for beekeeping equipment, training, and processing units.",
+    "application_process": "Apply through state horticulture or agriculture departments.",
+    "required_documents": "Identity proof, bank account details, land or site proof for apiary."
+  },
+  {
+    "scheme_name": "Modified Interest Subvention Scheme (MISS)",
+    "description": "Provides interest subvention on short-term crop loans up to ₹3 lakh to farmers.",
+    "eligibility_criteria": "Farmers availing short-term crop loans under Kisan Credit Card scheme.",
+    "benefits": "Interest rate reduced to 7%, with an additional 3% subvention for timely repayment.",
+    "application_process": "Apply for crop loan through any eligible bank under KCC.",
+    "required_documents": "KCC documents, Aadhaar card, land and crop details."
+  },
+  {
+    "scheme_name": "Rythu Bandhu Scheme (Telangana)",
+    "description": "Provides direct financial assistance to farmers for agricultural investments before each cropping season.",
+    "eligibility_criteria": "Land-owning farmers in Telangana; tenant farmers are not covered.",
+    "benefits": "₹5,000 per acre per crop season deposited directly into the farmer’s account.",
+    "application_process": "Registration through local agriculture department or online portal.",
+    "required_documents": "Land ownership documents, Aadhaar card, bank details."
+  },
+  {
+    "scheme_name": "Godhan Nyay Yojana (Chhattisgarh)",
+    "description": "Procures cow dung from farmers and livestock owners to promote organic manure production and rural income.",
+    "eligibility_criteria": "Farmers and cattle owners residing in Chhattisgarh.",
+    "benefits": "Government buys cow dung at a fixed rate, generating additional income for farmers.",
+    "application_process": "Register as a supplier at village-level centers or online portal.",
+    "required_documents": "Identity proof, bank details, livestock ownership proof."
+  },
+  {
+    "scheme_name": "Kisan Credit Card (KCC) Scheme",
+    "description": "Provides timely credit to farmers for crop cultivation and other agricultural needs.",
+    "eligibility_criteria": "All farmers involved in crop cultivation, allied activities, or animal husbandry.",
+    "benefits": "Short-term credit at subsidized interest rates with flexible repayment options.",
+    "application_process": "Apply through banks or cooperative societies offering KCC.",
+    "required_documents": "Aadhaar card, land documents, bank details, photo ID."
+  },
+  {
+    "scheme_name": "Pradhan Mantri Krishi Sinchai Yojana (PMKSY)",
+    "description": "Aims to improve irrigation efficiency and ensure water availability for all farms.",
+    "eligibility_criteria": "All farmers, especially those in water-scarce regions.",
+    "benefits": "Financial assistance for micro-irrigation systems like drip and sprinkler irrigation.",
+    "application_process": "Apply through state agriculture or irrigation departments.",
+    "required_documents": "Land ownership proof, Aadhaar card, bank account details."
+  },
+  {
+    "scheme_name": "Neem Coated Urea Policy",
+    "description": "Ensures adequate supply of neem-coated urea to reduce fertilizer misuse and improve soil health.",
+    "eligibility_criteria": "All farmers purchasing urea for agricultural use.",
+    "benefits": "Improved nitrogen efficiency, reduced pest attacks, and lower urea consumption.",
+    "application_process": "Purchase neem-coated urea from authorized fertilizer dealers.",
+    "required_documents": "Farmer ID or Aadhaar card."
+  }
+]
