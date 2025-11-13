@@ -39,8 +39,6 @@ except Exception as e:
 def find_market_price(district=None, commodity=None):
     baseUrl = os.getenv("MARKET_API_URL")
     api_key = os.getenv("MARKET_API_KEY")
-    print(baseUrl, api_key)
-    print(district, commodity)
     if not baseUrl or not api_key:
         raise ValueError("Missing MARKET_API_URL or MARKET_API_KEY environment variables.")
 
@@ -105,7 +103,6 @@ def find_annual_rainfall(lat, lon):
         if "properties" in data and "parameter" in data["properties"] and "PRECTOTCORR" in data["properties"]["parameter"]:
             rainfall_data = data["properties"]["parameter"]["PRECTOTCORR"]
             avg_rainfall = rainfall_data.get(f"{year}13")
-            print(avg_rainfall)
             total_rainfall = avg_rainfall*365
             return total_rainfall
         else:
