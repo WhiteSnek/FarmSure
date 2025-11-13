@@ -21,11 +21,11 @@ body {
   font-family: "Poppins", sans-serif;
   color: var(--secondary);
 }
-.pages {
+/* .pages {
   padding: 20px;
   margin: 0 auto;
   max-width: 1560px;
-}
+} */
 
 /* Form Styles */
 label, input {

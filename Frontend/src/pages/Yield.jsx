@@ -3,12 +3,14 @@ import React, { useState } from "react";
 const Yield = () => {
   const yieldImage="https://plus.unsplash.com/premium_photo-1664197864438-bc9251cce42e?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDR8fGhhcmQlMjB3b3JrfGVufDB8fDB8fHww";
   const [formData, setFormData] = useState({
-    State_Name: "",
-    Crop_Year: "",
-    Season: "Kharif",
-    Crop: "",
-    Area: ""
-  });
+  Crop: "",
+  Season: "Kharif",
+  State: "",
+  Area: "",
+  Fertilizer: "",
+  Pesticide: ""
+});
+
   const [prediction, setPrediction] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [focusedField, setFocusedField] = useState(null);
@@ -48,6 +50,7 @@ const Yield = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    console.log(formData)
     setPrediction(null);
 
     try {
@@ -55,13 +58,18 @@ const Yield = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          State_Name: formData.State_Name,
-          Crop_Year: parseInt(formData.Crop_Year),
-          Season: formData.Season,
-          Crop: formData.Crop,
-          Area: parseInt(formData.Area)
-        })
+        Crop: formData.Crop,
+        Season: formData.Season,
+        State: formData.State,
+        Area: Number(formData.Area) / 11959.9,// Convert gajj to hectares 
+        Fertilizer: Number(formData.Fertilizer),
+        Pesticide: Number(formData.Pesticide)
+      })
+
+     
+
       });
+      //console.log(res);
 
       const result = await res.json();
       setPrediction(result.predicted_yield);
@@ -73,10 +81,17 @@ const Yield = () => {
     }
   };
 
-  const isFormValid = () => {
-    return formData.State_Name && formData.Crop_Year && formData.Season && 
-           formData.Crop && formData.Area;
-  };
+    const isFormValid = () => {
+      return (
+        formData.Crop &&
+        formData.Season &&
+        formData.State &&
+        formData.Area &&
+        formData.Fertilizer &&
+        formData.Pesticide
+      );
+    };
+
 
   return (
     <div style={{
@@ -331,44 +346,52 @@ const Yield = () => {
                   Enter crop details for hyper-accurate yield forecasts
                 </p>
 
-                <form onSubmit={handleSubmit} style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '20px'
-                }}>
-                  {/* State and Year */}
-                  <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: '1fr 1fr',
+                <form
+                  onSubmit={handleSubmit}
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'column',
                     gap: '20px'
-                  }}>
+                  }}
+                >
+                  {/* State and Season */}
+                  <div
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: '1fr 1fr',
+                      gap: '20px'
+                    }}
+                  >
+                    {/* State */}
                     <div>
-                      <label style={{
-                        display: 'block',
-                        fontSize: '13px',
-                        fontWeight: '600',
-                        color: 'rgba(255, 255, 255, 0.8)',
-                        marginBottom: '10px',
-                        textTransform: 'uppercase',
-                        letterSpacing: '1px'
-                      }}>
+                      <label
+                        style={{
+                          display: 'block',
+                          fontSize: '13px',
+                          fontWeight: '600',
+                          color: 'rgba(255, 255, 255, 0.8)',
+                          marginBottom: '10px',
+                          textTransform: 'uppercase',
+                          letterSpacing: '1px'
+                        }}
+                      >
                         State
                       </label>
                       <select
-                        name="State_Name"
-                        value={formData.State_Name}
+                        name="State"
+                        value={formData.State}
                         onChange={handleInputChange}
-                        onFocus={() => setFocusedField('State_Name')}
+                        onFocus={() => setFocusedField('State')}
                         onBlur={() => setFocusedField(null)}
                         required
                         style={{
                           width: '100%',
                           padding: '16px 20px',
                           background: 'rgba(255, 255, 255, 0.05)',
-                          border: `2px solid ${focusedField === 'State_Name' ? '#22c55e' : 'rgba(255, 255, 255, 0.1)'}`,
+                          border: `2px solid ${focusedField === 'State' ? '#22c55e' : 'rgba(255, 255, 255, 0.1)'}`,
                           borderRadius: '12px',
                           fontSize: '15px',
-                          color: '#ffffff',
+                          color: 'rgb(255, 255, 255)',
                           transition: 'all 0.3s ease',
                           outline: 'none',
                           appearance: 'none',
@@ -380,81 +403,26 @@ const Yield = () => {
                       >
                         <option value="">Select State</option>
                         {states.map(state => (
-                          <option key={state} value={state} style={{ color: 'rgba(255, 255, 255, 0.8)', }}>
+                          <option key={state} value={state} style={{ color: 'rgb(255, 255, 255)' }}>
                             {state}
                           </option>
                         ))}
                       </select>
                     </div>
 
+                    {/* Season */}
                     <div>
-                      <label style={{
-                        display: 'block',
-                        fontSize: '13px',
-                        fontWeight: '600',
-                        color: 'rgba(255, 255, 255, 0.8)',
-                        marginBottom: '10px',
-                        textTransform: 'uppercase',
-                        letterSpacing: '1px'
-                      }}>
-                        Crop Year
-                      </label>
-                      <div style={{ position: 'relative' }}>
-                        <input
-                          type="number"
-                          name="Crop_Year"
-                          value={formData.Crop_Year}
-                          onChange={handleInputChange}
-                          onFocus={() => setFocusedField('Crop_Year')}
-                          onBlur={() => setFocusedField(null)}
-                          required
-                          min="1997"
-                          max="2030"
-                          placeholder="e.g. 2024"
-                          style={{
-                            width: '100%',
-                            padding: '16px 20px',
-                            background: 'rgba(255, 255, 255, 0.05)',
-                            border: `2px solid ${focusedField === 'Crop_Year' ? '#22c55e' : 'rgba(255, 255, 255, 0.1)'}`,
-                            borderRadius: '12px',
-                            fontSize: '15px',
-                            color: '#ffffff',
-                            transition: 'all 0.3s ease',
-                            boxSizing: 'border-box',
-                            outline: 'none'
-                          }}
-                        />
-                        {focusedField === 'Crop_Year' && (
-                          <div style={{
-                            position: 'absolute',
-                            bottom: '-2px',
-                            left: '0',
-                            right: '0',
-                            height: '2px',
-                            background: 'linear-gradient(90deg, transparent, #22c55e, transparent)',
-                            animation: 'shimmer 2s ease-in-out infinite'
-                          }}></div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Season and Crop */}
-                  <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: '1fr 1fr',
-                    gap: '20px'
-                  }}>
-                    <div>
-                      <label style={{
-                        display: 'block',
-                        fontSize: '13px',
-                        fontWeight: '600',
-                        color: 'rgba(255, 255, 255, 0.8)',
-                        marginBottom: '10px',
-                        textTransform: 'uppercase',
-                        letterSpacing: '1px'
-                      }}>
+                      <label
+                        style={{
+                          display: 'block',
+                          fontSize: '13px',
+                          fontWeight: '600',
+                          color: 'rgba(255, 255, 255, 0.8)',
+                          marginBottom: '10px',
+                          textTransform: 'uppercase',
+                          letterSpacing: '1px'
+                        }}
+                      >
                         Season
                       </label>
                       <select
@@ -481,24 +449,37 @@ const Yield = () => {
                           cursor: 'pointer'
                         }}
                       >
+                        <option value="">Select Season</option>
                         {seasons.map(season => (
-                          <option key={season} value={season} style={{color: 'rgba(255, 255, 255, 0.8)' }}>
+                          <option key={season} value={season} style={{ color: 'rgb(255, 255, 255)' }}>
                             {season}
                           </option>
                         ))}
                       </select>
                     </div>
+                  </div>
 
+                  {/* Crop and Area */}
+                  <div
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: '1fr 1fr',
+                      gap: '20px'
+                    }}
+                  >
+                    {/* Crop */}
                     <div>
-                      <label style={{
-                        display: 'block',
-                        fontSize: '13px',
-                        fontWeight: '600',
-                        color: 'rgba(255, 255, 255, 0.8)',
-                        marginBottom: '10px',
-                        textTransform: 'uppercase',
-                        letterSpacing: '1px'
-                      }}>
+                      <label
+                        style={{
+                          display: 'block',
+                          fontSize: '13px',
+                          fontWeight: '600',
+                          color: 'rgba(255, 255, 255, 0.8)',
+                          marginBottom: '10px',
+                          textTransform: 'uppercase',
+                          letterSpacing: '1px'
+                        }}
+                      >
                         Crop
                       </label>
                       <select
@@ -527,74 +508,197 @@ const Yield = () => {
                       >
                         <option value="">Select Crop</option>
                         {crops.map(crop => (
-                          <option key={crop} value={crop} style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+                          <option key={crop} value={crop} style={{ color: 'rgb(255, 255, 255)' }}>
                             {crop}
                           </option>
                         ))}
                       </select>
                     </div>
-                  </div>
 
-                  {/* Area */}
-                  <div>
-                    <label style={{
-                      display: 'block',
-                      fontSize: '13px',
-                      fontWeight: '600',
-                      color: 'rgba(255, 255, 255, 0.8)',
-                      marginBottom: '10px',
-                      textTransform: 'uppercase',
-                      letterSpacing: '1px'
-                    }}>
-                      Area (hectares)
-                    </label>
-                    <div style={{ position: 'relative' }}>
-                      <input
-                        type="number"
-                        name="Area"
-                        value={formData.Area}
-                        onChange={handleInputChange}
-                        onFocus={() => setFocusedField('Area')}
-                        onBlur={() => setFocusedField(null)}
-                        required
-                        min="1"
-                        step="0.01"
-                        placeholder="e.g. 10.5"
+                    {/* Area */}
+                    <div>
+                      <label
                         style={{
-                          width: '100%',
-                          padding: '16px 20px',
-                          background: 'rgba(255, 255, 255, 0.05)',
-                          border: `2px solid ${focusedField === 'Area' ? '#22c55e' : 'rgba(255, 255, 255, 0.1)'}`,
-                          borderRadius: '12px',
-                          fontSize: '15px',
-                          color: '#ffffff',
-                          transition: 'all 0.3s ease',
-                          boxSizing: 'border-box',
-                          outline: 'none'
+                          display: 'block',
+                          fontSize: '13px',
+                          fontWeight: '600',
+                          color: 'rgba(255, 255, 255, 0.8)',
+                          marginBottom: '10px',
+                          textTransform: 'uppercase',
+                          letterSpacing: '1px'
                         }}
-                      />
-                      {focusedField === 'Area' && (
-                        <div style={{
-                          position: 'absolute',
-                          bottom: '-2px',
-                          left: '0',
-                          right: '0',
-                          height: '2px',
-                          background: 'linear-gradient(90deg, transparent, #22c55e, transparent)',
-                          animation: 'shimmer 2s ease-in-out infinite'
-                        }}></div>
-                      )}
+                      >
+                        Area (gajj)
+                      </label>
+                      <div style={{ position: 'relative' }}>
+                        <input
+                          type="number"
+                          name="Area"
+                          value={formData.Area}
+                          onChange={handleInputChange}
+                          onFocus={() => setFocusedField('Area')}
+                          onBlur={() => setFocusedField(null)}
+                          required
+                          min="0.01"
+                          step="0.01"
+                          placeholder="e.g. 10.5"
+                          style={{
+                            width: '100%',
+                            padding: '16px 20px',
+                            background: 'rgba(255, 255, 255, 0.05)',
+                            border: `2px solid ${focusedField === 'Area' ? '#22c55e' : 'rgba(255, 255, 255, 0.1)'}`,
+                            borderRadius: '12px',
+                            fontSize: '15px',
+                            color: 'rgb(255, 255, 255)',
+                            transition: 'all 0.3s ease',
+                            outline: 'none'
+                          }}
+                        />
+                        {focusedField === 'Area' && (
+                          <div
+                            style={{
+                              position: 'absolute',
+                              bottom: '-2px',
+                              left: '0',
+                              right: '0',
+                              height: '2px',
+                              background: 'linear-gradient(90deg, transparent, #22c55e, transparent)',
+                              animation: 'shimmer 2s ease-in-out infinite'
+                            }}
+                          />
+                        )}
+                      </div>
                     </div>
                   </div>
 
+                  {/* Fertilizer and Pesticide */}
+                  <div
+                    style={{
+                      display: 'grid',
+                      gridTemplateColumns: '1fr 1fr',
+                      gap: '20px'
+                    }}
+                  >
+                    {/* Fertilizer */}
+                    <div>
+                      <label
+                        style={{
+                          display: 'block',
+                          fontSize: '13px',
+                          fontWeight: '600',
+                          color: 'rgba(255, 255, 255, 0.8)',
+                          marginBottom: '10px',
+                          textTransform: 'uppercase',
+                          letterSpacing: '1px'
+                        }}
+                      >
+                        Fertilizer (kg)
+                      </label>
+                      <div style={{ position: 'relative' }}>
+                        <input
+                          type="number"
+                          name="Fertilizer"
+                          value={formData.Fertilizer}
+                          onChange={handleInputChange}
+                          onFocus={() => setFocusedField('Fertilizer')}
+                          onBlur={() => setFocusedField(null)}
+                          required
+                          min="0"
+                          step="0.01"
+                          placeholder="e.g. 150.5"
+                          style={{
+                            width: '100%',
+                            padding: '16px 20px',
+                            background: 'rgba(255, 255, 255, 0.05)',
+                            border: `2px solid ${focusedField === 'Fertilizer' ? '#22c55e' : 'rgba(255, 255, 255, 0.1)'}`,
+                            borderRadius: '12px',
+                            fontSize: '15px',
+                            color: 'rgb(255, 255, 255)',
+                            transition: 'all 0.3s ease',
+                            outline: 'none'
+                          }}
+                        />
+                        {focusedField === 'Fertilizer' && (
+                          <div
+                            style={{
+                              position: 'absolute',
+                              bottom: '-2px',
+                              left: '0',
+                              right: '0',
+                              height: '2px',
+                              background: 'linear-gradient(90deg, transparent, #22c55e, transparent)',
+                              animation: 'shimmer 2s ease-in-out infinite'
+                            }}
+                          />
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Pesticide */}
+                    <div>
+                      <label
+                        style={{
+                          display: 'block',
+                          fontSize: '13px',
+                          fontWeight: '600',
+                          color: 'rgba(255, 255, 255, 0.8)',
+                          marginBottom: '10px',
+                          textTransform: 'uppercase',
+                          letterSpacing: '1px'
+                        }}
+                      >
+                        Pesticide (kg)
+                      </label>
+                      <div style={{ position: 'relative' }}>
+                        <input
+                          type="number"
+                          name="Pesticide"
+                          value={formData.Pesticide}
+                          onChange={handleInputChange}
+                          onFocus={() => setFocusedField('Pesticide')}
+                          onBlur={() => setFocusedField(null)}
+                          required
+                          min="0"
+                          step="0.01"
+                          placeholder="e.g. 25.0"
+                          style={{
+                            width: '100%',
+                            padding: '16px 20px',
+                            background: 'rgba(255, 255, 255, 0.05)',
+                            border: `2px solid ${focusedField === 'Pesticide' ? '#22c55e' : 'rgba(255, 255, 255, 0.1)'}`,
+                            borderRadius: '12px',
+                            fontSize: '15px',
+                            color: 'rgb(255, 255, 255)',
+                            transition: 'all 0.3s ease',
+                            outline: 'none'
+                          }}
+                        />
+                        {focusedField === 'Pesticide' && (
+                          <div
+                            style={{
+                              position: 'absolute',
+                              bottom: '-2px',
+                              left: '0',
+                              right: '0',
+                              height: '2px',
+                              background: 'linear-gradient(90deg, transparent, #22c55e, transparent)',
+                              animation: 'shimmer 2s ease-in-out infinite'
+                            }}
+                          />
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Submit Button */}
                   <button
                     type="submit"
                     disabled={!isFormValid() || isLoading}
                     style={{
                       marginTop: '12px',
                       padding: '16px 32px',
-                      background: !isFormValid() || isLoading 
-                        ? 'rgba(255, 255, 255, 0.1)' 
+                      background: !isFormValid() || isLoading
+                        ? 'rgba(255, 255, 255, 0.1)'
                         : 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
                       color: !isFormValid() || isLoading ? 'rgba(255, 255, 255, 0.3)' : '#ffffff',
                       border: 'none',
@@ -625,26 +729,30 @@ const Yield = () => {
                     }}
                   >
                     {!isFormValid() || isLoading ? null : (
-                      <div style={{
-                        position: 'absolute',
-                        top: 0,
-                        left: '-100%',
-                        width: '100%',
-                        height: '100%',
-                        background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent)',
-                        animation: 'slideRight 3s ease-in-out infinite'
-                      }}></div>
+                      <div
+                        style={{
+                          position: 'absolute',
+                          top: 0,
+                          left: '-100%',
+                          width: '100%',
+                          height: '100%',
+                          background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent)',
+                          animation: 'slideRight 3s ease-in-out infinite'
+                        }}
+                      />
                     )}
                     {isLoading ? (
                       <>
-                        <div style={{
-                          width: '18px',
-                          height: '18px',
-                          border: '3px solid rgba(255, 255, 255, 0.3)',
-                          borderTop: '3px solid #ffffff',
-                          borderRadius: '50%',
-                          animation: 'spin 0.8s linear infinite'
-                        }}></div>
+                        <div
+                          style={{
+                            width: '18px',
+                            height: '18px',
+                            border: '3px solid rgba(255, 255, 255, 0.3)',
+                            borderTop: '3px solid #ffffff',
+                            borderRadius: '50%',
+                            animation: 'spin 0.8s linear infinite'
+                          }}
+                        />
                         Predicting...
                       </>
                     ) : (
@@ -656,21 +764,25 @@ const Yield = () => {
                   </button>
 
                   {/* Pro Tip */}
-                  <div style={{
-                    marginTop: '32px',
-                    padding: '20px',
-                    background: 'rgba(34, 197, 94, 0.1)',
-                    border: '1px solid rgba(34, 197, 94, 0.2)',
-                    borderRadius: '12px',
-                    backdropFilter: 'blur(10px)'
-                  }}>
-                    <p style={{
-                      margin: 0,
-                      fontSize: '14px',
-                      color: 'rgba(255, 255, 255, 0.8)',
-                      lineHeight: '1.6'
-                    }}>
-                      <strong style={{ color: '#22c55e' }}>Pro Tip:</strong> Use data from the last 3 years for the most accurate yield trends.
+                  <div
+                    style={{
+                      marginTop: '32px',
+                      padding: '20px',
+                      background: 'rgba(34, 197, 94, 0.1)',
+                      border: '1px solid rgba(34, 197, 94, 0.2)',
+                      borderRadius: '12px',
+                      backdropFilter: 'blur(10px)'
+                    }}
+                  >
+                    <p
+                      style={{
+                        margin: 0,
+                        fontSize: '14px',
+                        color: 'rgba(255, 255, 255, 0.8)',
+                        lineHeight: '1.6'
+                      }}
+                    >
+                      <strong style={{ color: '#22c55e' }}>Pro Tip:</strong> Enter accurate fertilizer and pesticide usage for best yield predictions.
                     </p>
                   </div>
                 </form>
@@ -923,7 +1035,7 @@ const Yield = () => {
           100% { left: 200%; }
         }
         input::placeholder, select {
-          color: rgba(255, 255, 255, 0.3) !important;
+          color: rgba(210, 98, 98, 0.3) !important;
         }
         select option {
           background: #1a1d3a;

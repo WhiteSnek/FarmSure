@@ -22,6 +22,7 @@ const Navbar = () => {
         <div className="navbar-links">
           <Link to="/">Home</Link>
           <Link to="/crop">Crop</Link>
+          <Link to="/croprecommendation">Crop-Recommendation</Link>
           <Link to="/fertilizer">Fertilizer</Link>
           <Link to="/yield">Yield</Link>
         </div>
@@ -65,8 +66,8 @@ const Navbar = () => {
 
         .navbar-links {
           display: flex;
-          gap: 20px;
-          padding: 8px 20px;
+          gap: 80px;
+          padding: 8px 40px;
         }
 
         .navbar-links a {

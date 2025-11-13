@@ -18,7 +18,7 @@ const CropRecommendation = () => {
   const [formData, setFormData] = useState({
     location: null,
     rainfall: "",
-    ph: "",
+    p: "",
     nitrogen: "",
     potassium: "",
     fieldSize: ""
@@ -79,17 +79,18 @@ const CropRecommendation = () => {
     setPrediction(null);
 
     try {
-      const res = await fetch(`${process.env.CROP_MODEL_URI}/predict_crop`, {
+      const res = await fetch(`${process.env.CROP_MODEL_URI}/predict`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          rainfall: parseFloat(formData.rainfall),
-          ph: parseFloat(formData.ph),
-          nitrogen: parseFloat(formData.nitrogen),
-          potassium: parseFloat(formData.potassium),
-          field_size: parseFloat(formData.fieldSize),
-          location: formData.location
-        })
+        location: formData.location,
+        rainfall: parseFloat(formData.rainfall),
+        pH: parseFloat(formData.ph),
+        nitro: parseFloat(formData.nitrogen),
+        pota: parseFloat(formData.potassium),
+        phos: parseFloat(formData.fieldSize)
+      })
+
       });
 
       const result = await res.json();
@@ -632,7 +633,7 @@ const CropRecommendation = () => {
                       textTransform: 'uppercase',
                       letterSpacing: '1px'
                     }}>
-                      Field Size (hectares)
+                      Phosphorus (P) PPM
                     </label>
                     <div style={{ position: 'relative' }}>
                       <input
