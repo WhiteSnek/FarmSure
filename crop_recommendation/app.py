@@ -7,6 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 import requests
 from dotenv import load_dotenv
 from constant import crop_mapping
+import time
 load_dotenv()
 # -------------------------
 # Setup
@@ -60,11 +61,8 @@ def find_market_price(district=None, commodity=None):
     try:
         response = requests.get(baseUrl, params=params, timeout=10)
         response.raise_for_status()
-
         data = response.json()
-        print(data)
         records = data.get("records", [])
-        print(records)
         filtered_data = [
             {
                 "district": r.get("district"),
@@ -85,13 +83,43 @@ def find_market_price(district=None, commodity=None):
     except ValueError:
         print("Invalid JSON response")
         return {"error": "Invalid JSON response"}
-
+    
+def find_annual_rainfall(lat, lon):
+    url = os.getenv("RAIN_API_URL")
+    now = time.gmtime(time.time())
+    current_year = now.tm_year
+    year = str(current_year - 1)
+    params = {
+        "start": year,
+        "end": year,
+        "latitude": lat,
+        "longitude": lon,
+        "community": "AG",
+        "parameters": "PRECTOT",
+        "format": "JSON"
+    }
+    try:
+        response = requests.get(url, params=params, timeout=10)
+        response.raise_for_status()
+        data = response.json()
+        if "properties" in data and "parameter" in data["properties"] and "PRECTOTCORR" in data["properties"]["parameter"]:
+            rainfall_data = data["properties"]["parameter"]["PRECTOTCORR"]
+            avg_rainfall = rainfall_data.get(f"{year}13")
+            print(avg_rainfall)
+            total_rainfall = avg_rainfall*365
+            return total_rainfall
+        else:
+            print("Rainfall data not found in the response")
+            return None
+    except requests.exceptions.RequestException as e:
+        print(f"Request failed: {e}")
+        return None
 # -------------------------
 # API endpoint
 # -------------------------
 @app.post("/predict")
 async def predict(data: dict):
-    required_fields = ["location","rainfall", "pH", "nitro", "pota", "phos"]
+    required_fields = ["location", "pH", "nitro", "pota", "phos"]
 
     # Check missing fields
     for field in required_fields:
@@ -108,12 +136,11 @@ async def predict(data: dict):
 
     geo_coords = geo_data[0]
     lat, lon = geo_coords['lat'], geo_coords['lon']
-    print(f"Latitude: {lat}, Longitude: {lon}")
     weather_data = requests.get(
         f"{os.getenv('WEATHER_API')}?lat={lat}&lon={lon}&appid={os.getenv('WEATHER_API_KEY')}").json()
     temp = round(weather_data["main"]["temp"] - 273.15, 2)
     humid = weather_data["main"]["humidity"]
-    print(f"Temperature: {temp}, Humidity: {humid}")
+    rainfall = find_annual_rainfall(lat, lon)
     try:
         # Convert to integers
         input_data = [
@@ -123,7 +150,7 @@ async def predict(data: dict):
             int(temp),
             int(humid),
             float(data['pH']),
-            int(data['rainfall'])
+            int(rainfall)
         ]
 
         prediction = model.predict([input_data])
