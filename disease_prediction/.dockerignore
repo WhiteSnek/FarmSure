@@ -1,0 +1,16 @@
+# Ignore dataset folders
+dataset/Train/
+dataset/Validation/
+
+# Optional: Ignore other unnecessary files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.swp
+*.DS_Store
+
+.env
+.git
+.gitignore
+.vscode
