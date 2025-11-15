@@ -3,8 +3,11 @@ import { useDropzone } from "react-dropzone";
 import uploadIcon from "../assets/uploadIcon.png";
 import UploadedFile from "../components/UploadedFile";
 import PredictionBox from "../components/PredictionBox";
+import { useTranslation } from "react-i18next";
 
 const Crop = () => {
+  const { t } = useTranslation();
+
   const farmersImage = "https://images.unsplash.com/photo-1515150144380-bca9f1650ed9?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
   const [files, setFiles] = useState([]);
   const [prediction, setPrediction] = useState([]);
@@ -48,6 +51,7 @@ const Crop = () => {
       setPrediction(results);
     } catch (err) {
       console.error("Prediction error:", err);
+      // Error message will be handled in PredictionBox or via toast
     } finally {
       setIsLoading(false);
     }
@@ -133,7 +137,7 @@ const Crop = () => {
           }}>
             <img
               src={uploadIcon}
-              alt="Upload"
+              alt={t("upload_icon_alt")}
               style={{
                 width: "56px",
                 height: "56px",
@@ -152,7 +156,7 @@ const Crop = () => {
                 textShadow: isDragActive ? "0 0 20px rgba(34, 197, 94, 0.5)" : "none",
               }}
             >
-              {isDragActive ? "Drop Here!" : "Drop Images or Click to Browse"}
+              {isDragActive ? t("drop_here") : t("drop_or_click")}
             </p>
             <p
               style={{
@@ -162,7 +166,7 @@ const Crop = () => {
                 fontWeight: "500",
               }}
             >
-              JPG, PNG, GIF, BMP, WebP • Max 10MB
+              {t("supported_formats")}
             </p>
           </div>
           {isDragActive && (
@@ -261,11 +265,11 @@ const Crop = () => {
                   borderRadius: "50%",
                   animation: "spin 0.8s linear infinite"
                 }}></div>
-                Analyzing...
+                {t("analyzing")}
               </>
             ) : (
               <>
-                Analyze {files.length} Image{files.length !== 1 ? "s" : ""}
+                {t("analyze_images", { count: files.length })}
                 <span style={{ fontSize: "18px" }}>→</span>
               </>
             )}
@@ -355,7 +359,7 @@ const Crop = () => {
                   backdropFilter: 'blur(0px)'
                 }}></div>
               </div>
-              
+
               {/* Decorative Elements */}
               <div style={{
                 position: 'absolute',
@@ -368,7 +372,7 @@ const Crop = () => {
                 transform: 'rotate(45deg)',
                 animation: 'pulse 3s ease-in-out infinite'
               }}></div>
-              
+
               <div style={{
                 position: 'absolute',
                 inset: 0,
@@ -381,7 +385,6 @@ const Crop = () => {
                   color: 'white',
                   maxWidth: '450px'
                 }}>
-                  
                   <h1 style={{
                     fontSize: '48px',
                     fontWeight: '800',
@@ -392,7 +395,7 @@ const Crop = () => {
                     WebkitTextFillColor: 'transparent',
                     animation: 'fadeInLeft 0.8s ease-out'
                   }}>
-                    AI-Powered Crop Guardian
+                    {t("ai_powered_crop_guardian")}
                   </h1>
                   <p style={{
                     fontSize: '18px',
@@ -401,11 +404,7 @@ const Crop = () => {
                     lineHeight: '1.6',
                     animation: 'fadeInLeft 0.8s ease-out 0.2s backwards'
                   }}>
-                    Upload crop images to instantly detect diseases, get fertilizer recommendations, and protect your harvest with <span style={{ 
-                      color: '#22c55e', 
-                      fontWeight: '600',
-                      textShadow: '0 0 20px rgba(34, 197, 94, 0.5)'
-                    }}>real-time AI insights</span>
+                    {t("upload_for_insights")}
                   </p>
 
                   {/* Stats */}
@@ -416,9 +415,9 @@ const Crop = () => {
                     animation: 'fadeInLeft 0.8s ease-out 0.4s backwards'
                   }}>
                     {[
-                      { label: 'Diseases Detected', value: '40+' },
-                      { label: 'Accuracy Rate', value: '98.7%' },
-                      { label: 'Crops Supported', value: '25+' }
+                      { label: t("diseases_detected"), value: '40+' },
+                      { label: t("accuracy_rate"), value: '98.7%' },
+                      { label: t("crops_supported"), value: '25+' }
                     ].map((stat, i) => (
                       <div key={i} style={{
                         padding: '16px 20px',
@@ -491,7 +490,7 @@ const Crop = () => {
                   margin: '0 0 12px 0',
                   letterSpacing: '-0.5px'
                 }}>
-                  Upload & Analyze
+                  {t("upload_and_analyze")}
                 </h2>
                 <p style={{
                   fontSize: '15px',
@@ -499,7 +498,7 @@ const Crop = () => {
                   margin: '0 0 40px 0',
                   fontWeight: '400'
                 }}>
-                  Drop 3+ images for comprehensive AI analysis
+                  {t("drop_images_tip")}
                 </p>
 
                 <FileUpload />
@@ -519,7 +518,7 @@ const Crop = () => {
                     color: 'rgba(255, 255, 255, 0.8)',
                     lineHeight: '1.6'
                   }}>
-                    <strong style={{ color: '#22c55e' }}>Pro Tip:</strong> Use clear, well-lit images from multiple angles for maximum accuracy.
+                    <strong style={{ color: '#22c55e' }}>{t("pro_tip")}:</strong> {t("clear_images_tip")}
                   </p>
                 </div>
               </div>
@@ -547,7 +546,7 @@ const Crop = () => {
                 margin: '0 0 12px 0',
                 letterSpacing: '-1px'
               }}>
-                AI Diagnosis Complete
+                {t("ai_diagnosis_complete")}
               </h2>
               <p style={{ 
                 fontSize: '18px', 
@@ -555,7 +554,7 @@ const Crop = () => {
                 margin: 0,
                 fontWeight: '500'
               }}>
-                {prediction.length} crop{prediction.length !== 1 ? 's' : ''} analyzed with 98.7% confidence
+                {t("crops_analyzed", { count: prediction.length })}
               </p>
             </div>
 
@@ -622,7 +621,7 @@ const Crop = () => {
                 e.target.style.boxShadow = '0 0 30px rgba(34, 197, 94, 0.4)';
               }}
               >
-                Export Report
+                {t("export_report")}
               </button>
               <button style={{
                 padding: '14px 32px',
@@ -645,7 +644,7 @@ const Crop = () => {
                 e.target.style.transform = 'translateY(0)';
               }}
               >
-                Analyze More
+                {t("analyze_more")}
               </button>
             </div>
           </div>
@@ -653,85 +652,19 @@ const Crop = () => {
       </div>
 
       <style>{`
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-        @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-20px); }
-        }
-        @keyframes slideUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        @keyframes fadeInLeft {
-          from {
-            opacity: 0;
-            transform: translateX(-20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        @keyframes pulse {
-          0%, 100% {
-            opacity: 0.3;
-            transform: rotate(45deg) scale(1);
-          }
-          50% {
-            opacity: 0.6;
-            transform: rotate(45deg) scale(1.1);
-          }
-        }
-        @keyframes glow {
-          0%, 100% {
-            box-shadow: 0 0 20px #22c55e;
-          }
-          50% {
-            box-shadow: 0 0 30px #22c55e, 0 0 40px #22c55e;
-          }
-        }
-        @keyframes shimmer {
-          0% { transform: translateX(-100%); }
-          100% { transform: translateX(100%); }
-        }
-        @keyframes rotate {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        @keyframes slideRight {
-          0% { left: -100%; }
-          100% { left: 200%; }
-        }
-        @keyframes ripple {
-          0% { transform: scale(0.8); opacity: 1; }
-          100% { transform: scale(2.4); opacity: 0; }
-        }
-        input::placeholder {
-          color: rgba(255, 255, 255, 0.3);
-        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeInLeft { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0%, 100% { opacity: 0.3; transform: rotate(45deg) scale(1); } 50% { opacity: 0.6; transform: rotate(45deg) scale(1.1); } }
+        @keyframes glow { 0%, 100% { box-shadow: 0 0 20px #22c55e; } 50% { box-shadow: 0 0 30px #22c55e, 0 0 40px #22c55e; } }
+        @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes slideRight { 0% { left: -100%; } 100% { left: 200%; } }
+        @keyframes ripple { 0% { transform: scale(0.8); opacity: 1; } 100% { transform: scale(2.4); opacity: 0; } }
+        input::placeholder { color: rgba(255, 255, 255, 0.3); }
       `}</style>
     </div>
   );

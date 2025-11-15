@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { useTranslation } from "react-i18next";
 
 // Fix Leaflet default icon issue
 delete L.Icon.Default.prototype._getIconUrl;
@@ -15,10 +16,12 @@ L.Icon.Default.mergeOptions({
 });
 
 const CropRecommendation = () => {
+  const { t } = useTranslation();
+
   const [formData, setFormData] = useState({
     location: null,
     rainfall: "",
-    p: "",
+    ph: "",
     nitrogen: "",
     potassium: "",
     fieldSize: ""
@@ -83,21 +86,20 @@ const CropRecommendation = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-        location: formData.location,
-        rainfall: parseFloat(formData.rainfall),
-        pH: parseFloat(formData.ph),
-        nitro: parseFloat(formData.nitrogen),
-        pota: parseFloat(formData.potassium),
-        phos: parseFloat(formData.fieldSize)
-      })
-
+          location: formData.location,
+          rainfall: parseFloat(formData.rainfall),
+          pH: parseFloat(formData.ph),
+          nitro: parseFloat(formData.nitrogen),
+          pota: parseFloat(formData.potassium),
+          phos: parseFloat(formData.fieldSize)
+        })
       });
 
       const result = await res.json();
       setPrediction(result.recommended_crops || result.prediction);
     } catch (err) {
       console.error("Prediction error:", err);
-      setPrediction(["Error getting recommendation. Please try again."]);
+      setPrediction([t("prediction_error")]);
     } finally {
       setIsLoading(false);
     }
@@ -187,22 +189,21 @@ const CropRecommendation = () => {
                 zIndex: 0
               }}>
                 <MapContainer
-                    center={mapCenter}
-                    zoom={5}
-                    style={{ height: "100%", width: "100%" }}
-                    scrollWheelZoom={false}
-                    >
-                    <TileLayer
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                    />
-                    {markerPosition && (
-                        <Marker position={markerPosition}>
-                        <Popup>{formData.location || "Selected Location"}</Popup>
-                        </Marker>
-                    )}
-                    </MapContainer>
-
+                  center={mapCenter}
+                  zoom={5}
+                  style={{ height: "100%", width: "100%" }}
+                  scrollWheelZoom={false}
+                >
+                  <TileLayer
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                  />
+                  {markerPosition && (
+                    <Marker position={markerPosition}>
+                      <Popup>{formData.location || t("selected_location")}</Popup>
+                    </Marker>
+                  )}
+                </MapContainer>
               </div>
 
               {/* Decorative Elements */}
@@ -231,8 +232,6 @@ const CropRecommendation = () => {
                   color: 'white',
                   maxWidth: '500px'
                 }}>
-                  {/* Logo/Brand ,,hta dia hai mgr yahan se*/}
-
                   <h1 style={{
                     fontSize: '48px',
                     fontWeight: '800',
@@ -243,7 +242,7 @@ const CropRecommendation = () => {
                     WebkitTextFillColor: 'transparent',
                     animation: 'fadeInLeft 0.8s ease-out'
                   }}>
-                    Smart Crop Selector
+                    {t("smart_crop_selector")}
                   </h1>
                   <p style={{
                     fontSize: '18px',
@@ -252,11 +251,7 @@ const CropRecommendation = () => {
                     lineHeight: '1.6',
                     animation: 'fadeInLeft 0.8s ease-out 0.2s backwards'
                   }}>
-                    Discover the <span style={{
-                      color: '#22c55e',
-                      fontWeight: '600',
-                      textShadow: '0 0 20px rgba(34, 197, 94, 0.5)'
-                    }}>perfect crops</span> for your land using AI & real-time soil data
+                    {t("discover_perfect_crops")}
                   </p>
 
                   {/* Stats */}
@@ -267,12 +262,11 @@ const CropRecommendation = () => {
                     animation: 'fadeInLeft 0.8s ease-out 0.4s backwards'
                   }}>
                     {[
-                      { label: 'Crops Analyzed', value: '50+' },
-                      { label: 'Parameters', value: '6' },
-                      { label: 'Accuracy', value: '98.7%' }
+                      { label: t("crops_analyzed"), value: '50+' },
+                      { label: t("parameters"), value: '6' },
+                      { label: t("accuracy"), value: '98.7%' }
                     ].map((stat, i) => (
                       <div key={i} style={{
-                        
                         padding: '16px 20px',
                         background: 'rgba(255, 255, 255, 0.05)',
                         backdropFilter: 'blur(10px)',
@@ -284,7 +278,6 @@ const CropRecommendation = () => {
                           fontWeight: '700',
                           color: '#22c55e',
                           marginBottom: '4px'
-                          
                         }}>{stat.value}</div>
                         <div style={{
                           fontSize: '12px',
@@ -344,7 +337,7 @@ const CropRecommendation = () => {
                   margin: '0 0 12px 0',
                   letterSpacing: '-0.5px'
                 }}>
-                  Crop Recommendation Engine
+                  {t("crop_recommendation_engine")}
                 </h2>
                 <p style={{
                   fontSize: '15px',
@@ -352,7 +345,7 @@ const CropRecommendation = () => {
                   margin: '0 0 40px 0',
                   fontWeight: '400'
                 }}>
-                  Enter your field data for AI-powered crop suggestions
+                  {t("enter_field_data")}
                 </p>
 
                 <form onSubmit={handleSubmit} style={{
@@ -371,7 +364,7 @@ const CropRecommendation = () => {
                       textTransform: 'uppercase',
                       letterSpacing: '1px'
                     }}>
-                      Location (City)
+                      {t("location_city")}
                     </label>
                     <select
                       name="location"
@@ -397,9 +390,9 @@ const CropRecommendation = () => {
                         cursor: 'pointer'
                       }}
                     >
-                      <option value="">Select City</option>
+                      <option value="">{t("select_city")}</option>
                       {cities.map(city => (
-                        <option key={city.name} value={city.name} style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+                        <option key={city.name} value={city.name}>
                           {city.name}
                         </option>
                       ))}
@@ -422,7 +415,7 @@ const CropRecommendation = () => {
                         textTransform: 'uppercase',
                         letterSpacing: '1px'
                       }}>
-                        Rainfall (mm/year)
+                        {t("rainfall_mm_year")}
                       </label>
                       <div style={{ position: 'relative' }}>
                         <input
@@ -434,7 +427,7 @@ const CropRecommendation = () => {
                           onBlur={() => setFocusedField(null)}
                           required
                           step="0.1"
-                          placeholder="e.g. 1200"
+                          placeholder={t("rainfall_placeholder")}
                           style={{
                             width: '100%',
                             padding: '16px 20px',
@@ -472,7 +465,7 @@ const CropRecommendation = () => {
                         textTransform: 'uppercase',
                         letterSpacing: '1px'
                       }}>
-                        Soil pH
+                        {t("soil_ph")}
                       </label>
                       <div style={{ position: 'relative' }}>
                         <input
@@ -486,7 +479,7 @@ const CropRecommendation = () => {
                           step="0.1"
                           min="0"
                           max="14"
-                          placeholder="e.g. 6.5"
+                          placeholder={t("ph_placeholder")}
                           style={{
                             width: '100%',
                             padding: '16px 20px',
@@ -531,7 +524,7 @@ const CropRecommendation = () => {
                         textTransform: 'uppercase',
                         letterSpacing: '1px'
                       }}>
-                        Nitrogen (N) ppm
+                        {t("nitrogen_ppm")}
                       </label>
                       <div style={{ position: 'relative' }}>
                         <input
@@ -543,7 +536,7 @@ const CropRecommendation = () => {
                           onBlur={() => setFocusedField(null)}
                           required
                           step="0.1"
-                          placeholder="e.g. 45"
+                          placeholder={t("nitrogen_placeholder")}
                           style={{
                             width: '100%',
                             padding: '16px 20px',
@@ -581,7 +574,7 @@ const CropRecommendation = () => {
                         textTransform: 'uppercase',
                         letterSpacing: '1px'
                       }}>
-                        Potassium (K) ppm
+                        {t("potassium_ppm")}
                       </label>
                       <div style={{ position: 'relative' }}>
                         <input
@@ -593,7 +586,7 @@ const CropRecommendation = () => {
                           onBlur={() => setFocusedField(null)}
                           required
                           step="0.1"
-                          placeholder="e.g. 30"
+                          placeholder={t("potassium_placeholder")}
                           style={{
                             width: '100%',
                             padding: '16px 20px',
@@ -622,7 +615,7 @@ const CropRecommendation = () => {
                     </div>
                   </div>
 
-                  {/* Field Size */}
+                  {/* Phosphorus (Field Size in form) */}
                   <div>
                     <label style={{
                       display: 'block',
@@ -633,7 +626,7 @@ const CropRecommendation = () => {
                       textTransform: 'uppercase',
                       letterSpacing: '1px'
                     }}>
-                      Phosphorus (P) PPM
+                      {t("phosphorus_ppm")}
                     </label>
                     <div style={{ position: 'relative' }}>
                       <input
@@ -646,7 +639,7 @@ const CropRecommendation = () => {
                         required
                         min="0.1"
                         step="0.01"
-                        placeholder="e.g. 5.5"
+                        placeholder={t("phosphorus_placeholder")}
                         style={{
                           width: '100%',
                           padding: '16px 20px',
@@ -732,11 +725,11 @@ const CropRecommendation = () => {
                           borderRadius: '50%',
                           animation: 'spin 0.8s linear infinite'
                         }}></div>
-                        Analyzing...
+                        {t("analyzing")}
                       </>
                     ) : (
                       <>
-                        Recommend Crops
+                        {t("recommend_crops")}
                         <span style={{ fontSize: '18px' }}>→</span>
                       </>
                     )}
@@ -757,7 +750,7 @@ const CropRecommendation = () => {
                       color: 'rgba(255, 255, 255, 0.8)',
                       lineHeight: '1.6'
                     }}>
-                      <strong style={{ color: '#22c55e' }}>Pro Tip:</strong> For best results, use soil test data from the past 6 months.
+                      <strong style={{ color: '#22c55e' }}>{t("pro_tip")}:</strong> {t("soil_test_tip")}
                     </p>
                   </div>
                 </form>
@@ -786,7 +779,7 @@ const CropRecommendation = () => {
                 margin: '0 0 12px 0',
                 letterSpacing: '-1px'
               }}>
-                AI Crop Recommendations
+                {t("ai_crop_recommendations")}
               </h2>
               <p style={{
                 fontSize: '18px',
@@ -794,7 +787,7 @@ const CropRecommendation = () => {
                 margin: 0,
                 fontWeight: '500'
               }}>
-                {formData.location} • {formData.fieldSize} hectares
+                {formData.location} • {formData.fieldSize} {t("hectares")}
               </p>
             </div>
 
@@ -846,7 +839,7 @@ const CropRecommendation = () => {
                         justifyContent: 'center',
                         fontSize: '28px'
                       }}>
-                        {index === 0 ? '1st' : index === 1 ? '2nd' : index === 2 ? '3rd' : 'Alternative'}
+                        {index === 0 ? t("first") : index === 1 ? t("second") : index === 2 ? t("third") : t("alternative")}
                       </div>
                       <h4 style={{
                         fontSize: '20px',
@@ -861,7 +854,7 @@ const CropRecommendation = () => {
                         color: 'rgba(255, 255, 255, 0.7)',
                         margin: 0
                       }}>
-                        {index === 0 ? 'Top Recommendation' : 'Strong Alternative'}
+                        {index === 0 ? t("top_recommendation") : t("strong_alternative")}
                       </p>
                     </div>
                   ))}
@@ -908,7 +901,7 @@ const CropRecommendation = () => {
                 e.currentTarget.style.boxShadow = '0 0 30px rgba(34, 197, 94, 0.4)';
               }}
               >
-                Save Plan
+                {t("save_plan")}
               </button>
               <button style={{
                 padding: '14px 32px',
@@ -931,7 +924,7 @@ const CropRecommendation = () => {
                 e.currentTarget.style.transform = 'translateY(0)';
               }}
               >
-                New Analysis
+                {t("new_analysis")}
               </button>
             </div>
           </div>
@@ -939,88 +932,20 @@ const CropRecommendation = () => {
       </div>
 
       <style>{`
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-        @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-20px); }
-        }
-        @keyframes slideUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        @keyframes fadeInLeft {
-          from {
-            opacity: 0;
-            transform: translateX(-20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        @keyframes pulse {
-          0%, 100% {
-            opacity: 0.3;
-            transform: rotate(45deg) scale(1);
-          }
-          50% {
-            opacity: 0.6;
-            transform: rotate(45deg) scale(1.1);
-          }
-        }
-        @keyframes glow {
-          0%, 100% {
-            box-shadow: 0 0 20px #22c55e;
-          }
-          50% {
-            box-shadow: 0 0 30px #22c55e, 0 0 40px #22c55e;
-          }
-        }
-        @keyframes shimmer {
-          0% { transform: translateX(-100%); }
-          100% { transform: translateX(100%); }
-        }
-        @keyframes rotate {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        @keyframes slideRight {
-          0% { left: -100%; }
-          100% { left: 200%; }
-        }
-        input::placeholder, select {
-          color: rgba(255, 255, 255, 0.3) !important;
-        }
-        select option {
-          background: #1a1d3a;
-          color: white;
-        }
-        .leaflet-container {
-          border-radius: 16px;
-        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeInLeft { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0%, 100% { opacity: 0.3; transform: rotate(45deg) scale(1); } 50% { opacity: 0.6; transform: rotate(45deg) scale(1.1); } }
+        @keyframes glow { 0%, 100% { box-shadow: 0 0 20px #22c55e; } 50% { box-shadow: 0 0 30px #22c55e, 0 0 40px #22c55e; } }
+        @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes slideRight { 0% { left: -100%; } 100% { left: 200%; } }
+        input::placeholder, select { color: rgba(255, 255, 255, 0.3) !important; }
+        select option { background: #1a1d3a; color: white; }
+        .leaflet-container { border-radius: 16px; }
       `}</style>
     </div>
   );

@@ -1,15 +1,19 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const Yield = () => {
-  const yieldImage="https://plus.unsplash.com/premium_photo-1664197864438-bc9251cce42e?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDR8fGhhcmQlMjB3b3JrfGVufDB8fDB8fHww";
+  const { t } = useTranslation();
+
+  const yieldImage = "https://plus.unsplash.com/premium_photo-1664197864438-bc9251cce42e?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDR8fGhhcmQlMjB3b3JrfGVufDB8fDB8fHww";
+  
   const [formData, setFormData] = useState({
-  Crop: "",
-  Season: "Kharif",
-  State: "",
-  Area: "",
-  Fertilizer: "",
-  Pesticide: ""
-});
+    Crop: "",
+    Season: "Kharif",
+    State: "",
+    Area: "",
+    Fertilizer: "",
+    Pesticide: ""
+  });
 
   const [prediction, setPrediction] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -50,7 +54,6 @@ const Yield = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    console.log(formData)
     setPrediction(null);
 
     try {
@@ -58,40 +61,35 @@ const Yield = () => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-        Crop: formData.Crop,
-        Season: formData.Season,
-        State: formData.State,
-        Area: Number(formData.Area) / 11959.9,// Convert gajj to hectares 
-        Fertilizer: Number(formData.Fertilizer),
-        Pesticide: Number(formData.Pesticide)
-      })
-
-     
-
+          Crop: formData.Crop,
+          Season: formData.Season,
+          State: formData.State,
+          Area: Number(formData.Area) / 11959.9,
+          Fertilizer: Number(formData.Fertilizer),
+          Pesticide: Number(formData.Pesticide)
+        })
       });
-      //console.log(res);
 
       const result = await res.json();
       setPrediction(result.predicted_yield);
     } catch (err) {
       console.error("Prediction error:", err);
-      setPrediction("Error getting prediction. Please try again.");
+      setPrediction(t("prediction_error"));
     } finally {
       setIsLoading(false);
     }
   };
 
-    const isFormValid = () => {
-      return (
-        formData.Crop &&
-        formData.Season &&
-        formData.State &&
-        formData.Area &&
-        formData.Fertilizer &&
-        formData.Pesticide
-      );
-    };
-
+  const isFormValid = () => {
+    return (
+      formData.Crop &&
+      formData.Season &&
+      formData.State &&
+      formData.Area &&
+      formData.Fertilizer &&
+      formData.Pesticide
+    );
+  };
 
   return (
     <div style={{
@@ -173,7 +171,7 @@ const Yield = () => {
                   backdropFilter: 'blur(2px)'
                 }}></div>
               </div>
-              
+
               {/* Decorative Elements */}
               <div style={{
                 position: 'absolute',
@@ -186,7 +184,7 @@ const Yield = () => {
                 transform: 'rotate(45deg)',
                 animation: 'pulse 3s ease-in-out infinite'
               }}></div>
-              
+
               <div style={{
                 position: 'absolute',
                 inset: 0,
@@ -223,7 +221,7 @@ const Yield = () => {
                       fontSize: '20px',
                       fontWeight: '700',
                       letterSpacing: '0.5px'
-                    }}>FarmSure</span>
+                    }}>{t("brand_name")}</span>
                   </div>
 
                   <h1 style={{
@@ -236,7 +234,7 @@ const Yield = () => {
                     WebkitTextFillColor: 'transparent',
                     animation: 'fadeInLeft 0.8s ease-out'
                   }}>
-                    AI Yield Forecaster
+                    {t("ai_yield_forecaster")}
                   </h1>
                   <p style={{
                     fontSize: '18px',
@@ -245,11 +243,7 @@ const Yield = () => {
                     lineHeight: '1.6',
                     animation: 'fadeInLeft 0.8s ease-out 0.2s backwards'
                   }}>
-                    Predict <span style={{ 
-                      color: '#22c55e', 
-                      fontWeight: '600',
-                      textShadow: '0 0 20px rgba(34, 197, 94, 0.5)'
-                    }}>harvest outcomes</span> with 99.5% accuracy using location, season, and crop data
+                    {t("predict_harvest_outcomes")}
                   </p>
 
                   {/* Stats */}
@@ -260,9 +254,9 @@ const Yield = () => {
                     animation: 'fadeInLeft 0.8s ease-out 0.4s backwards'
                   }}>
                     {[
-                      { label: 'States Covered', value: '28' },
-                      { label: 'Crops Supported', value: '40+' },
-                      { label: 'Accuracy', value: '99.5%' }
+                      { label: t("states_covered"), value: '28' },
+                      { label: t("crops_supported"), value: '40+' },
+                      { label: t("accuracy"), value: '90.5%' }
                     ].map((stat, i) => (
                       <div key={i} style={{
                         padding: '16px 20px',
@@ -335,7 +329,7 @@ const Yield = () => {
                   margin: '0 0 12px 0',
                   letterSpacing: '-0.5px'
                 }}>
-                  Yield Prediction Engine
+                  {t("yield_prediction_engine")}
                 </h2>
                 <p style={{
                   fontSize: '15px',
@@ -343,39 +337,32 @@ const Yield = () => {
                   margin: '0 0 40px 0',
                   fontWeight: '400'
                 }}>
-                  Enter crop details for hyper-accurate yield forecasts
+                  {t("enter_crop_details")}
                 </p>
 
-                <form
-                  onSubmit={handleSubmit}
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '20px'
-                  }}
-                >
+                <form onSubmit={handleSubmit} style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '20px'
+                }}>
                   {/* State and Season */}
-                  <div
-                    style={{
-                      display: 'grid',
-                      gridTemplateColumns: '1fr 1fr',
-                      gap: '20px'
-                    }}
-                  >
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr',
+                    gap: '20px'
+                  }}>
                     {/* State */}
                     <div>
-                      <label
-                        style={{
-                          display: 'block',
-                          fontSize: '13px',
-                          fontWeight: '600',
-                          color: 'rgba(255, 255, 255, 0.8)',
-                          marginBottom: '10px',
-                          textTransform: 'uppercase',
-                          letterSpacing: '1px'
-                        }}
-                      >
-                        State
+                      <label style={{
+                        display: 'block',
+                        fontSize: '13px',
+                        fontWeight: '600',
+                        color: 'rgba(255, 255, 255, 0.8)',
+                        marginBottom: '10px',
+                        textTransform: 'uppercase',
+                        letterSpacing: '1px'
+                      }}>
+                        {t("state")}
                       </label>
                       <select
                         name="State"
@@ -401,7 +388,7 @@ const Yield = () => {
                           cursor: 'pointer'
                         }}
                       >
-                        <option value="">Select State</option>
+                        <option value="">{t("select_state")}</option>
                         {states.map(state => (
                           <option key={state} value={state} style={{ color: 'rgb(255, 255, 255)' }}>
                             {state}
@@ -412,18 +399,16 @@ const Yield = () => {
 
                     {/* Season */}
                     <div>
-                      <label
-                        style={{
-                          display: 'block',
-                          fontSize: '13px',
-                          fontWeight: '600',
-                          color: 'rgba(255, 255, 255, 0.8)',
-                          marginBottom: '10px',
-                          textTransform: 'uppercase',
-                          letterSpacing: '1px'
-                        }}
-                      >
-                        Season
+                      <label style={{
+                        display: 'block',
+                        fontSize: '13px',
+                        fontWeight: '600',
+                        color: 'rgba(255, 255, 255, 0.8)',
+                        marginBottom: '10px',
+                        textTransform: 'uppercase',
+                        letterSpacing: '1px'
+                      }}>
+                        {t("season")}
                       </label>
                       <select
                         name="Season"
@@ -449,7 +434,7 @@ const Yield = () => {
                           cursor: 'pointer'
                         }}
                       >
-                        <option value="">Select Season</option>
+                        <option value="">{t("select_season")}</option>
                         {seasons.map(season => (
                           <option key={season} value={season} style={{ color: 'rgb(255, 255, 255)' }}>
                             {season}
@@ -460,27 +445,23 @@ const Yield = () => {
                   </div>
 
                   {/* Crop and Area */}
-                  <div
-                    style={{
-                      display: 'grid',
-                      gridTemplateColumns: '1fr 1fr',
-                      gap: '20px'
-                    }}
-                  >
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr',
+                    gap: '20px'
+                  }}>
                     {/* Crop */}
                     <div>
-                      <label
-                        style={{
-                          display: 'block',
-                          fontSize: '13px',
-                          fontWeight: '600',
-                          color: 'rgba(255, 255, 255, 0.8)',
-                          marginBottom: '10px',
-                          textTransform: 'uppercase',
-                          letterSpacing: '1px'
-                        }}
-                      >
-                        Crop
+                      <label style={{
+                        display: 'block',
+                        fontSize: '13px',
+                        fontWeight: '600',
+                        color: 'rgba(255, 255, 255, 0.8)',
+                        marginBottom: '10px',
+                        textTransform: 'uppercase',
+                        letterSpacing: '1px'
+                      }}>
+                        {t("crop")}
                       </label>
                       <select
                         name="Crop"
@@ -506,7 +487,7 @@ const Yield = () => {
                           cursor: 'pointer'
                         }}
                       >
-                        <option value="">Select Crop</option>
+                        <option value="">{t("select_crop")}</option>
                         {crops.map(crop => (
                           <option key={crop} value={crop} style={{ color: 'rgb(255, 255, 255)' }}>
                             {crop}
@@ -517,18 +498,16 @@ const Yield = () => {
 
                     {/* Area */}
                     <div>
-                      <label
-                        style={{
-                          display: 'block',
-                          fontSize: '13px',
-                          fontWeight: '600',
-                          color: 'rgba(255, 255, 255, 0.8)',
-                          marginBottom: '10px',
-                          textTransform: 'uppercase',
-                          letterSpacing: '1px'
-                        }}
-                      >
-                        Area (gajj)
+                      <label style={{
+                        display: 'block',
+                        fontSize: '13px',
+                        fontWeight: '600',
+                        color: 'rgba(255, 255, 255, 0.8)',
+                        marginBottom: '10px',
+                        textTransform: 'uppercase',
+                        letterSpacing: '1px'
+                      }}>
+                        {t("area_gajj")}
                       </label>
                       <div style={{ position: 'relative' }}>
                         <input
@@ -541,7 +520,7 @@ const Yield = () => {
                           required
                           min="0.01"
                           step="0.01"
-                          placeholder="e.g. 10.5"
+                          placeholder={t("area_placeholder")}
                           style={{
                             width: '100%',
                             padding: '16px 20px',
@@ -555,44 +534,38 @@ const Yield = () => {
                           }}
                         />
                         {focusedField === 'Area' && (
-                          <div
-                            style={{
-                              position: 'absolute',
-                              bottom: '-2px',
-                              left: '0',
-                              right: '0',
-                              height: '2px',
-                              background: 'linear-gradient(90deg, transparent, #22c55e, transparent)',
-                              animation: 'shimmer 2s ease-in-out infinite'
-                            }}
-                          />
+                          <div style={{
+                            position: 'absolute',
+                            bottom: '-2px',
+                            left: '0',
+                            right: '0',
+                            height: '2px',
+                            background: 'linear-gradient(90deg, transparent, #22c55e, transparent)',
+                            animation: 'shimmer 2s ease-in-out infinite'
+                          }}></div>
                         )}
                       </div>
                     </div>
                   </div>
 
                   {/* Fertilizer and Pesticide */}
-                  <div
-                    style={{
-                      display: 'grid',
-                      gridTemplateColumns: '1fr 1fr',
-                      gap: '20px'
-                    }}
-                  >
+                  <div style={{
+                    display: 'grid',
+                    gridTemplateColumns: '1fr 1fr',
+                    gap: '20px'
+                  }}>
                     {/* Fertilizer */}
                     <div>
-                      <label
-                        style={{
-                          display: 'block',
-                          fontSize: '13px',
-                          fontWeight: '600',
-                          color: 'rgba(255, 255, 255, 0.8)',
-                          marginBottom: '10px',
-                          textTransform: 'uppercase',
-                          letterSpacing: '1px'
-                        }}
-                      >
-                        Fertilizer (kg)
+                      <label style={{
+                        display: 'block',
+                        fontSize: '13px',
+                        fontWeight: '600',
+                        color: 'rgba(255, 255, 255, 0.8)',
+                        marginBottom: '10px',
+                        textTransform: 'uppercase',
+                        letterSpacing: '1px'
+                      }}>
+                        {t("fertilizer_kg")}
                       </label>
                       <div style={{ position: 'relative' }}>
                         <input
@@ -605,7 +578,7 @@ const Yield = () => {
                           required
                           min="0"
                           step="0.01"
-                          placeholder="e.g. 150.5"
+                          placeholder={t("fertilizer_placeholder")}
                           style={{
                             width: '100%',
                             padding: '16px 20px',
@@ -619,35 +592,31 @@ const Yield = () => {
                           }}
                         />
                         {focusedField === 'Fertilizer' && (
-                          <div
-                            style={{
-                              position: 'absolute',
-                              bottom: '-2px',
-                              left: '0',
-                              right: '0',
-                              height: '2px',
-                              background: 'linear-gradient(90deg, transparent, #22c55e, transparent)',
-                              animation: 'shimmer 2s ease-in-out infinite'
-                            }}
-                          />
+                          <div style={{
+                            position: 'absolute',
+                            bottom: '-2px',
+                            left: '0',
+                            right: '0',
+                            height: '2px',
+                            background: 'linear-gradient(90deg, transparent, #22c55e, transparent)',
+                            animation: 'shimmer 2s ease-in-out infinite'
+                          }}></div>
                         )}
                       </div>
                     </div>
 
                     {/* Pesticide */}
                     <div>
-                      <label
-                        style={{
-                          display: 'block',
-                          fontSize: '13px',
-                          fontWeight: '600',
-                          color: 'rgba(255, 255, 255, 0.8)',
-                          marginBottom: '10px',
-                          textTransform: 'uppercase',
-                          letterSpacing: '1px'
-                        }}
-                      >
-                        Pesticide (kg)
+                      <label style={{
+                        display: 'block',
+                        fontSize: '13px',
+                        fontWeight: '600',
+                        color: 'rgba(255, 255, 255, 0.8)',
+                        marginBottom: '10px',
+                        textTransform: 'uppercase',
+                        letterSpacing: '1px'
+                      }}>
+                        {t("pesticide_kg")}
                       </label>
                       <div style={{ position: 'relative' }}>
                         <input
@@ -660,7 +629,7 @@ const Yield = () => {
                           required
                           min="0"
                           step="0.01"
-                          placeholder="e.g. 25.0"
+                          placeholder={t("pesticide_placeholder")}
                           style={{
                             width: '100%',
                             padding: '16px 20px',
@@ -674,17 +643,15 @@ const Yield = () => {
                           }}
                         />
                         {focusedField === 'Pesticide' && (
-                          <div
-                            style={{
-                              position: 'absolute',
-                              bottom: '-2px',
-                              left: '0',
-                              right: '0',
-                              height: '2px',
-                              background: 'linear-gradient(90deg, transparent, #22c55e, transparent)',
-                              animation: 'shimmer 2s ease-in-out infinite'
-                            }}
-                          />
+                          <div style={{
+                            position: 'absolute',
+                            bottom: '-2px',
+                            left: '0',
+                            right: '0',
+                            height: '2px',
+                            background: 'linear-gradient(90deg, transparent, #22c55e, transparent)',
+                            animation: 'shimmer 2s ease-in-out infinite'
+                          }}></div>
                         )}
                       </div>
                     </div>
@@ -729,60 +696,52 @@ const Yield = () => {
                     }}
                   >
                     {!isFormValid() || isLoading ? null : (
-                      <div
-                        style={{
-                          position: 'absolute',
-                          top: 0,
-                          left: '-100%',
-                          width: '100%',
-                          height: '100%',
-                          background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent)',
-                          animation: 'slideRight 3s ease-in-out infinite'
-                        }}
-                      />
+                      <div style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: '-100%',
+                        width: '100%',
+                        height: '100%',
+                        background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent)',
+                        animation: 'slideRight 3s ease-in-out infinite'
+                      }}></div>
                     )}
                     {isLoading ? (
                       <>
-                        <div
-                          style={{
-                            width: '18px',
-                            height: '18px',
-                            border: '3px solid rgba(255, 255, 255, 0.3)',
-                            borderTop: '3px solid #ffffff',
-                            borderRadius: '50%',
-                            animation: 'spin 0.8s linear infinite'
-                          }}
-                        />
-                        Predicting...
+                        <div style={{
+                          width: '18px',
+                          height: '18px',
+                          border: '3px solid rgba(255, 255, 255, 0.3)',
+                          borderTop: '3px solid #ffffff',
+                          borderRadius: '50%',
+                          animation: 'spin 0.8s linear infinite'
+                        }}></div>
+                        {t("predicting")}
                       </>
                     ) : (
                       <>
-                        Predict Yield
+                        {t("predict_yield")}
                         <span style={{ fontSize: '18px' }}>→</span>
                       </>
                     )}
                   </button>
 
                   {/* Pro Tip */}
-                  <div
-                    style={{
-                      marginTop: '32px',
-                      padding: '20px',
-                      background: 'rgba(34, 197, 94, 0.1)',
-                      border: '1px solid rgba(34, 197, 94, 0.2)',
-                      borderRadius: '12px',
-                      backdropFilter: 'blur(10px)'
-                    }}
-                  >
-                    <p
-                      style={{
-                        margin: 0,
-                        fontSize: '14px',
-                        color: 'rgba(255, 255, 255, 0.8)',
-                        lineHeight: '1.6'
-                      }}
-                    >
-                      <strong style={{ color: '#22c55e' }}>Pro Tip:</strong> Enter accurate fertilizer and pesticide usage for best yield predictions.
+                  <div style={{
+                    marginTop: '32px',
+                    padding: '20px',
+                    background: 'rgba(34, 197, 94, 0.1)',
+                    border: '1px solid rgba(34, 197, 94, 0.2)',
+                    borderRadius: '12px',
+                    backdropFilter: 'blur(10px)'
+                  }}>
+                    <p style={{
+                      margin: 0,
+                      fontSize: '14px',
+                      color: 'rgba(255, 255, 255, 0.8)',
+                      lineHeight: '1.6'
+                    }}>
+                      <strong style={{ color: '#22c55e' }}>{t("pro_tip")}:</strong> {t("accurate_input_tip")}
                     </p>
                   </div>
                 </form>
@@ -811,7 +770,7 @@ const Yield = () => {
                 margin: '0 0 12px 0',
                 letterSpacing: '-1px'
               }}>
-                Yield Forecast Complete
+                {t("yield_forecast_complete")}
               </h2>
               <p style={{ 
                 fontSize: '18px', 
@@ -819,7 +778,7 @@ const Yield = () => {
                 margin: 0,
                 fontWeight: '500'
               }}>
-                {formData.Crop} in {formData.State_Name}, {formData.Crop_Year}
+                {formData.Crop} in {formData.State}, {formData.Season}
               </p>
             </div>
 
@@ -861,7 +820,7 @@ const Yield = () => {
                   textTransform: 'uppercase',
                   letterSpacing: '1px'
                 }}>
-                  AI-Powered Prediction
+                  {t("ai_powered_prediction")}
                 </span>
               </div>
               
@@ -884,7 +843,7 @@ const Yield = () => {
                   margin: '0 0 24px 0',
                   fontWeight: '500'
                 }}>
-                  <span style={{ color: '#22c55e' }}>tonnes</span> per hectare
+                  <span style={{ color: '#22c55e' }}>{t("tonnes")}</span> {t("per_hectare")}
                 </p>
               )}
               
@@ -895,8 +854,11 @@ const Yield = () => {
                 margin: '0 auto'
               }}>
                 {typeof prediction === 'number' 
-                  ? `Expected total yield: ${(prediction * parseFloat(formData.Area)).toFixed(2)} tonnes across ${formData.Area} hectares`
-                  : 'Please try again with valid parameters'}
+                  ? t("expected_total_yield", { 
+                      total: (prediction * parseFloat(formData.Area) / 11959.9).toFixed(2),
+                      area: formData.Area 
+                    })
+                  : t("try_again_valid")}
               </p>
             </div>
 
@@ -931,7 +893,7 @@ const Yield = () => {
                 e.target.style.boxShadow = '0 0 30px rgba(34, 197, 94, 0.4)';
               }}
               >
-                Export Forecast
+                {t("export_forecast")}
               </button>
               <button style={{
                 padding: '14px 32px',
@@ -954,7 +916,7 @@ const Yield = () => {
                 e.target.style.transform = 'translateY(0)';
               }}
               >
-                New Prediction
+                {t("new_prediction")}
               </button>
             </div>
           </div>
@@ -962,85 +924,19 @@ const Yield = () => {
       </div>
 
       <style>{`
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-        @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-20px); }
-        }
-        @keyframes slideUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        @keyframes fadeInLeft {
-          from {
-            opacity: 0;
-            transform: translateX(-20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        @keyframes pulse {
-          0%, 100% {
-            opacity: 0.3;
-            transform: rotate(45deg) scale(1);
-          }
-          50% {
-            opacity: 0.6;
-            transform: rotate(45deg) scale(1.1);
-          }
-        }
-        @keyframes glow {
-          0%, 100% {
-            box-shadow: 0 0 20px #22c55e;
-          }
-          50% {
-            box-shadow: 0 0 30px #22c55e, 0 0 40px #22c55e;
-          }
-        }
-        @keyframes shimmer {
-          0% { transform: translateX(-100%); }
-          100% { transform: translateX(100%); }
-        }
-        @keyframes rotate {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        @keyframes slideRight {
-          0% { left: -100%; }
-          100% { left: 200%; }
-        }
-        input::placeholder, select {
-          color: rgba(210, 98, 98, 0.3) !important;
-        }
-        select option {
-          background: #1a1d3a;
-          color: white;
-        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeInLeft { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0%, 100% { opacity: 0.3; transform: rotate(45deg) scale(1); } 50% { opacity: 0.6; transform: rotate(45deg) scale(1.1); } }
+        @keyframes glow { 0%, 100% { box-shadow: 0 0 20px #22c55e; } 50% { box-shadow: 0 0 30px #22c55e, 0 0 40px #22c55e; } }
+        @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes slideRight { 0% { left: -100%; } 100% { left: 200%; } }
+        input::placeholder, select { color: rgba(255, 255, 255, 0.3) !important; }
+        select option { background: #1a1d3a; color: white; }
       `}</style>
     </div>
   );

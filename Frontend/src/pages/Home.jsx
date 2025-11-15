@@ -1,28 +1,28 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const Home = () => {
+  const { t } = useTranslation();
+
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  // Carousel images - using placeholder images
+  // Carousel images
   const slides = [
     {
-      image:
-        "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1200&q=80",
-      title: "AI-Powered Crop Health",
-      description: "Detect diseases early with advanced machine learning",
+      image: "https://images.unsplash.com/photo-1625246333195-78d9c38ad449?w=1200&q=80",
+      title: t("slide_crop_health_title"),
+      description: t("slide_crop_health_desc"),
     },
     {
-      image:
-        "https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=1200&q=80",
-      title: "Smart Fertilizer Recommendations",
-      description: "Get personalized nutrient solutions for optimal growth",
+      image: "https://images.unsplash.com/photo-1574943320219-553eb213f72d?w=1200&q=80",
+      title: t("slide_fertilizer_title"),
+      description: t("slide_fertilizer_desc"),
     },
     {
-      image:
-        "https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=1200&q=80",
-      title: "Data-Driven Farming",
-      description: "Make informed decisions backed by technology",
+      image: "https://images.unsplash.com/photo-1464226184884-fa280b87c399?w=1200&q=80",
+      title: t("slide_data_driven_title"),
+      description: t("slide_data_driven_desc"),
     },
   ];
 
@@ -31,7 +31,7 @@ const Home = () => {
       setCurrentSlide((prev) => (prev + 1) % slides.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [slides.length]);
 
   const nextSlide = () => {
     setCurrentSlide((prev) => (prev + 1) % slides.length);
@@ -43,24 +43,21 @@ const Home = () => {
 
   const features = [
     {
-      icon: "🔬",
-      title: "Disease Detection",
-      description:
-        "Upload crop images to identify diseases instantly with high accuracy AI models",
+      icon: "Microscope",
+      title: t("feature_disease_detection"),
+      description: t("feature_disease_desc"),
       color: "#ef4444",
     },
     {
-      icon: "🌱",
-      title: "Fertilizer Recommendation",
-      description:
-        "Get customized fertilizer suggestions based on soil conditions and crop type",
+      icon: "Seedling",
+      title: t("feature_fertilizer_recommendation"),
+      description: t("feature_fertilizer_desc"),
       color: "#22c55e",
     },
     {
-      icon: "🌾",
-      title: "Yield Optimization",
-      description:
-        "Maximize your harvest with data-driven recommendations and best practices",
+      icon: "Wheat",
+      title: t("feature_yield_optimization"),
+      description: t("feature_yield_desc"),
       color: "#f59e0b",
     },
   ];
@@ -147,7 +144,7 @@ const Home = () => {
                   backdropFilter: 'blur(2px)'
                 }}></div>
               </div>
-              
+
               {/* Decorative Elements */}
               <div style={{
                 position: 'absolute',
@@ -157,10 +154,10 @@ const Home = () => {
                 height: '60px',
                 border: '2px solid rgba(34, 197, 94, 0.3)',
                 borderRadius: '12px',
-                transform: 'rotate(45deg)',
+                transform: ' 45deg',
                 animation: 'pulse 3s ease-in-out infinite'
               }}></div>
-              
+
               <div style={{
                 position: 'absolute',
                 inset: 0,
@@ -197,7 +194,7 @@ const Home = () => {
                       fontSize: '20px',
                       fontWeight: '700',
                       letterSpacing: '0.5px'
-                    }}>FarmAssist</span>
+                    }}>{t("brand_name")}</span>
                   </div>
 
                   <h1 style={{
@@ -210,7 +207,7 @@ const Home = () => {
                     WebkitTextFillColor: 'transparent',
                     animation: 'fadeInLeft 0.8s ease-out'
                   }}>
-                    Welcome to the Future of Farming
+                    {t("welcome_future_farming")}
                   </h1>
                   <p style={{
                     fontSize: '18px',
@@ -219,11 +216,7 @@ const Home = () => {
                     lineHeight: '1.6',
                     animation: 'fadeInLeft 0.8s ease-out 0.2s backwards'
                   }}>
-                    Access <span style={{ 
-                      color: '#22c55e', 
-                      fontWeight: '600',
-                      textShadow: '0 0 20px rgba(34, 197, 94, 0.5)'
-                    }}>AI-powered</span> farming insights and data-driven tools for maximum productivity
+                    {t("access_ai_farming_home")}
                   </p>
 
                   {/* Stats */}
@@ -234,8 +227,8 @@ const Home = () => {
                     animation: 'fadeInLeft 0.8s ease-out 0.4s backwards'
                   }}>
                     {[
-                      { label: 'Active Users', value: '50K+' },
-                      { label: 'Farms Connected', value: '30K+' }
+                      { label: t("active_users"), value: '50K+' },
+                      { label: t("farms_connected"), value: '30K+' }
                     ].map((stat, i) => (
                       <div key={i} style={{
                         padding: '16px 20px',
@@ -308,7 +301,7 @@ const Home = () => {
                   margin: '0 0 12px 0',
                   letterSpacing: '-0.5px'
                 }}>
-                  Welcome to FarmAssist
+                  {t("welcome_farmassist")}
                 </h2>
                 <p style={{
                   fontSize: '15px',
@@ -316,7 +309,7 @@ const Home = () => {
                   margin: '0 0 40px 0',
                   fontWeight: '400'
                 }}>
-                  Empowering farmers with cutting-edge AI technology
+                  {t("empowering_farmers")}
                 </p>
 
                 {/* Carousel Section */}
@@ -389,7 +382,7 @@ const Home = () => {
                           height: '8px',
                           borderRadius: '4px',
                           border: 'none',
-                          backgroundColor: currentSlide === index ? '#22c55e' : 'rgba(255, 255, 255, 0.4)',
+                          backgroundColor: currentSlide === index ? '#22c55e' :'rgba(255, 255, 255, 0.4)',
                           cursor: 'pointer',
                           transition: 'all 0.3s ease'
                         }}
@@ -501,7 +494,7 @@ const Home = () => {
                         background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent)',
                         animation: 'slideRight 3s ease-in-out infinite'
                       }}></div>
-                      Get Started
+                      {t("get_started")}
                     </button>
                   </Link>
 
@@ -528,7 +521,7 @@ const Home = () => {
                         e.target.style.transform = 'translateY(0)';
                       }}
                     >
-                      Sign In
+                      {t("sign_in")}
                     </button>
                   </Link>
                 </div>

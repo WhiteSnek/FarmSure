@@ -2,13 +2,19 @@ import { Link } from "react-router-dom";
 import { useAuthContext } from "../hooks/useAuthContext";
 import logo from '../assets/logo.png';
 import { useLogout } from '../hooks/useLogout';
+import { useTranslation } from "react-i18next";
 
 const Navbar = () => {
   const { user } = useAuthContext();
   const { logout } = useLogout();
+  const { t, i18n } = useTranslation();
 
   const handleClick = () => {
     logout();
+  };
+
+  const changeLang = (lang) => {
+    i18n.changeLanguage(lang);
   };
 
   return (
@@ -16,21 +22,27 @@ const Navbar = () => {
       <nav className="navbar">
         <div className="navbar-left">
           <img src={logo} alt="FarmSure Logo" className="logo" />
-          <h1>FarmSure</h1>
+          <h1>{t("appName")}</h1>
         </div>
 
         <div className="navbar-links">
-          <Link to="/">Home</Link>
-          <Link to="/crop">Crop</Link>
-          <Link to="/croprecommendation">Crop-Recommendation</Link>
-          <Link to="/fertilizer">Fertilizer</Link>
-          <Link to="/yield">Yield</Link>
+          <Link to="/">{t("home")}</Link>
+          <Link to="/crop">{t("crop")}</Link>
+          <Link to="/croprecommendation">{t("cropRecommendation")}</Link>
+          <Link to="/fertilizer">{t("fertilizer")}</Link>
+          <Link to="/yield">{t("yield")}</Link>
         </div>
 
         <div className="navbar-right">
+          {/* Language Switch */}
+          <div style={{ display: "flex", gap: "8px", marginRight: "14px" }}>
+            <button onClick={() => changeLang("en")}>EN</button>
+            <button onClick={() => changeLang("hi")}>HI</button>
+          </div>
+
           {user && (
             <button className="logout-btn" onClick={handleClick}>
-              Logout
+              {t("logout")}
             </button>
           )}
         </div>

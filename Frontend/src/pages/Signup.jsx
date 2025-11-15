@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { User, Mail, Phone, Lock } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 const Signup = () => {
+  const { t } = useTranslation();
+
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
@@ -24,14 +27,13 @@ const Signup = () => {
   const handleSubmit = async () => {
     setIsLoading(true);
     setError("");
-    
-    // Simulate signup
+
     setTimeout(() => {
       if (formData.username && formData.email && formData.contact && formData.password) {
-        alert("Account Created Successfully! 🎉");
+        alert(t("signup_success")); // Translated
         setIsLoading(false);
       } else {
-        setError("Please fill all fields");
+        setError(t("fill_all_fields")); // Translated
         setIsLoading(false);
       }
     }, 1500);
@@ -123,7 +125,7 @@ const Signup = () => {
                   backdropFilter: 'blur(2px)'
                 }}></div>
               </div>
-              
+
               {/* Decorative Elements */}
               <div style={{
                 position: 'absolute',
@@ -136,7 +138,7 @@ const Signup = () => {
                 transform: 'rotate(45deg)',
                 animation: 'pulse 3s ease-in-out infinite'
               }}></div>
-              
+
               <div style={{
                 position: 'absolute',
                 inset: 0,
@@ -173,7 +175,7 @@ const Signup = () => {
                       fontSize: '20px',
                       fontWeight: '700',
                       letterSpacing: '0.5px'
-                    }}>FarmSure</span>
+                    }}>{t("brand_name")}</span>
                   </div>
 
                   <h1 style={{
@@ -186,7 +188,7 @@ const Signup = () => {
                     WebkitTextFillColor: 'transparent',
                     animation: 'fadeInLeft 0.8s ease-out'
                   }}>
-                    Start Your Smart Farming Journey
+                    {t("smart_farming_journey")}
                   </h1>
                   <p style={{
                     fontSize: '18px',
@@ -195,11 +197,7 @@ const Signup = () => {
                     lineHeight: '1.6',
                     animation: 'fadeInLeft 0.8s ease-out 0.2s backwards'
                   }}>
-                    Join thousands of farmers using <span style={{ 
-                      color: '#22c55e', 
-                      fontWeight: '600',
-                      textShadow: '0 0 20px rgba(34, 197, 94, 0.5)'
-                    }}>AI-powered insights</span> for smarter crop management and higher yields
+                    {t("join_farmers_ai")}
                   </p>
 
                   {/* Features */}
@@ -211,9 +209,9 @@ const Signup = () => {
                     animation: 'fadeInLeft 0.8s ease-out 0.4s backwards'
                   }}>
                     {[
-                      { icon: '🌾', text: 'Real-time crop monitoring' },
-                      { icon: '🌤️', text: 'Weather forecasts & alerts' },
-                      { icon: '📊', text: 'Data-driven recommendations' }
+                      { icon: '🌾', text: t("feature_crop_monitoring") },
+                      { icon: '🌤️', text: t("feature_weather_alerts") },
+                      { icon: '📊', text: t("feature_data_recommendations") }
                     ].map((feature, i) => (
                       <div key={i} style={{
                         display: 'flex',
@@ -284,7 +282,7 @@ const Signup = () => {
                   margin: '0 0 12px 0',
                   letterSpacing: '-0.5px'
                 }}>
-                  Create Account
+                  {t("create_account")}
                 </h2>
                 <p style={{
                   fontSize: '15px',
@@ -292,7 +290,7 @@ const Signup = () => {
                   margin: '0 0 32px 0',
                   fontWeight: '400'
                 }}>
-                  Fill in your details to get started
+                  {t("fill_details")}
                 </p>
 
                 <div style={{
@@ -311,7 +309,7 @@ const Signup = () => {
                       textTransform: 'uppercase',
                       letterSpacing: '1px'
                     }}>
-                      Username
+                      {t("username")}
                     </label>
                     <div style={{ position: 'relative' }}>
                       <User style={{
@@ -327,7 +325,7 @@ const Signup = () => {
                       <input
                         type="text"
                         name="username"
-                        placeholder="Enter your username"
+                        placeholder={t("enter_username")}
                         value={formData.username}
                         onChange={handleChange}
                         onFocus={() => setFocusedField('username')}
@@ -370,7 +368,7 @@ const Signup = () => {
                       textTransform: 'uppercase',
                       letterSpacing: '1px'
                     }}>
-                      Email Address
+                      {t("email_address")}
                     </label>
                     <div style={{ position: 'relative' }}>
                       <Mail style={{
@@ -386,7 +384,7 @@ const Signup = () => {
                       <input
                         type="email"
                         name="email"
-                        placeholder="Enter your email"
+                        placeholder={t("enter_email")}
                         value={formData.email}
                         onChange={handleChange}
                         onFocus={() => setFocusedField('email')}
@@ -429,11 +427,11 @@ const Signup = () => {
                       textTransform: 'uppercase',
                       letterSpacing: '1px'
                     }}>
-                      Contact Number
+                      {t("contact_number")}
                     </label>
                     <div style={{ position: 'relative' }}>
                       <Phone style={{
-                        position: 'absolute',
+                        position: 'absolute ',
                         left: '16px',
                         top: '50%',
                         transform: 'translateY(-50%)',
@@ -445,7 +443,7 @@ const Signup = () => {
                       <input
                         type="text"
                         name="contact"
-                        placeholder="Enter your contact number"
+                        placeholder={t("enter_contact")}
                         value={formData.contact}
                         onChange={handleChange}
                         onFocus={() => setFocusedField('contact')}
@@ -488,7 +486,7 @@ const Signup = () => {
                       textTransform: 'uppercase',
                       letterSpacing: '1px'
                     }}>
-                      Password
+                      {t("password")}
                     </label>
                     <div style={{ position: 'relative' }}>
                       <Lock style={{
@@ -504,7 +502,7 @@ const Signup = () => {
                       <input
                         type="password"
                         name="password"
-                        placeholder="Create a strong password"
+                        placeholder={t("create_password")}
                         value={formData.password}
                         onChange={handleChange}
                         onFocus={() => setFocusedField('password')}
@@ -614,11 +612,11 @@ const Signup = () => {
                           borderRadius: '50%',
                           animation: 'spin 0.8s linear infinite'
                         }}></div>
-                        Creating Account...
+                        {t("creating_account")}
                       </>
                     ) : (
                       <>
-                        Sign Up
+                        {t("sign_up")}
                         <span style={{ fontSize: '18px' }}>→</span>
                       </>
                     )}
@@ -633,7 +631,7 @@ const Signup = () => {
                       color: 'rgba(255, 255, 255, 0.5)',
                       margin: 0
                     }}>
-                      Already have an account?{' '}
+                      {t("already_have_account")}{' '}
                       <span
                         onClick={() => navigate("/login")}
                         style={{
@@ -651,7 +649,7 @@ const Signup = () => {
                           e.target.style.textShadow = 'none';
                         }}
                       >
-                        Login
+                        {t("login")}
                       </span>
                     </p>
                   </div>

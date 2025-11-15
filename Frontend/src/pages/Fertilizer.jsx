@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import FertilizerPrediction from "../components/FertilizerPrediction";
+import { useTranslation } from "react-i18next";
 
 const Fertilizer = () => {
-  const fertilizerImage="https://plus.unsplash.com/premium_photo-1680125265832-ffaf364a8aca?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8ZmVydGlsaXplcnN8ZW58MHx8MHx8fDA%3D";
+  const { t } = useTranslation();
+  const fertilizerImage = "https://plus.unsplash.com/premium_photo-1680125265832-ffaf364a8aca?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8ZmVydGlsaXplcnN8ZW58MHx8MHx8fDA%3D";
+  
   const [formData, setFormData] = useState({
     temp: "",
     humid: "",
@@ -78,7 +81,7 @@ const Fertilizer = () => {
       setPrediction(result.fertilizer || result.recommendation);
     } catch (err) {
       console.error("Prediction error:", err);
-      setPrediction("Error getting prediction. Please try again.");
+      setPrediction(t("prediction_error"));
     } finally {
       setIsLoading(false);
     }
@@ -169,7 +172,7 @@ const Fertilizer = () => {
                   backdropFilter: 'blur(2px)'
                 }}></div>
               </div>
-              
+
               {/* Decorative Elements */}
               <div style={{
                 position: 'absolute',
@@ -182,7 +185,7 @@ const Fertilizer = () => {
                 transform: 'rotate(45deg)',
                 animation: 'pulse 3s ease-in-out infinite'
               }}></div>
-              
+
               <div style={{
                 position: 'absolute',
                 inset: 0,
@@ -219,7 +222,7 @@ const Fertilizer = () => {
                       fontSize: '20px',
                       fontWeight: '700',
                       letterSpacing: '0.5px'
-                    }}>FarmSure</span>
+                    }}>{t("brand_name")}</span>
                   </div>
 
                   <h1 style={{
@@ -232,7 +235,7 @@ const Fertilizer = () => {
                     WebkitTextFillColor: 'transparent',
                     animation: 'fadeInLeft 0.8s ease-out'
                   }}>
-                    Precision Nutrient Intelligence
+                    {t("precision_nutrient_intelligence")}
                   </h1>
                   <p style={{
                     fontSize: '18px',
@@ -241,11 +244,7 @@ const Fertilizer = () => {
                     lineHeight: '1.6',
                     animation: 'fadeInLeft 0.8s ease-out 0.2s backwards'
                   }}>
-                    Get <span style={{ 
-                      color: '#22c55e', 
-                      fontWeight: '600',
-                      textShadow: '0 0 20px rgba(34, 197, 94, 0.5)'
-                    }}>AI-powered</span> fertilizer recommendations tailored to your soil, crop, and climate
+                    {t("get_ai_powered_recommendations")}
                   </p>
 
                   {/* Stats */}
@@ -256,9 +255,9 @@ const Fertilizer = () => {
                     animation: 'fadeInLeft 0.8s ease-out 0.4s backwards'
                   }}>
                     {[
-                      { label: 'Crops Supported', value: '17+' },
-                      { label: 'Soil Types', value: '5' },
-                      { label: 'Accuracy', value: '99.2%' }
+                      { label: t("crops_supported"), value: '17+' },
+                      { label: t("soil_types"), value: '5' },
+                      { label: t("accuracy"), value: '99.2%' }
                     ].map((stat, i) => (
                       <div key={i} style={{
                         padding: '16px 20px',
@@ -331,7 +330,7 @@ const Fertilizer = () => {
                   margin: '0 0 12px 0',
                   letterSpacing: '-0.5px'
                 }}>
-                  Smart Fertilizer Advisor
+                  {t("smart_fertilizer_advisor")}
                 </h2>
                 <p style={{
                   fontSize: '15px',
@@ -339,7 +338,7 @@ const Fertilizer = () => {
                   margin: '0 0 40px 0',
                   fontWeight: '400'
                 }}>
-                  Enter soil & climate data for instant AI recommendations
+                  {t("enter_soil_climate_data")}
                 </p>
 
                 <form onSubmit={handleSubmit} style={{
@@ -363,7 +362,7 @@ const Fertilizer = () => {
                         textTransform: 'uppercase',
                         letterSpacing: '1px'
                       }}>
-                        Temperature (°C)
+                        {t("temperature_c")}
                       </label>
                       <div style={{ position: 'relative' }}>
                         <input
@@ -375,7 +374,7 @@ const Fertilizer = () => {
                           onBlur={() => setFocusedField(null)}
                           required
                           step="0.1"
-                          placeholder="e.g. 28.5"
+                          placeholder={t("temp_placeholder")}
                           style={{
                             width: '100%',
                             padding: '16px 20px',
@@ -413,7 +412,7 @@ const Fertilizer = () => {
                         textTransform: 'uppercase',
                         letterSpacing: '1px'
                       }}>
-                        Humidity (%)
+                        {t("humidity_percent")}
                       </label>
                       <div style={{ position: 'relative' }}>
                         <input
@@ -425,7 +424,7 @@ const Fertilizer = () => {
                           onBlur={() => setFocusedField(null)}
                           required
                           step="0.1"
-                          placeholder="e.g. 65.2"
+                          placeholder={t("humid_placeholder")}
                           style={{
                             width: '100%',
                             padding: '16px 20px',
@@ -464,7 +463,7 @@ const Fertilizer = () => {
                       textTransform: 'uppercase',
                       letterSpacing: '1px'
                     }}>
-                      Soil Moisture (%)
+                      {t("soil_moisture_percent")}
                     </label>
                     <div style={{ position: 'relative' }}>
                       <input
@@ -476,7 +475,7 @@ const Fertilizer = () => {
                         onBlur={() => setFocusedField(null)}
                         required
                         step="0.1"
-                        placeholder="e.g. 45.8"
+                        placeholder={t("mois_placeholder")}
                         style={{
                           width: '100%',
                           padding: '16px 20px',
@@ -520,7 +519,7 @@ const Fertilizer = () => {
                         textTransform: 'uppercase',
                         letterSpacing: '1px'
                       }}>
-                        Soil Type
+                        {t("soil_type")}
                       </label>
                       <select
                         name="soil"
@@ -563,7 +562,7 @@ const Fertilizer = () => {
                         textTransform: 'uppercase',
                         letterSpacing: '1px'
                       }}>
-                        Crop Type
+                        {t("crop_type")}
                       </label>
                       <select
                         name="crop"
@@ -613,7 +612,7 @@ const Fertilizer = () => {
                         textTransform: 'uppercase',
                         letterSpacing: '1px'
                       }}>
-                        Nitrogen (N)
+                        {t("nitrogen_n")}
                       </label>
                       <div style={{ position: 'relative' }}>
                         <input
@@ -625,7 +624,7 @@ const Fertilizer = () => {
                           onBlur={() => setFocusedField(null)}
                           required
                           step="0.1"
-                          placeholder="e.g. 45"
+                          placeholder={t("nitro_placeholder")}
                           style={{
                             width: '100%',
                             padding: '16px 20px',
@@ -663,7 +662,7 @@ const Fertilizer = () => {
                         textTransform: 'uppercase',
                         letterSpacing: '1px'
                       }}>
-                        Potassium (K)
+                        {t("potassium_k")}
                       </label>
                       <div style={{ position: 'relative' }}>
                         <input
@@ -675,7 +674,7 @@ const Fertilizer = () => {
                           onBlur={() => setFocusedField(null)}
                           required
                           step="0.1"
-                          placeholder="e.g. 30"
+                          placeholder={t("pota_placeholder")}
                           style={{
                             width: '100%',
                             padding: '16px 20px',
@@ -713,7 +712,7 @@ const Fertilizer = () => {
                         textTransform: 'uppercase',
                         letterSpacing: '1px'
                       }}>
-                        Phosphorus (P)
+                        {t("phosphorus_p")}
                       </label>
                       <div style={{ position: 'relative' }}>
                         <input
@@ -725,7 +724,7 @@ const Fertilizer = () => {
                           onBlur={() => setFocusedField(null)}
                           required
                           step="0.1"
-                          placeholder="e.g. 25"
+                          placeholder={t("phos_placeholder")}
                           style={{
                             width: '100%',
                             padding: '16px 20px',
@@ -812,11 +811,11 @@ const Fertilizer = () => {
                           borderRadius: '50%',
                           animation: 'spin 0.8s linear infinite'
                         }}></div>
-                        Analyzing...
+                        {t("analyzing")}
                       </>
                     ) : (
                       <>
-                        Get Recommendation
+                        {t("get_recommendation")}
                         <span style={{ fontSize: '18px' }}>→</span>
                       </>
                     )}
@@ -838,7 +837,7 @@ const Fertilizer = () => {
                     color: 'rgba(255, 255, 255, 0.8)',
                     lineHeight: '1.6'
                   }}>
-                    <strong style={{ color: '#22c55e' }}>Pro Tip:</strong> Use recent soil test results for the most accurate AI recommendations.
+                    <strong style={{ color: '#22c55e' }}>{t("pro_tip")}:</strong> {t("use_recent_soil_test")}
                   </p>
                 </div>
               </div>
@@ -866,7 +865,7 @@ const Fertilizer = () => {
                 margin: '0 0 12px 0',
                 letterSpacing: '-1px'
               }}>
-                AI Recommendation Ready
+                {t("ai_recommendation_ready")}
               </h2>
               <p style={{ 
                 fontSize: '18px', 
@@ -874,7 +873,7 @@ const Fertilizer = () => {
                 margin: 0,
                 fontWeight: '500'
               }}>
-                Optimal fertilizer blend for maximum yield
+                {t("optimal_fertilizer_blend")}
               </p>
             </div>
 
@@ -923,7 +922,7 @@ const Fertilizer = () => {
                 e.target.style.boxShadow = '0 0 30px rgba(34, 197, 94, 0.4)';
               }}
               >
-                Save Report
+                {t("save_report")}
               </button>
               <button style={{
                 padding: '14px 32px',
@@ -946,7 +945,7 @@ const Fertilizer = () => {
                 e.target.style.transform = 'translateY(0)';
               }}
               >
-                New Analysis
+                {t("new_analysis")}
               </button>
             </div>
           </div>
@@ -954,85 +953,19 @@ const Fertilizer = () => {
       </div>
 
       <style>{`
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
-        }
-        @keyframes float {
-          0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-20px); }
-        }
-        @keyframes slideUp {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-        @keyframes fadeInLeft {
-          from {
-            opacity: 0;
-            transform: translateX(-20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        @keyframes pulse {
-          0%, 100% {
-            opacity: 0.3;
-            transform: rotate(45deg) scale(1);
-          }
-          50% {
-            opacity: 0.6;
-            transform: rotate(45deg) scale(1.1);
-          }
-        }
-        @keyframes glow {
-          0%, 100% {
-            box-shadow: 0 0 20px #22c55e;
-          }
-          50% {
-            box-shadow: 0 0 30px #22c55e, 0 0 40px #22c55e;
-          }
-        }
-        @keyframes shimmer {
-          0% { transform: translateX(-100%); }
-          100% { transform: translateX(100%); }
-        }
-        @keyframes rotate {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        @keyframes slideRight {
-          0% { left: -100%; }
-          100% { left: 200%; }
-        }
-        input::placeholder, select {
-          color: rgba(255, 255, 255, 0.3) !important;
-        }
-        select option {
-          background: #1a1d3a;
-          color: white;
-        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeInLeft { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0%, 100% { opacity: 0.3; transform: rotate(45deg) scale(1); } 50% { opacity: 0.6; transform: rotate(45deg) scale(1.1); } }
+        @keyframes glow { 0%, 100% { box-shadow: 0 0 20px #22c55e; } 50% { box-shadow: 0 0 30px #22c55e, 0 0 40px #22c55e; } }
+        @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes slideRight { 0% { left: -100%; } 100% { left: 200%; } }
+        input::placeholder, select { color: rgba(255, 255, 255, 0.3) !important; }
+        select option { background: #1a1d3a; color: white; }
       `}</style>
     </div>
   );

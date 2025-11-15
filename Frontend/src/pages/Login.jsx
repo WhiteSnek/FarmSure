@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+
 const Login = () => {
+  const { t } = useTranslation();
+
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     contact: "",
@@ -24,10 +28,10 @@ const Login = () => {
     // Simulate login
     setTimeout(() => {
       if (formData.contact && formData.password) {
-        alert("Login Successful! 🎉");
+        alert(t("login_success")); // Translated
         setIsLoading(false);
       } else {
-        setError("Invalid credentials");
+        setError(t("invalid_credentials")); // Translated
         setIsLoading(false);
       }
     }, 1500);
@@ -169,7 +173,7 @@ const Login = () => {
                       fontSize: '20px',
                       fontWeight: '700',
                       letterSpacing: '0.5px'
-                    }}>FarmSure</span>
+                    }}>{t("brand_name")}</span> {/* Translated */}
                   </div>
 
                   <h1 style={{
@@ -182,7 +186,7 @@ const Login = () => {
                     WebkitTextFillColor: 'transparent',
                     animation: 'fadeInLeft 0.8s ease-out'
                   }}>
-                    Welcome Back to the Future
+                    {t("welcome_back")} {/* Translated */}
                   </h1>
                   <p style={{
                     fontSize: '18px',
@@ -191,11 +195,7 @@ const Login = () => {
                     lineHeight: '1.6',
                     animation: 'fadeInLeft 0.8s ease-out 0.2s backwards'
                   }}>
-                    Access <span style={{ 
-                      color: '#22c55e', 
-                      fontWeight: '600',
-                      textShadow: '0 0 20px rgba(34, 197, 94, 0.5)'
-                    }}>AI-powered</span> farming insights and data-driven tools for maximum productivity
+                    {t("access_ai_farming")} {/* Translated */}
                   </p>
 
                   {/* Stats */}
@@ -206,8 +206,8 @@ const Login = () => {
                     animation: 'fadeInLeft 0.8s ease-out 0.4s backwards'
                   }}>
                     {[
-                      { label: 'Active Users', value: '50K+' },
-                      { label: 'Farms Connected', value: '30K+' }
+                      { label: t("active_users"), value: '50K+' },
+                      { label: t("farms_connected"), value: '30K+' }
                     ].map((stat, i) => (
                       <div key={i} style={{
                         padding: '16px 20px',
@@ -280,7 +280,7 @@ const Login = () => {
                   margin: '0 0 12px 0',
                   letterSpacing: '-0.5px'
                 }}>
-                  Sign In
+                  {t("sign_in")} {/* Translated */}
                 </h2>
                 <p style={{
                   fontSize: '15px',
@@ -288,7 +288,7 @@ const Login = () => {
                   margin: '0 0 40px 0',
                   fontWeight: '400'
                 }}>
-                  Enter your credentials to access your dashboard
+                  {t("enter_credentials")} {/* Translated */}
                 </p>
 
                 <div style={{
@@ -306,13 +306,13 @@ const Login = () => {
                       textTransform: 'uppercase',
                       letterSpacing: '1px'
                     }}>
-                      Contact Number
+                      {t("contact_number")} {/* Translated */}
                     </label>
                     <div style={{ position: 'relative' }}>
                       <input
                         type="text"
                         name="contact"
-                        placeholder="Enter your contact number"
+                        placeholder={t("enter_contact_placeholder")} 
                         value={formData.contact}
                         onChange={handleChange}
                         onFocus={() => setFocusedField('contact')}
@@ -354,13 +354,13 @@ const Login = () => {
                       textTransform: 'uppercase',
                       letterSpacing: '1px'
                     }}>
-                      Password
+                      {t("password")} 
                     </label>
                     <div style={{ position: 'relative' }}>
                       <input
                         type="password"
                         name="password"
-                        placeholder="Enter your password"
+                        placeholder={t("enter_password_placeholder")} 
                         value={formData.password}
                         onChange={handleChange}
                         onFocus={() => setFocusedField('password')}
@@ -470,11 +470,11 @@ const Login = () => {
                           borderRadius: '50%',
                           animation: 'spin 0.8s linear infinite'
                         }}></div>
-                        Authenticating...
+                        {t("authenticating")} {/* Translated */}
                       </>
                     ) : (
                       <>
-                        Login
+                        {t("login")} {/* Translated */}
                         <span style={{ fontSize: '18px' }}>→</span>
                       </>
                     )}
@@ -489,9 +489,8 @@ const Login = () => {
                       color: 'rgba(255, 255, 255, 0.5)',
                       margin: 0
                     }}>
-                      Don't have an account?{' '}
-                      <span
-                        onClick={() =>navigate("/signup")}
+                      {t("no_account")} <span
+                        onClick={() => navigate("/signup")}
                         style={{
                           color: '#22c55e',
                           fontWeight: '700',
@@ -507,7 +506,7 @@ const Login = () => {
                           e.target.style.textShadow = 'none';
                         }}
                       >
-                        Sign Up
+                        {t("sign_up")} {/* Translated */}
                       </span>
                     </p>
                   </div>
