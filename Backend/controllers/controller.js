@@ -56,7 +56,7 @@ const getCropPrices = async (req, res) => {
     if (state) params.append("filters[state.keyword]", state);
     if (district) params.append("filters[district]", district);
     if (market) params.append("filters[market]", market);
-    if (commodity) params.append("filters[state.keyword]", commodity);
+    if (commodity) params.append("filters[commodity]", commodity);
 
     const requestUrl = `${baseUrl}?${params.toString()}`;
 
