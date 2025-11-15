@@ -5,3 +5,4 @@ __pycache__/
 dataset/
 *_model.h5 
 model_disease_severity.h5
+*.npy
