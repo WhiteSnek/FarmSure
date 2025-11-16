@@ -6,278 +6,300 @@ const PredictionBox = ({
   predicted_disease,
   disease_confidence,
   preventive_measures,
-  description
+  predicted_severity,
+  recommended_pesticides,
 }) => {
   return (
     <div
       style={{
-        width: '100%',
-        backgroundColor: '#ffffff',
-        borderRadius: '12px',
-        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08)',
-        border: '1px solid #e5e7eb',
+        display: "flex",
+        gap: "24px",
+        alignItems: "flex-start",
+        flexWrap: "wrap",
         padding: '24px',
-        marginBottom: '20px',
-        fontFamily:
-          '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-        transition: 'transform 0.2s ease, box-shadow 0.2s ease'
-      }}
-      onMouseEnter={(e) => {
-        e.currentTarget.style.transform = 'translateY(-2px)';
-        e.currentTarget.style.boxShadow = '0 8px 30px rgba(0, 0, 0, 0.12)';
-      }}
-      onMouseLeave={(e) => {
-        e.currentTarget.style.transform = 'translateY(0)';
-        e.currentTarget.style.boxShadow = '0 4px 20px rgba(0, 0, 0, 0.08)';
       }}
     >
+      {/* Image Section */}
       <div
         style={{
-          display: 'flex',
-          gap: '24px',
-          alignItems: 'flex-start',
-          flexWrap: 'wrap'
+          flexShrink: 0,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
         }}
       >
-        {/* Image Section */}
         <div
           style={{
-            flexShrink: 0,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center'
+            borderRadius: "8px",
+            overflow: "hidden",
+            boxShadow: "0 2px 10px rgba(0,0,0,0.7)",
+            marginBottom: "12px",
           }}
         >
+          <img
+            src={`data:image/jpeg;base64,${image_base64}`}
+            alt={file_name}
+            style={{
+              width: "120px",
+              height: "120px",
+              objectFit: "cover",
+              display: "block",
+            }}
+          />
+        </div>
+
+        <div
+          style={{
+            fontSize: "12px",
+            textAlign: "center",
+            fontWeight: "500",
+            maxWidth: "120px",
+            color: "#b3b3b3",
+          }}
+        >
+          {file_name}
+        </div>
+      </div>
+
+      {/* Content */}
+      <div style={{ flex: 1, minWidth: "300px" }}>
+        <div
+          style={{
+            marginBottom: "20px",
+            paddingBottom: "16px",
+            borderBottom: "1px solid rgba(255,255,255,0.08)",
+          }}
+        >
+          {/* Crop */}
           <div
             style={{
-              borderRadius: '8px',
-              overflow: 'hidden',
-              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
-              marginBottom: '12px'
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              flexWrap: "wrap",
+              gap: "12px",
+              marginBottom: "10px",
             }}
           >
-            <img
-              src={`data:image/jpeg;base64,${image_base64}`}
-              alt={file_name}
+            <h3
               style={{
-                width: '120px',
-                height: '120px',
-                objectFit: 'cover',
-                display: 'block'
+                margin: 0,
+                fontSize: "18px",
+                fontWeight: "700",
+                color: "#00ffbf",
+                textTransform: "capitalize",
               }}
-            />
+            >
+              Crop: {predicted_crop || "Unknown"}
+            </h3>
+
+            {crop_confidence !== undefined && (
+              <div
+                style={{
+                  padding: "4px 12px",
+                  borderRadius: "20px",
+                  fontSize: "13px",
+                  fontWeight: "600",
+                  background:
+                    crop_confidence >= 80
+                      ? "rgba(0,255,170,0.18)"
+                      : crop_confidence >= 60
+                      ? "rgba(255,200,0,0.18)"
+                      : "rgba(255,0,0,0.18)",
+                  color:
+                    crop_confidence >= 80
+                      ? "#00ffbf"
+                      : crop_confidence >= 60
+                      ? "#ffdd66"
+                      : "#ff6b6b",
+                }}
+              >
+                {crop_confidence}% Confidence
+              </div>
+            )}
           </div>
+
+          {/* Disease */}
           <div
             style={{
-              fontSize: '12px',
-              color: '#6b7280',
-              textAlign: 'center',
-              fontWeight: '500',
-              maxWidth: '120px',
-              wordBreak: 'break-word'
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              flexWrap: "wrap",
+              gap: "12px",
             }}
           >
-            {file_name}
+            <h3
+              style={{
+                margin: 0,
+                fontSize: "18px",
+                fontWeight: "700",
+                color: "#fff",
+                textTransform: "capitalize",
+              }}
+            >
+              Disease: {predicted_disease || "None Detected"}
+            </h3>
+
+            {disease_confidence !== undefined && (
+              <div
+                style={{
+                  padding: "4px 12px",
+                  borderRadius: "20px",
+                  fontSize: "13px",
+                  fontWeight: "600",
+                  background:
+                    disease_confidence >= 80
+                      ? "rgba(0,255,170,0.18)"
+                      : disease_confidence >= 60
+                      ? "rgba(255,200,0,0.18)"
+                      : "rgba(255,0,0,0.18)",
+                  color:
+                    disease_confidence >= 80
+                      ? "#00ffbf"
+                      : disease_confidence >= 60
+                      ? "#ffdd66"
+                      : "#ff6b6b",
+                }}
+              >
+                {disease_confidence}% Confidence
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Content Section */}
-        <div
-          style={{
-            flex: 1,
-            minWidth: '300px'
-          }}
-        >
-          {/* Header with Crop & Disease Prediction */}
-          <div
-            style={{
-              marginBottom: '20px',
-              paddingBottom: '16px',
-              borderBottom: '1px solid #f3f4f6'
-            }}
-          >
-            {/* Crop Name */}
-            <div
+        {/* Severity */}
+        {predicted_severity && (
+          <div style={{ marginBottom: "20px" }}>
+            <h4
               style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                flexWrap: 'wrap',
-                gap: '12px',
-                marginBottom: '10px'
+                margin: "0 0 8px",
+                fontSize: "14px",
+                fontWeight: "600",
+                color: "#b3b3b3",
+                textTransform: "uppercase",
               }}
             >
-              <h3
-                style={{
-                  margin: 0,
-                  fontSize: '18px',
-                  fontWeight: '600',
-                  color: '#047857',
-                  textTransform: 'capitalize'
-                }}
-              >
-                Crop: {predicted_crop || 'Unknown'}
-              </h3>
+              Predicted Severity
+            </h4>
 
-              {crop_confidence !== undefined && (
-                <div
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    backgroundColor:
-                      crop_confidence >= 80
-                        ? '#dcfce7'
-                        : crop_confidence >= 60
-                        ? '#fef3c7'
-                        : '#fee2e2',
-                    color:
-                      crop_confidence >= 80
-                        ? '#166534'
-                        : crop_confidence >= 60
-                        ? '#92400e'
-                        : '#dc2626',
-                    padding: '4px 12px',
-                    borderRadius: '20px',
-                    fontSize: '13px',
-                    fontWeight: '600'
-                  }}
-                >
-                  {crop_confidence}% Confidence
-                </div>
-              )}
-            </div>
-
-            {/* Disease Name */}
             <div
               style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                flexWrap: 'wrap',
-                gap: '12px'
+                display: "inline-block",
+                padding: "6px 14px",
+                borderRadius: "20px",
+                fontSize: "14px",
+                fontWeight: "600",
+                background:
+                  predicted_severity === "mild"
+                    ? "rgba(0,255,170,0.18)"
+                    : predicted_severity === "moderate"
+                    ? "rgba(255,200,0,0.18)"
+                    : "rgba(255,0,0,0.18)",
+                color:
+                  predicted_severity === "mild"
+                    ? "#00ffbf"
+                    : predicted_severity === "moderate"
+                    ? "#ffdd66"
+                    : "#ff6b6b",
               }}
             >
-              <h3
-                style={{
-                  margin: 0,
-                  fontSize: '18px',
-                  fontWeight: '600',
-                  color: '#1f2937',
-                  textTransform: 'capitalize'
-                }}
-              >
-                Disease: {predicted_disease || 'None Detected'}
-              </h3>
-
-              {disease_confidence !== undefined && (
-                <div
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    backgroundColor:
-                      disease_confidence >= 80
-                        ? '#dcfce7'
-                        : disease_confidence >= 60
-                        ? '#fef3c7'
-                        : '#fee2e2',
-                    color:
-                      disease_confidence >= 80
-                        ? '#166534'
-                        : disease_confidence >= 60
-                        ? '#92400e'
-                        : '#dc2626',
-                    padding: '4px 12px',
-                    borderRadius: '20px',
-                    fontSize: '13px',
-                    fontWeight: '600'
-                  }}
-                >
-                  {disease_confidence}% Confidence
-                </div>
-              )}
+              {predicted_severity}
             </div>
           </div>
+        )}
 
-          {/* Description */}
-          {description && (
-            <div style={{ marginBottom: '20px' }}>
-              <h4
-                style={{
-                  margin: '0 0 8px 0',
-                  fontSize: '14px',
-                  fontWeight: '600',
-                  color: '#374151',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.05em'
-                }}
-              >
-                Description
-              </h4>
-              <p
-                style={{
-                  margin: 0,
-                  fontSize: '14px',
-                  lineHeight: '1.6',
-                  color: '#4b5563'
-                }}
-              >
-                {description}
-              </p>
-            </div>
-          )}
+        {/* Preventive Measures */}
+        {preventive_measures?.length > 0 && (
+          <div style={{ marginBottom: "20px" }}>
+            <h4
+              style={{
+                margin: "0 0 12px",
+                fontSize: "14px",
+                fontWeight: "600",
+                color: "#b3b3b3",
+                textTransform: "uppercase",
+              }}
+            >
+              Preventive Measures
+            </h4>
 
-          {/* Preventive Measures */}
-          {preventive_measures && preventive_measures.length > 0 && (
-            <div>
-              <h4
-                style={{
-                  margin: '0 0 12px 0',
-                  fontSize: '14px',
-                  fontWeight: '600',
-                  color: '#374151',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.05em'
-                }}
-              >
-                Preventive Measures
-              </h4>
-              <ul
-                style={{
-                  margin: 0,
-                  paddingLeft: '0',
-                  listStyle: 'none'
-                }}
-              >
-                {preventive_measures.map((measure, idx) => (
-                  <li
-                    key={idx}
+            <ul style={{ margin: 0, paddingLeft: 0, listStyle: "none" }}>
+              {preventive_measures.map((m, idx) => (
+                <li
+                  key={idx}
+                  style={{
+                    position: "relative",
+                    paddingLeft: "24px",
+                    marginBottom: "8px",
+                    fontSize: "14px",
+                    lineHeight: "1.5",
+                    color: "#cccccc",
+                  }}
+                >
+                  <span
                     style={{
-                      position: 'relative',
-                      paddingLeft: '24px',
-                      marginBottom: '8px',
-                      fontSize: '14px',
-                      lineHeight: '1.5',
-                      color: '#4b5563'
+                      position: "absolute",
+                      left: "0",
+                      top: "6px",
+                      width: "6px",
+                      height: "6px",
+                      backgroundColor: "#3b82f6",
+                      borderRadius: "50%",
                     }}
-                  >
-                    <span
-                      style={{
-                        position: 'absolute',
-                        left: '0',
-                        top: '2px',
-                        width: '6px',
-                        height: '6px',
-                        backgroundColor: '#3b82f6',
-                        borderRadius: '50%'
-                      }}
-                    ></span>
-                    {measure}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
+                  ></span>
+                  {m}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* Pesticides */}
+        {recommended_pesticides?.length > 0 && (
+          <div style={{ marginBottom: "20px" }}>
+            <h4
+              style={{
+                margin: "0 0 12px",
+                fontSize: "14px",
+                fontWeight: "600",
+                color: "#b3b3b3",
+                textTransform: "uppercase",
+              }}
+            >
+              Recommended Pesticides
+            </h4>
+
+            <ul style={{ margin: 0, paddingLeft: 0, listStyle: "none" }}>
+              {recommended_pesticides.map((p, idx) => (
+                <li
+                  key={idx}
+                  style={{
+                    position: "relative",
+                    paddingLeft: "24px",
+                    marginBottom: "8px",
+                    fontSize: "14px",
+                    lineHeight: "1.5",
+                    color: "#cccccc",
+                  }}
+                >
+                  <span
+                    style={{
+                      position: "absolute",
+                      left: "0",
+                      top: "6px",
+                      width: "6px",
+                      height: "6px",
+                      backgroundColor: "#00ffbf",
+                      borderRadius: "50%",
+                    }}
+                  ></span>
+                  {p}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -43,7 +43,8 @@ const Crop = () => {
           predicted_disease: result.predicted_disease,
           disease_confidence: result.disease_confidence,
           preventive_measures: result.preventive_measures,
-          description: result.description,
+          predicted_severity: result.predicted_severity,
+          recommended_pesticides: result.recommended_pesticides
         };
       });
 
@@ -584,7 +585,8 @@ const Crop = () => {
                     predicted_disease={pred.predicted_disease}
                     disease_confidence={pred.disease_confidence}
                     preventive_measures={pred.preventive_measures}
-                    description={pred.description}
+                    predicted_severity={pred.predicted_severity}
+                    recommended_pesticides={pred.recommended_pesticides}
                   />
                 </div>
               ))}
