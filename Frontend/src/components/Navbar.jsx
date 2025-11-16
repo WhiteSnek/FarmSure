@@ -31,6 +31,7 @@ const Navbar = () => {
           <Link to="/croprecommendation">{t("cropRecommendation")}</Link>
           <Link to="/fertilizer">{t("fertilizer")}</Link>
           <Link to="/yield">{t("yield")}</Link>
+          <Link to="/price-predict">{t("pricePredict")}</Link>
         </div>
 
         <div className="navbar-right">
