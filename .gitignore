@@ -3,6 +3,10 @@ __pycache__/
 .env
 *.csv
 dataset/
-*_model.h5 
+*_model.h5
 model_disease_severity.h5
 *.npy
+
+# macOS
+.DS_Store
+**/.DS_Store
