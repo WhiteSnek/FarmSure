@@ -11,7 +11,15 @@ export const useLogin = () => {
     setError(null);
     const data = { contact, password };
 
-    const response = await fetch(`${process.env.BACKEND_URI}/api/user/login`, {
+    // const response = await fetch(`${process.env.BACKEND_URI}/api/user/login`, {
+    //   method: "POST",
+    //   body: JSON.stringify(data),
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    // });
+
+    const response = await fetch(import.meta.env.VITE_LOGIN_URL, {
       method: "POST",
       body: JSON.stringify(data),
       headers: {

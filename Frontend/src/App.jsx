@@ -35,6 +35,7 @@ const App = () => {
             path="/"
             element={<Home /> }
             //element={user ? <Home /> : <Navigate to="/login" />}
+            
           />
           <Route
             path="/crop"
@@ -43,20 +44,23 @@ const App = () => {
           />
           <Route
             path="/fertilizer"
-           // element={user ? <Fertilizer /> : <Navigate to="/login" />}
-           element={<Fertilizer />}
+            element={<Fertilizer />}
+           //element={user ? <Fertilizer /> : <Navigate to="/login" />}
           />
+
+
           <Route
             path="/croprecommendation"
-           // element={user ? <Fertilizer /> : <Navigate to="/login" />}
-           element={<CropRecommendation />}
+            element={<CropRecommendation/>}
+           //element={user ? <CropRecommendation/> : <Navigate to="/login" />}
           />
+
           <Route
             path="/yield"
-           // element={user ? <Yield /> : <Navigate to="/login" />}
-           element={<Yield />}
+           element={user ? <Yield /> : <Navigate to="/login" />}
 
           />
+          
           <Route path="*" element={<Navigate to={user ? "/" : "/login"} />} />
         </Routes>
       </div>
