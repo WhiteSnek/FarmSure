@@ -11,6 +11,7 @@ import Fertilizer from "./pages/Fertilizer";
 import Yield from "./pages/Yield";
 import CropRecommendation from "./pages/cropRecommendation";
 import SchemesPage from "./pages/Schemes";
+import PricePredict from "./pages/PricePredict";
 
 const App = () => {
   const { user } = useAuthContext();
@@ -67,6 +68,13 @@ const App = () => {
             path="/schemes"
             element={<SchemesPage/>}
             //element={user ? <SchemesPage/>: <Navigate to="/login" />}
+
+          />
+
+          <Route
+            path="/price-predict"
+            element={<PricePredict/>}
+            //element={user ? <PricePredict/>: <Navigate to="/login" />}
 
           />
           
