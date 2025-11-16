@@ -18,6 +18,8 @@ const Yield = () => {
   const [prediction, setPrediction] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [focusedField, setFocusedField] = useState(null);
+  const [fullResult, setFullResult] = useState(null);
+
 
   const seasons = [
     "Kharif", "Rabi", "Whole Year", "Summer", "Winter", "Autumn"
@@ -33,7 +35,7 @@ const Yield = () => {
   ];
 
   const crops = [
-    "Rice", "Wheat", "Maize", "Cotton", "Sugarcane", "Soyabean", "Groundnut",
+    "Paddy","Rice", "Wheat", "Maize", "Cotton", "Sugarcane", "Soyabean", "Groundnut",
     "Sunflower", "Jowar", "Bajra", "Ragi", "Moong", "Urad", "Arhar/Tur",
     "Masoor", "Gram", "Rapeseed & Mustard", "Safflower", "Sesamum",
     "Nigerseed", "Castorseed", "Linseed", "Coconut", "Dry Chillies",
@@ -57,7 +59,7 @@ const Yield = () => {
     setPrediction(null);
 
     try {
-      const res = await fetch(`${process.env.YIELD_MODEL_URI}/predict_yield`, {
+      const res = await fetch(`${import.meta.env.VITE_YIELD_MODEL_URI}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -71,7 +73,10 @@ const Yield = () => {
       });
 
       const result = await res.json();
-      setPrediction(result.predicted_yield);
+      console.log(result);
+      setPrediction(Number(result.predicted_yield));
+      setFullResult(result);
+
     } catch (err) {
       console.error("Prediction error:", err);
       setPrediction(t("prediction_error"));
@@ -751,11 +756,12 @@ const Yield = () => {
         </div>
 
         {/* Prediction Result - Outside Card */}
-        {prediction && (
+        {fullResult && (
           <div style={{
             marginTop: '40px',
             animation: 'fadeInUp 0.8s ease-out'
           }}>
+            {/* Heading */}
             <div style={{ 
               textAlign: "center", 
               marginBottom: "40px",
@@ -782,6 +788,7 @@ const Yield = () => {
               </p>
             </div>
 
+            {/* Prediction Card */}
             <div style={{
               background: 'rgba(255, 255, 255, 0.03)',
               backdropFilter: 'blur(20px)',
@@ -824,6 +831,7 @@ const Yield = () => {
                 </span>
               </div>
               
+              {/* MAIN YIELD */}
               <h3 style={{
                 fontSize: '64px',
                 fontWeight: '900',
@@ -833,33 +841,62 @@ const Yield = () => {
                 WebkitTextFillColor: 'transparent',
                 lineHeight: '1'
               }}>
-                {typeof prediction === 'number' ? prediction.toFixed(2) : prediction}
+                {typeof prediction === "number" && !isNaN(prediction)
+                    ? prediction.toFixed(2)
+                    : "--"}
               </h3>
-              
-              {typeof prediction === 'number' && (
-                <p style={{
-                  fontSize: '20px',
-                  color: 'rgba(255, 255, 255, 0.7)',
-                  margin: '0 0 24px 0',
-                  fontWeight: '500'
-                }}>
-                  <span style={{ color: '#22c55e' }}>{t("tonnes")}</span> {t("per_hectare")}
-                </p>
-              )}
-              
+
               <p style={{
-                fontSize: '16px',
-                color: 'rgba(255, 255, 255, 0.6)',
-                maxWidth: '600px',
-                margin: '0 auto'
+                fontSize: '20px',
+                color: 'rgba(255, 255, 255, 0.7)',
+                margin: '0 0 24px 0',
+                fontWeight: '500'
               }}>
-                {typeof prediction === 'number' 
-                  ? t("expected_total_yield", { 
-                      total: (prediction * parseFloat(formData.Area) / 11959.9).toFixed(2),
-                      area: formData.Area 
-                    })
-                  : t("try_again_valid")}
+                <span style={{ color: '#22c55e' }}>{t("tonnes")}</span> {t("per_hectare")}
               </p>
+
+              {/* YIELD STATS */}
+              <div style={{ marginTop: "30px", textAlign: "left" }}>
+                <h3 style={{
+                  color: "#22c55e",
+                  marginBottom: "10px",
+                  fontSize: "22px"
+                }}>Yield Details</h3>
+
+                <p style={{ color: "white", marginBottom: "8px" }}>
+                  <strong>Yield Per Unit Area:</strong> {fullResult.yield_per_unit_area}
+                </p>
+                <p style={{ color: "white", marginBottom: "8px" }}>
+                  <strong>Total Yield:</strong> {fullResult.total_yield}
+                </p>
+              </div>
+
+              {/* MARKET DATA */}
+              <div style={{ marginTop: "40px", textAlign: "left" }}>
+                <h3 style={{
+                  color: "#22c55e",
+                  marginBottom: "10px",
+                  fontSize: "22px"
+                }}>Market Prices</h3>
+
+                {fullResult.market_data.map((m, i) => (
+                  <div key={i} style={{
+                    padding: "12px",
+                    marginBottom: "10px",
+                    background: "rgba(255,255,255,0.05)",
+                    borderRadius: "10px",
+                    border: "1px solid rgba(255,255,255,0.1)"
+                  }}>
+                    <p style={{ color: "white", margin: 0 }}>
+                      <strong>{m.market}</strong> - {m.district}
+                    </p>
+                    <p style={{ color: "rgba(255,255,255,0.8)", margin: "5px 0 0" }}>
+                      Min: ₹{m.min_price} | Max: ₹{m.max_price}
+                    </p>
+                  </div>
+                ))}
+              </div>
+
             </div>
 
             {/* Action Buttons */}
@@ -883,18 +920,10 @@ const Yield = () => {
                 boxShadow: '0 0 30px rgba(34, 197, 94, 0.4)',
                 textTransform: 'uppercase',
                 letterSpacing: '0.5px'
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.transform = 'translateY(-2px)';
-                e.target.style.boxShadow = '0 0 40px rgba(34, 197, 94, 0.6)';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.transform = 'translateY(0)';
-                e.target.style.boxShadow = '0 0 30px rgba(34, 197, 94, 0.4)';
-              }}
-              >
+              }}>
                 {t("export_forecast")}
               </button>
+
               <button style={{
                 padding: '14px 32px',
                 background: 'rgba(255, 255, 255, 0.1)',
@@ -906,21 +935,15 @@ const Yield = () => {
                 cursor: 'pointer',
                 transition: 'all 0.3s ease',
                 backdropFilter: 'blur(10px)'
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.background = 'rgba(255, 255, 255, 0.15)';
-                e.target.style.transform = 'translateY(-2px)';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.background = 'rgba(255, 255, 255, 0.1)';
-                e.target.style.transform = 'translateY(0)';
-              }}
-              >
+              }}>
                 {t("new_prediction")}
               </button>
             </div>
+
           </div>
         )}
+
+
       </div>
 
       <style>{`

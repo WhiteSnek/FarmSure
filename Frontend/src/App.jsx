@@ -57,7 +57,8 @@ const App = () => {
 
           <Route
             path="/yield"
-           element={user ? <Yield /> : <Navigate to="/login" />}
+            element={<Yield />}
+            //element={user ? <Yield /> : <Navigate to="/login" />}
 
           />
           
