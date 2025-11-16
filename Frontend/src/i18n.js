@@ -79,7 +79,7 @@ i18n
             "access_ai_farming_home": "Access AI-powered farming insights and data-driven tools for maximum productivity",
             "active_users": "Active Users",
             "farms_connected": "Farms Connected",
-            "welcome_farmassist": "Welcome to FarmAssist",
+            "welcome_farmassist": "Welcome to FarmSure",
             "empowering_farmers": "Empowering farmers with cutting-edge AI technology",
             "slide_crop_health_title": "AI-Powered Crop Health",
             "slide_crop_health_desc": "Detect diseases early with advanced machine learning",
@@ -95,6 +95,7 @@ i18n
             "feature_yield_desc": "Maximize your harvest with data-driven recommendations and best practices",
             "get_started": "Get Started",
             "sign_in": "Sign In",
+            "current_government_schemes": "Current Government Schemes",
 
 
             //yeild
@@ -285,7 +286,7 @@ i18n
             "access_ai_farming_home": "AI-संचालित खेती संबंधी जानकारियाँ और अधिकतम उत्पादकता के लिए डेटा-आधारित टूल्स प्राप्त करें",
             "active_users": "सक्रिय उपयोगकर्ता",
             "farms_connected": "जुड़ी हुई फ़ार्म",
-            "welcome_farmassist": "FarmAssist में आपका स्वागत है",
+            "welcome_farmassist": "FarmSure में आपका स्वागत है",
             "empowering_farmers": "किसानों को अत्याधुनिक AI तकनीक से सशक्त बनाना",
             "slide_crop_health_title": "AI-संचालित फ़सल स्वास्थ्य",
             "slide_crop_health_desc": "उन्नत मशीन लर्निंग के साथ रोगों का जल्दी पता लगाएँ",
@@ -300,6 +301,10 @@ i18n
             "feature_yield_optimization": "उपज अनुकूलन",
             "feature_yield_desc": "डेटा-आधारित सुझावों और सर्वोत्तम प्रथाओं के साथ अपनी उपज को अधिकतम करें",
             "get_started": "शुरू करें",
+            "current_government_schemes": "वर्तमान सरकारी योजनाएँ",
+
+            
+
 
             //yeild
 

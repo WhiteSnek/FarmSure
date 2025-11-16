@@ -10,6 +10,7 @@ import Crop from "./pages/Crop";
 import Fertilizer from "./pages/Fertilizer";
 import Yield from "./pages/Yield";
 import CropRecommendation from "./pages/cropRecommendation";
+import SchemesPage from "./pages/Schemes";
 
 const App = () => {
   const { user } = useAuthContext();
@@ -59,6 +60,13 @@ const App = () => {
             path="/yield"
             element={<Yield />}
             //element={user ? <Yield /> : <Navigate to="/login" />}
+
+          />
+
+          <Route
+            path="/schemes"
+            element={<SchemesPage/>}
+            //element={user ? <SchemesPage/>: <Navigate to="/login" />}
 
           />
           

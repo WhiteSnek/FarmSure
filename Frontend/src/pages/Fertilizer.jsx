@@ -372,7 +372,7 @@ const Fertilizer = () => {
                       textTransform: 'uppercase',
                       letterSpacing: '1px'
                     }}>
-                      Location (City)
+                       {t("location_city")}
                     </label>
                     <select
                       name="location"

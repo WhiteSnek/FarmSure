@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { useTranslation } from "react-i18next";
 
 // Fix Leaflet icon issue
 delete L.Icon.Default.prototype._getIconUrl;
@@ -12,6 +13,7 @@ L.Icon.Default.mergeOptions({
 });
 
 const CropRecommendation = () => {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     location: null,
     rainfall: "",
@@ -69,8 +71,6 @@ const CropRecommendation = () => {
     setIsLoading(true);
     setPrediction(null);
 
-
-    
     try {
       const res = await fetch(`${import.meta.env.VITE_CROP_MODEL_URI}`, {
         method: "POST",
@@ -84,18 +84,15 @@ const CropRecommendation = () => {
         })
       });
       const result = await res.json();
-     // console.log(result);
       setPrediction({
-          crop: result.crop,
-          market: result.market_data || []
-        });
-
+        crop: result.crop,
+        market: result.market_data || []
+      });
     } catch (err) {
-      setPrediction(["Error: Could not connect to server"]);
+      setPrediction({ error: t("prediction_error") });
     } finally {
       setIsLoading(false);
     }
-    
   };
 
   const isFormValid = () => {
@@ -150,7 +147,7 @@ const CropRecommendation = () => {
           backdropFilter: 'blur(20px)',
           borderRadius: '24px',
           border: '1px solid rgba(255, 255, 255, 0.1)',
-          boxShadow: '0 8px 32px rgba(216, 86, 86, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1)',
           overflow: 'hidden',
           animation: 'slideUp 0.6s ease-out'
         }}>
@@ -166,7 +163,6 @@ const CropRecommendation = () => {
               position: 'relative',
               overflow: 'hidden'
             }}>
-              {/* Dark Overlay */}
               <div style={{
                 position: 'absolute',
                 inset: 0,
@@ -175,7 +171,6 @@ const CropRecommendation = () => {
                 zIndex: 1
               }}></div>
 
-              {/* MAP - ONLY ONE */}
               <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
                 <MapContainer 
                   center={mapCenter} 
@@ -195,7 +190,6 @@ const CropRecommendation = () => {
                 </MapContainer>
               </div>
 
-              {/* Decorative Corner */}
               <div style={{
                 position: 'absolute',
                 top: '20px',
@@ -209,7 +203,6 @@ const CropRecommendation = () => {
                 zIndex: 2
               }}></div>
 
-              {/* Hero Text */}
               <div style={{
                 position: 'absolute',
                 inset: 0,
@@ -252,7 +245,7 @@ const CropRecommendation = () => {
                     WebkitBackgroundClip: 'text',
                     WebkitTextFillColor: 'transparent'
                   }}>
-                    Smart Crop Selector
+                    {t("smart_crop_selector")}
                   </h1>
                   <p style={{
                     fontSize: '18px',
@@ -260,16 +253,14 @@ const CropRecommendation = () => {
                     lineHeight: '1.6',
                     margin: 0
                   }}>
-                    Discover the <span style={{ color: 'rgb(212, 255, 0)', fontWeight: '600', textShadow: '0 0 20px rgba(34, 197, 94, 0.5)' }}>
-                      perfect crops
-                    </span> for your land using AI & real-time soil data
+                    {t("discover_perfect_crops")}
                   </p>
 
                   <div style={{ display: 'flex', gap: '24px', marginTop: '40px' }}>
                     {[
-                      { label: 'Crops Analyzed', value: '50+' },
-                      { label: 'Parameters', value: '6' },
-                      { label: 'Accuracy', value: '98.7%' }
+                      { label: t("crops_analyzed"), value: '50+' },
+                      { label: t("parameters"), value: '6' },
+                      { label: t("accuracy"), value: '98.7%' }
                     ].map((stat, i) => (
                       <div key={i} style={{
                         padding: '16px 20px',
@@ -303,7 +294,6 @@ const CropRecommendation = () => {
               justifyContent: 'center',
               position: 'relative'
             }}>
-              {/* Corner Spinner */}
               <div style={{
                 position: 'absolute',
                 top: '30px',
@@ -336,7 +326,7 @@ const CropRecommendation = () => {
                   margin: '0 0 12px 0',
                   letterSpacing: '-0.5px'
                 }}>
-                  Crop Recommendation Engine
+                  {t("crop_recommendation_engine")}
                 </h2>
                 <p style={{
                   fontSize: '15px',
@@ -344,7 +334,7 @@ const CropRecommendation = () => {
                   margin: '0 0 40px 0',
                   fontWeight: '400'
                 }}>
-                  Enter your field data for AI-powered crop suggestions
+                  {t("enter_field_data")}
                 </p>
 
                 <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
@@ -359,7 +349,7 @@ const CropRecommendation = () => {
                       textTransform: 'uppercase',
                       letterSpacing: '1px'
                     }}>
-                      Location (City)
+                      {t("location_city")}
                     </label>
                     <select
                       name="location"
@@ -379,70 +369,85 @@ const CropRecommendation = () => {
                         transition: 'all 0.3s ease',
                         outline: 'none',
                         appearance: 'none',
-                        backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='rgba(0, 0, 0, 0.9)' height='24' viewBox='0 0 24 24' width='24'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e")`,
+                        backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='rgba(255,255,255,0.7)' height='24' viewBox='0 0 24 24' width='24'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e")`,
                         backgroundRepeat: 'no-repeat',
                         backgroundPosition: 'right 16px center',
                         cursor: 'pointer',
                         backgroundColor: '#0f172a',
                       }}
                     >
-                      <option value="">Select City</option>
+                      <option value="">{t("select_city")}</option>
                       {cities.map(city => (
                         <option key={city.name} value={city.name}>{city.name}</option>
                       ))}
                     </select>
                   </div>
 
-                  {/* Rainfall & pH */}
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '20px' }}>
-                    
-                      <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', color: 'rgba(255, 255, 255, 0.8)', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                        Soil pH
-                      </label>
-                      <div style={{ position: 'relative' }}>
-                        <input
-                          type="number"
-                          name="ph"
-                          value={formData.ph}
-                          onChange={handleInputChange}
-                          onFocus={() => setFocusedField('ph')}
-                          onBlur={() => setFocusedField(null)}
-                          required
-                          step="0.1"
-                          min="0"
-                          max="14"
-                          placeholder="e.g. 6.5"
-                          style={{
-                            width: '100%',
-                            padding: '16px 20px',
-                            background: 'rgba(255, 255, 255, 0.05)',
-                            border: `2px solid ${focusedField === 'ph' ? '#22c55e' : 'rgba(255, 255, 255, 0.1)'}`,
-                            borderRadius: '12px',
-                            fontSize: '15px',
-                            color: '#ffffff',
-                            transition: 'all 0.3s ease',
-                            outline: 'none'
-                          }}
-                        />
-                        {focusedField === 'ph' && (
-                          <div style={{
-                            position: 'absolute',
-                            bottom: '-2px',
-                            left: 0,
-                            right: 0,
-                            height: '2px',
-                            background: 'linear-gradient(90deg, transparent, #22c55e, transparent)',
-                            animation: 'shimmer 2s ease-in-out infinite'
-                          }}></div>
-                        )}
-                      </div>
+                  {/* Soil pH */}
+                  <div>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '13px',
+                      fontWeight: '600',
+                      color: 'rgba(255, 255, 255, 0.8)',
+                      marginBottom: '10px',
+                      textTransform: 'uppercase',
+                      letterSpacing: '1px'
+                    }}>
+                      {t("soil_ph")}
+                    </label>
+                    <div style={{ position: 'relative' }}>
+                      <input
+                        type="number"
+                        name="ph"
+                        value={formData.ph}
+                        onChange={handleInputChange}
+                        onFocus={() => setFocusedField('ph')}
+                        onBlur={() => setFocusedField(null)}
+                        required
+                        step="0.1"
+                        min="0"
+                        max="14"
+                        placeholder={t("ph_placeholder")}
+                        style={{
+                          width: '100%',
+                          padding: '16px 20px',
+                          background: 'rgba(255, 255, 255, 0.05)',
+                          border: `2px solid ${focusedField === 'ph' ? '#22c55e' : 'rgba(255, 255, 255, 0.1)'}`,
+                          borderRadius: '12px',
+                          fontSize: '15px',
+                          color: '#ffffff',
+                          transition: 'all 0.3s ease',
+                          outline: 'none'
+                        }}
+                      />
+                      {focusedField === 'ph' && (
+                        <div style={{
+                          position: 'absolute',
+                          bottom: '-2px',
+                          left: 0,
+                          right: 0,
+                          height: '2px',
+                          background: 'linear-gradient(90deg, transparent, #22c55e, transparent)',
+                          animation: 'shimmer 2s ease-in-out infinite'
+                        }}></div>
+                      )}
+                    </div>
                   </div>
 
                   {/* Nitrogen & Potassium */}
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                     <div>
-                      <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', color: 'rgba(255, 255, 255, 0.8)', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                        Nitrogen (N) ppm
+                      <label style={{
+                        display: 'block',
+                        fontSize: '13px',
+                        fontWeight: '600',
+                        color: 'rgba(255, 255, 255, 0.8)',
+                        marginBottom: '10px',
+                        textTransform: 'uppercase',
+                        letterSpacing: '1px'
+                      }}>
+                        {t("nitrogen_ppm")}
                       </label>
                       <div style={{ position: 'relative' }}>
                         <input
@@ -454,7 +459,7 @@ const CropRecommendation = () => {
                           onBlur={() => setFocusedField(null)}
                           required
                           step="0.1"
-                          placeholder="e.g. 45"
+                          placeholder={t("nitrogen_placeholder")}
                           style={{
                             width: '100%',
                             padding: '16px 20px',
@@ -482,8 +487,16 @@ const CropRecommendation = () => {
                     </div>
 
                     <div>
-                      <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', color: 'rgba(255, 255, 255, 0.8)', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                        Potassium (K) ppm
+                      <label style={{
+                        display: 'block',
+                        fontSize: '13px',
+                        fontWeight: '600',
+                        color: 'rgba(255, 255, 255, 0.8)',
+                        marginBottom: '10px',
+                        textTransform: 'uppercase',
+                        letterSpacing: '1px'
+                      }}>
+                        {t("potassium_ppm")}
                       </label>
                       <div style={{ position: 'relative' }}>
                         <input
@@ -495,7 +508,7 @@ const CropRecommendation = () => {
                           onBlur={() => setFocusedField(null)}
                           required
                           step="0.1"
-                          placeholder="e.g. 30"
+                          placeholder={t("potassium_placeholder")}
                           style={{
                             width: '100%',
                             padding: '16px 20px',
@@ -523,10 +536,18 @@ const CropRecommendation = () => {
                     </div>
                   </div>
 
-                  {/* Field Size */}
+                  {/* Phosphorus */}
                   <div>
-                    <label style={{ display: 'block', fontSize: '13px', fontWeight: '600', color: 'rgba(255, 255, 255, 0.8)', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                      Phosphorus (K) ppm
+                    <label style={{
+                      display: 'block',
+                      fontSize: '13px',
+                      fontWeight: '600',
+                      color: 'rgba(255, 255, 255, 0.8)',
+                      marginBottom: '10px',
+                      textTransform: 'uppercase',
+                      letterSpacing: '1px'
+                    }}>
+                      {t("phosphorus_ppm")}
                     </label>
                     <div style={{ position: 'relative' }}>
                       <input
@@ -539,7 +560,7 @@ const CropRecommendation = () => {
                         required
                         min="0.1"
                         step="0.01"
-                        placeholder="e.g. 50"
+                        placeholder={t("phosphorus_placeholder")}
                         style={{
                           width: '100%',
                           padding: '16px 20px',
@@ -625,11 +646,11 @@ const CropRecommendation = () => {
                           borderRadius: '50%',
                           animation: 'spin 0.8s linear infinite'
                         }}></div>
-                        Analyzing...
+                        {t("analyzing")}
                       </>
                     ) : (
                       <>
-                        Recommend Crops
+                        {t("recommend_crops")}
                         <span style={{ fontSize: '18px' }}>→</span>
                       </>
                     )}
@@ -650,7 +671,7 @@ const CropRecommendation = () => {
                       color: 'rgba(255, 255, 255, 0.8)',
                       lineHeight: '1.6'
                     }}>
-                      <strong style={{ color: '#22c55e' }}>Pro Tip:</strong> For best results, use soil test data from the past 6 months.
+                      <strong style={{ color: '#22c55e' }}>{t("pro_tip")}:</strong> {t("soil_test_tip")}
                     </p>
                   </div>
                 </form>
@@ -660,301 +681,215 @@ const CropRecommendation = () => {
         </div>
 
         {/* RESULTS SECTION */}
-        {prediction && (
-  <div
-    style={{
-      marginTop: "40px",
-      animation: "fadeInUp 0.8s ease-out",
-    }}
-  >
-    <div
-      style={{
-        textAlign: "center",
-        marginBottom: "40px",
-        padding: "0 20px",
-      }}
-    >
-      <h2
-        style={{
-          fontSize: "42px",
-          fontWeight: "800",
-          background:
-            "linear-gradient(135deg, #22c55e 0%, #16a34a 100%)",
-          WebkitBackgroundClip: "text",
-          WebkitTextFillColor: "transparent",
-          margin: "0 0 12px 0",
-          letterSpacing: "-1px",
-        }}
-      >
-        AI Crop Recommendations
-      </h2>
-    </div>
+        {prediction && !prediction.error && (
+          <div style={{ marginTop: "40px", animation: "fadeInUp 0.8s ease-out" }}>
+            <div style={{ textAlign: "center", marginBottom: "40px", padding: "0 20px" }}>
+              <h2 style={{
+                fontSize: "42px",
+                fontWeight: "800",
+                background: "linear-gradient(135deg, #22c55e 0%, #16a34a 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                margin: "0 0 12px 0",
+                letterSpacing: "-1px",
+              }}>
+                {t("ai_crop_recommendations")}
+              </h2>
+            </div>
 
-    {/* CARD CONTAINER */}
-    <div
-      style={{
-        background: "rgba(255, 255, 255, 0.03)",
-        backdropFilter: "blur(20px)",
-        borderRadius: "20px",
-        border: "1px solid rgba(255, 255, 255, 0.1)",
-        overflow: "hidden",
-        boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)",
-        padding: "50px 40px",
-        margin: "0 20px",
-      }}
-    >
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns:
-            "repeat(auto-fit, minmax(280px, 1fr))",
-          gap: "24px",
-        }}
-      >
-        {/* --- CROP CARD --- */}
-        <div
-          style={{
-            background: "rgba(34, 197, 94, 0.1)",
-            border: "1px solid rgba(34, 197, 94, 0.2)",
-            borderRadius: "16px",
-            padding: "24px",
-            textAlign: "center",
-            backdropFilter: "blur(10px)",
-            transition: "all 0.3s ease",
-            cursor: "pointer",
-          }}
-          onMouseEnter={(e) => {
-            e.target.style.transform = "translateY(-4px)";
-            e.target.style.boxShadow =
-              "0 10px 30px rgba(34, 197, 94, 0.2)";
-          }}
-          onMouseLeave={(e) => {
-            e.target.style.transform = "translateY(0)";
-            e.target.style.boxShadow = "none";
-          }}
-        >
-          <div
-            style={{
-              width: "60px",
-              height: "60px",
-              background: "rgba(34, 197, 94, 0.2)",
-              borderRadius: "50%",
-              margin: "0 auto 16px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "28px",
-            }}
-          >
-            ★
-          </div>
-
-          <h4
-            style={{
-              fontSize: "20px",
-              fontWeight: "700",
-              color: "#ffffff",
-              margin: "0 0 8px 0",
-            }}
-          >
-            {prediction.crop}
-          </h4>
-
-          <p
-            style={{
-              fontSize: "14px",
-              color: "rgba(255, 255, 255, 0.7)",
-              margin: 0,
-            }}
-          >
-            Top Recommended Crop
-          </p>
-        </div>
-
-        {/* --- MARKET PRICE CARD --- */}
-        {prediction.market && prediction.market.length > 0 && (
-          <div
-            style={{
-              background: "rgba(34, 197, 94, 0.1)",
-              border: "1px solid rgba(34, 197, 94, 0.2)",
-              borderRadius: "16px",
-              padding: "24px",
-              backdropFilter: "blur(10px)",
-            }}
-          >
-            <h3
-              style={{
-                fontSize: "20px",
-                color: "#22c55e",
-                textAlign: "center",
-                marginBottom: "15px",
-                fontWeight: "700",
-              }}
-            >
-              Market Prices
-            </h3>
-
-            {prediction.market.map((mkt, index) => (
-              <div
-                key={index}
-                style={{
-                  marginBottom: "12px",
-                  padding: "14px",
-                  borderRadius: "12px",
-                  background: "rgba(255,255,255,0.05)",
-                  border: "1px solid rgba(255,255,255,0.1)",
+            <div style={{
+              background: "rgba(255, 255, 255, 0.03)",
+              backdropFilter: "blur(20px)",
+              borderRadius: "20px",
+              border: "1px solid rgba(255, 255, 255, 0.1)",
+              overflow: "hidden",
+              boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)",
+              padding: "50px 40px",
+              margin: "0 20px",
+            }}>
+              <div style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+                gap: "24px",
+              }}>
+                {/* Top Crop */}
+                <div style={{
+                  background: "rgba(34, 197, 94, 0.1)",
+                  border: "1px solid rgba(34, 197, 94, 0.2)",
+                  borderRadius: "16px",
+                  padding: "24px",
+                  textAlign: "center",
+                  backdropFilter: "blur(10px)",
+                  transition: "all 0.3s ease",
+                  cursor: "pointer",
                 }}
-              >
-                <div
-                  style={{
-                    color: "white",
-                    fontSize: "16px",
-                    fontWeight: "600",
-                    marginBottom: "6px",
-                  }}
-                >
-                  {mkt.market}, {mkt.district}
+                onMouseEnter={(e) => {
+                  e.target.style.transform = "translateY(-4px)";
+                  e.target.style.boxShadow = "0 10px 30px rgba(34, 197, 94, 0.2)";
+                }}
+                onMouseLeave={(e) => {
+                  e.target.style.transform = "translateY(0)";
+                  e.target.style.boxShadow = "none";
+                }}>
+                  <div style={{
+                    width: "60px",
+                    height: "60px",
+                    background: "rgba(34, 197, 94, 0.2)",
+                    borderRadius: "50%",
+                    margin: "0 auto 16px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    fontSize: "28px",
+                  }}>
+                    ★
+                  </div>
+                  <h4 style={{
+                    fontSize: "20px",
+                    fontWeight: "700",
+                    color: "#ffffff",
+                    margin: "0 0 8px 0",
+                  }}>
+                    {prediction.crop}
+                  </h4>
+                  <p style={{
+                    fontSize: "14px",
+                    color: "rgba(255, 255, 255, 0.7)",
+                    margin: 0,
+                  }}>
+                    {t("top_recommendation")}
+                  </p>
                 </div>
 
-                <div
-                  style={{
-                    color: "rgba(255,255,255,0.8)",
-                    fontSize: "14px",
-                    lineHeight: "1.4",
-                  }}
-                >
-                  <div>
-                    Min Price:{" "}
-                    <span style={{ color: "#22c55e" }}>
-                      ₹{mkt.min_price}
-                    </span>
+                {/* Market Prices */}
+                {prediction.market && prediction.market.length > 0 && (
+                  <div style={{
+                    background: "rgba(34, 197, 94, 0.1)",
+                    border: "1px solid rgba(34, 197, 94, 0.2)",
+                    borderRadius: "16px",
+                    padding: "24px",
+                    backdropFilter: "blur(10px)",
+                  }}>
+                    <h3 style={{
+                      fontSize: "20px",
+                      color: "#22c55e",
+                      textAlign: "center",
+                      marginBottom: "15px",
+                      fontWeight: "700",
+                    }}>
+                      {t("market_prices") || "Market Prices"}
+                    </h3>
+                    {prediction.market.map((mkt, index) => (
+                      <div key={index} style={{
+                        marginBottom: "12px",
+                        padding: "14px",
+                        borderRadius: "12px",
+                        background: "rgba(255,255,255,0.05)",
+                        border: "1px solid rgba(255,255,255,0.1)",
+                      }}>
+                        <div style={{
+                          color: "white",
+                          fontSize: "16px",
+                          fontWeight: "600",
+                          marginBottom: "6px",
+                        }}>
+                          {mkt.market}, {mkt.district}
+                        </div>
+                        <div style={{
+                          color: "rgba(255,255,255,0.8)",
+                          fontSize: "14px",
+                          lineHeight: "1.4",
+                        }}>
+                          <div>Min: <span style={{ color: "#22c55e" }}>₹{mkt.min_price}</span></div>
+                          <div>Max: <span style={{ color: "#22c55e" }}>₹{mkt.max_price}</span></div>
+                          <div>Modal: <span style={{ color: "#22c55e" }}>₹{mkt.modal_price}</span></div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                  <div>
-                    Max Price:{" "}
-                    <span style={{ color: "#22c55e" }}>
-                      ₹{mkt.max_price}
-                    </span>
-                  </div>
-                  <div>
-                    Modal Price:{" "}
-                    <span style={{ color: "#22c55e" }}>
-                      ₹{mkt.modal_price}
-                    </span>
-                  </div>
-                </div>
+                )}
               </div>
-            ))}
+            </div>
+
+            <div style={{
+              display: "flex",
+              justifyContent: "center",
+              gap: "16px",
+              marginTop: "40px",
+              padding: "0 20px",
+            }}>
+              <button style={{
+                padding: "14px 32px",
+                background: "linear-gradient(135deg, #22c55e 0%, #16a34a 100%)",
+                color: "#ffffff",
+                border: "none",
+                borderRadius: "12px",
+                fontSize: "16px",
+                fontWeight: "700",
+                cursor: "pointer",
+                transition: "all 0.3s ease",
+                boxShadow: "0 0 30px rgba(34, 197, 94, 0.4)",
+                textTransform: "uppercase",
+                letterSpacing: "0.5px",
+              }}>
+                {t("save_plan")}
+              </button>
+
+              <button style={{
+                padding: "14px 32px",
+                background: "rgba(255, 255, 255, 0.1)",
+                color: "#ffffff",
+                border: "1px solid rgba(255, 255, 255, 0.2)",
+                borderRadius: "12px",
+                fontSize: "16px",
+                fontWeight: "700",
+                cursor: "pointer",
+                transition: "all 0.3s ease",
+                backdropFilter: "blur(10px)",
+              }}
+              onClick={() => {
+                setPrediction(null);
+                setFormData({ location: null, rainfall: "", ph: "", nitrogen: "", potassium: "", fieldSize: "" });
+                setMapCenter([20.5937, 78.9629]);
+                setMarkerPosition(null);
+              }}>
+                {t("new_analysis")}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Error Message */}
+        {prediction?.error && (
+          <div style={{
+            marginTop: "40px",
+            padding: "20px",
+            background: "rgba(239, 68, 68, 0.1)",
+            border: "1px solid rgba(239, 68, 68, 0.3)",
+            borderRadius: "12px",
+            textAlign: "center",
+            color: "#fca5a5"
+          }}>
+            {prediction.error}
           </div>
         )}
       </div>
-    </div>
-
-    {/* BUTTON ROW */}
-    <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        gap: "16px",
-        marginTop: "40px",
-        padding: "0 20px",
-      }}
-    >
-      <button
-        style={{
-          padding: "14px 32px",
-          background:
-            "linear-gradient(135deg, #22c55e 0%, #16a34a 100%)",
-          color: "#ffffff",
-          border: "none",
-          borderRadius: "12px",
-          fontSize: "16px",
-          fontWeight: "700",
-          cursor: "pointer",
-          transition: "all 0.3s ease",
-          boxShadow: "0 0 30px rgba(34, 197, 94, 0.4)",
-          textTransform: "uppercase",
-          letterSpacing: "0.5px",
-        }}
-      >
-        Save Plan
-      </button>
-
-      <button
-        style={{
-          padding: "14px 32px",
-          background: "rgba(255, 255, 255, 0.1)",
-          color: "#ffffff",
-          border: "1px solid rgba(255, 255, 255, 0.2)",
-          borderRadius: "12px",
-          fontSize: "16px",
-          fontWeight: "700",
-          cursor: "pointer",
-          transition: "all 0.3s ease",
-          backdropFilter: "blur(10px)",
-        }}
-        onClick={() => {
-          setPrediction(null);
-          setFormData({
-            location: null,
-            rainfall: "",
-            ph: "",
-            nitrogen: "",
-            potassium: "",
-            fieldSize: "",
-          });
-          setMapCenter([20.5937, 78.9629]);
-          setMarkerPosition(null);
-        }}
-      >
-        New Analysis
-      </button>
-    </div>
-  </div>
-)}
-
-
-      </div>
 
       {/* ANIMATIONS */}
-      <style >{`
+      <style jsx>{`
         @keyframes float {
           0%, 100% { transform: translateY(0px); }
           50% { transform: translateY(-20px); }
         }
-        @keyframes slideUp {
-          from { opacity: 0; transform: translateY(30px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes fadeInUp {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes pulse {
-          0%, 100% { opacity: 0.3; transform: rotate(45deg) scale(1); }
-          50% { opacity: 0.6; transform: rotate(45deg) scale(1.1); }
-        }
-        @keyframes glow {
-          0%, 100% { box-shadow: 0 0 20px #22c55e; }
-          50% { box-shadow: 0 0 30px #22c55e, 0 0 40px #22c55e; }
-        }
-        @keyframes rotate {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-        @keyframes shimmer {
-          0% { transform: translateX(-100%); }
-          100% { transform: translateX(100%); }
-        }
-        @keyframes slideRight {
-          0% { left: -100%; }
-          100% { left: 200%; }
-        }
-        .leaflet-container {
-          border-radius: 16px;
-        }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse { 0%, 100% { opacity: 0.3; transform: rotate(45deg) scale(1); } 50% { opacity: 0.6; transform: rotate(45deg) scale(1.1); } }
+        @keyframes glow { 0%, 100% { box-shadow: 0 0 20px #22c55e; } 50% { box-shadow: 0 0 30px #22c55e, 0 0 40px #22c55e; } }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+        @keyframes slideRight { 0% { left: -100%; } 100% { left: 200%; } }
+        .leaflet-container { border-radius: 16px; }
       `}</style>
     </div>
   );

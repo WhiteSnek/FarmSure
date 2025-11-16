@@ -48,70 +48,99 @@ const Navbar = () => {
         </div>
       </nav>
 
-      <style>{`
-        .navbar {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 12px 24px;
-          background-color: #ffffff;
-          border-bottom: 2px solid #eaeaea;
-        }
+      
+     <style>{`
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 14px 32px;
+        background-color: #ffffff;
+        border-bottom: 1px solid #e5e7eb;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        position: sticky;
+        top: 0;
+        z-index: 999;
+      }
 
-        .navbar-left {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-        }
+      .navbar-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
 
-        .logo {
-          height: 40px;
-          width: auto;
-        }
+      .logo {
+        height: 42px;
+        width: auto;
+      }
 
-        .navbar h1 {
-          font-size: 20px;
-          font-weight: bold;
-          color: #2d6a4f;
-          margin: 0;
-        }
+      .navbar h1 {
+        font-size: 22px;
+        font-weight: 700;
+        color: #2d6a4f;
+        margin: 0;
+      }
 
-        .navbar-links {
-          display: flex;
-          gap: 80px;
-          padding: 8px 40px;
-        }
+      /* NAV LINKS */
+      .navbar-links {
+        display: flex;
+        gap: 32px; /* reduced from 80px */
+        padding: 8px 20px;
+      }
 
-        .navbar-links a {
-          text-decoration: none;
-          color: #333;
-          font-weight: 500;
-          transition: color 0.2s ease-in-out;
-        }
+      .navbar-links a {
+        text-decoration: none;
+        color: #374151;
+        font-weight: 550;
+        font-size: 15px;
+        padding: 6px 10px;
+        border-radius: 6px;
+        transition: 0.25s ease;
+      }
 
-        .navbar-links a:hover {
-          color: #2d6a4f;
-        }
+      .navbar-links a:hover {
+        background: #e6f4ea;
+        color: #2d6a4f;
+      }
 
-        .navbar-right {
-          display: flex;
-          align-items: center;
-        }
+      .navbar-right {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
 
-        .logout-btn {
-          background-color: #2d6a4f;
-          color: white;
-          border: none;
-          padding: 8px 16px;
-          border-radius: 4px;
-          cursor: pointer;
-          font-weight: 500;
-        }
+      /* LANG BUTTONS */
+      .navbar-right button {
+        padding: 6px 10px;
+        border: 1px solid #cbd5e1;
+        background: #f8fafc;
+        border-radius: 6px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: 0.25s ease;
+      }
 
-        .logout-btn:hover {
-          background-color: #1b4332;
-        }
-      `}</style>
+      .navbar-right button:hover {
+        background: #e2e8f0;
+      }
+
+      /* LOGOUT BUTTON */
+      .logout-btn {
+        background-color: #2d6a4f !important;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 500;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+      }
+
+      .logout-btn:hover {
+        background-color: #1b4332 !important;
+      }
+    `}</style>
+
     </>
   );
 };

@@ -252,9 +252,52 @@ const Home = () => {
                       </div>
                     ))}
                   </div>
+                  <div
+                    style={{
+                      marginTop: "62px",
+                      display: "flex",
+                      justifyContent: "flex-start",
+                      animation: "fadeInUp 0.7s ease-out 0.5s backwards",
+                    }}
+                  >
+                    <Link
+                      to="/schemes"
+                      style={{
+                        padding: "24px 26px",
+                        background: "rgba(255, 255, 255, 0.1)",
+                        backdropFilter: "blur(12px)",
+                        borderRadius: "12px",
+                        border: "1px solid rgba(255, 255, 255, 0.2)",
+                        color: "#22c55e",
+                        fontSize: "20px",
+                        fontWeight: "600",
+                        textDecoration: "none",
+                        letterSpacing: "0.5px",
+                        transition: "all 0.3s ease",
+                        boxShadow: "0 4px 12px rgba(0,0,0,0.25)",
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.background = "rgba(34, 197, 94, 0.15)";
+                        e.target.style.color = "#4ade80";
+                        e.target.style.borderColor = "#4ade80";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.background = "rgba(255, 255, 255, 0.1)";
+                        e.target.style.color = "#22c55e";
+                        e.target.style.borderColor = "rgba(255, 255, 255, 0.2)";
+                      }}
+                    >
+                      {t("current_government_schemes")} →
+                    </Link>
+                  </div>
+
                 </div>
+                
               </div>
+              
             </div>
+
+            
 
             {/* Right Side - Home Content Section */}
             <div style={{
