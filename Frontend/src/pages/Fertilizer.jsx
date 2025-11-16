@@ -7,7 +7,7 @@ const Fertilizer = () => {
   const fertilizerImage = "https://plus.unsplash.com/premium_photo-1680125265832-ffaf364a8aca?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8ZmVydGlsaXplcnN8ZW58MHx8MHx8fDA%3D";
   
   const [formData, setFormData] = useState({
-    temp: "",
+    location: "",
     humid: "",
     mois: "",
     soil: "0",
@@ -16,6 +16,14 @@ const Fertilizer = () => {
     pota: "",
     phos: ""
   });
+  const states = [
+    "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
+    "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka",
+    "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya",
+    "Mizoram", "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim",
+    "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand",
+    "West Bengal"
+  ];
   const [prediction, setPrediction] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [focusedField, setFocusedField] = useState(null);
@@ -27,6 +35,13 @@ const Fertilizer = () => {
     { value: "3", label: "Red" },
     { value: "4", label: "Sandy" }
   ];
+  const handleLocationChange = (e) => {
+  setFormData(prev => ({
+    ...prev,
+    location: e.target.value
+  }));
+};
+
 
   const cropTypes = [
     { value: "0", label: "Barley" },
@@ -62,12 +77,11 @@ const Fertilizer = () => {
     setPrediction(null);
 
     try {
-      const res = await fetch(`${process.env.FERTILIZER_MODEL_URI}/predict`, {
+      const res = await fetch(`${import.meta.env.VITE_FERTILIZER_MODEL_URI}`,  {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          temp: parseFloat(formData.temp),
-          humid: parseFloat(formData.humid),
+          location: parseFloat(formData.location),
           mois: parseFloat(formData.mois),
           soil: parseInt(formData.soil),
           crop: parseInt(formData.crop),
@@ -78,6 +92,7 @@ const Fertilizer = () => {
       });
 
       const result = await res.json();
+      console.log(result)
       setPrediction(result.fertilizer || result.recommendation);
     } catch (err) {
       console.error("Prediction error:", err);
@@ -88,7 +103,7 @@ const Fertilizer = () => {
   };
 
   const isFormValid = () => {
-    return formData.temp && formData.humid && formData.mois && 
+    return formData.location  && formData.mois && formData.soil &&
            formData.nitro && formData.pota && formData.phos;
   };
 
@@ -347,110 +362,48 @@ const Fertilizer = () => {
                   gap: '20px'
                 }}>
                   {/* Environmental Conditions */}
-                  <div style={{
-                    display: 'grid',
-                    gridTemplateColumns: '1fr 1fr',
-                    gap: '20px'
-                  }}>
-                    <div>
-                      <label style={{
-                        display: 'block',
-                        fontSize: '13px',
-                        fontWeight: '600',
-                        color: 'rgba(255, 255, 255, 0.8)',
-                        marginBottom: '10px',
-                        textTransform: 'uppercase',
-                        letterSpacing: '1px'
-                      }}>
-                        {t("temperature_c")}
-                      </label>
-                      <div style={{ position: 'relative' }}>
-                        <input
-                          type="number"
-                          name="temp"
-                          value={formData.temp}
-                          onChange={handleInputChange}
-                          onFocus={() => setFocusedField('temp')}
-                          onBlur={() => setFocusedField(null)}
-                          required
-                          step="0.1"
-                          placeholder={t("temp_placeholder")}
-                          style={{
-                            width: '100%',
-                            padding: '16px 20px',
-                            background: 'rgba(255, 255, 255, 0.05)',
-                            border: `2px solid ${focusedField === 'temp' ? '#22c55e' : 'rgba(255, 255, 255, 0.1)'}`,
-                            borderRadius: '12px',
-                            fontSize: '15px',
-                            color: '#ffffff',
-                            transition: 'all 0.3s ease',
-                            boxSizing: 'border-box',
-                            outline: 'none'
-                          }}
-                        />
-                        {focusedField === 'temp' && (
-                          <div style={{
-                            position: 'absolute',
-                            bottom: '-2px',
-                            left: '0',
-                            right: '0',
-                            height: '2px',
-                            background: 'linear-gradient(90deg, transparent, #22c55e, transparent)',
-                            animation: 'shimmer 2s ease-in-out infinite'
-                          }}></div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div>
-                      <label style={{
-                        display: 'block',
-                        fontSize: '13px',
-                        fontWeight: '600',
-                        color: 'rgba(255, 255, 255, 0.8)',
-                        marginBottom: '10px',
-                        textTransform: 'uppercase',
-                        letterSpacing: '1px'
-                      }}>
-                        {t("humidity_percent")}
-                      </label>
-                      <div style={{ position: 'relative' }}>
-                        <input
-                          type="number"
-                          name="humid"
-                          value={formData.humid}
-                          onChange={handleInputChange}
-                          onFocus={() => setFocusedField('humid')}
-                          onBlur={() => setFocusedField(null)}
-                          required
-                          step="0.1"
-                          placeholder={t("humid_placeholder")}
-                          style={{
-                            width: '100%',
-                            padding: '16px 20px',
-                            background: 'rgba(255, 255, 255, 0.05)',
-                            border: `2px solid ${focusedField === 'humid' ? '#22c55e' : 'rgba(255, 255, 255, 0.1)'}`,
-                            borderRadius: '12px',
-                            fontSize: '15px',
-                            color: '#ffffff',
-                            transition: 'all 0.3s ease',
-                            boxSizing: 'border-box',
-                            outline: 'none'
-                          }}
-                        />
-                        {focusedField === 'humid' && (
-                          <div style={{
-                            position: 'absolute',
-                            bottom: '-2px',
-                            left: '0',
-                            right: '0',
-                            height: '2px',
-                            background: 'linear-gradient(90deg, transparent, #22c55e, transparent)',
-                            animation: 'shimmer 2s ease-in-out infinite'
-                          }}></div>
-                        )}
-                      </div>
-                    </div>
+                  <div>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '13px',
+                      fontWeight: '600',
+                      color: 'rgba(255, 255, 255, 0.8)',
+                      marginBottom: '10px',
+                      textTransform: 'uppercase',
+                      letterSpacing: '1px'
+                    }}>
+                      Location (City)
+                    </label>
+                    <select
+                      name="location"
+                      value={formData.location || ""}
+                      onChange={handleLocationChange}
+                      onFocus={() => setFocusedField('location')}
+                      onBlur={() => setFocusedField(null)}
+                      required
+                      style={{
+                        width: '100%',
+                        padding: '16px 20px',
+                        background: 'rgba(255, 255, 255, 0.05)',
+                        border: `2px solid ${focusedField === 'location' ? '#22c55e' : 'rgba(255, 255, 255, 0.1)'}`,
+                        borderRadius: '12px',
+                        fontSize: '15px',
+                        color: 'rgb(255, 255, 255)',
+                        transition: 'all 0.3s ease',
+                        outline: 'none',
+                        appearance: 'none',
+                        backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='rgba(0, 0, 0, 0.9)' height='24' viewBox='0 0 24 24' width='24'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e")`,
+                        backgroundRepeat: 'no-repeat',
+                        backgroundPosition: 'right 16px center',
+                        cursor: 'pointer',
+                        backgroundColor: '#0f172a',
+                      }}
+                    >
+                      <option value="">Select City</option>
+                      {states.map(city => (
+                        <option key={city} value={city}>{city}</option>
+                      ))}
+                    </select>
                   </div>
 
                   <div>
