@@ -23,7 +23,7 @@ const Crop = () => {
         const file = fileArr[0];
         console.log("Sending file for prediction:", file.name);
 
-        const res = await fetch(`${process.env.DISEASE_MODEL_URI}/model/predict`, {
+        const res = await fetch(`${import.meta.env.VITE_DISEASE_MODEL_URI}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
