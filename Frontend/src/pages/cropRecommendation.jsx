@@ -27,6 +27,7 @@ const CropRecommendation = () => {
   const [markerPosition, setMarkerPosition] = useState(null);
 
   const cities = [
+    { name: "Surat", coords: [21.170240, 72.831062] },
     { name: "Delhi", coords: [28.6139, 77.2090] },
     { name: "Mumbai", coords: [19.0760, 72.8777] },
     { name: "Bangalore", coords: [12.9716, 77.5946] },
@@ -68,14 +69,7 @@ const CropRecommendation = () => {
     setIsLoading(true);
     setPrediction(null);
 
-    // Mock API response (replace with real backend later)
-    // setTimeout(() => {
-    //   const mockCrops = ["Wheat", "Rice", "Cotton", "Maize", "Sugarcane"];
-    //   setPrediction(mockCrops);
-    //   setIsLoading(false);
-    // }, 1500);
 
-    // Uncomment below for real API
     
     try {
       const res = await fetch(`${import.meta.env.VITE_CROP_MODEL_URI}`, {
@@ -90,8 +84,12 @@ const CropRecommendation = () => {
         })
       });
       const result = await res.json();
-      console.log(result);
-      setPrediction([result.crop]);
+     // console.log(result);
+      setPrediction({
+          crop: result.crop,
+          market: result.market_data || []
+        });
+
     } catch (err) {
       setPrediction(["Error: Could not connect to server"]);
     } finally {
@@ -663,171 +661,258 @@ const CropRecommendation = () => {
 
         {/* RESULTS SECTION */}
         {prediction && (
-          <div style={{
-            marginTop: '40px',
-            animation: 'fadeInUp 0.8s ease-out'
-          }}>
-            <div style={{ textAlign: 'center', marginBottom: '40px', padding: '0 20px' }}>
-              <h2 style={{
-                fontSize: '42px',
-                fontWeight: '800',
-                background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                margin: '0 0 12px 0',
-                letterSpacing: '-1px'
-              }}>
-                AI Crop Recommendations
-              </h2>
-              <p style={{
-                fontSize: '18px',
-                color: 'rgba(255, 255, 255, 0.7)',
-                margin: 0,
-                fontWeight: '500'
-              }}>
-                {formData.location} • {formData.fieldSize} hectares
-              </p>
-            </div>
+  <div
+    style={{
+      marginTop: "40px",
+      animation: "fadeInUp 0.8s ease-out",
+    }}
+  >
+    <div
+      style={{
+        textAlign: "center",
+        marginBottom: "40px",
+        padding: "0 20px",
+      }}
+    >
+      <h2
+        style={{
+          fontSize: "42px",
+          fontWeight: "800",
+          background:
+            "linear-gradient(135deg, #22c55e 0%, #16a34a 100%)",
+          WebkitBackgroundClip: "text",
+          WebkitTextFillColor: "transparent",
+          margin: "0 0 12px 0",
+          letterSpacing: "-1px",
+        }}
+      >
+        AI Crop Recommendations
+      </h2>
+    </div>
 
-            <div style={{
-              background: 'rgba(255, 255, 255, 0.03)',
-              backdropFilter: 'blur(20px)',
-              borderRadius: '20px',
-              border: '1px solid rgba(255, 255, 255, 0.1)',
-              overflow: 'hidden',
-              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
-              padding: '50px 40px',
-              margin: '0 20px'
-            }}>
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-                gap: '24px'
-              }}>
-                {prediction.map((crop, index) => (
-                  <div key={index} style={{
-                    background: 'rgba(34, 197, 94, 0.1)',
-                    border: '1px solid rgba(34, 197, 94, 0.2)',
-                    borderRadius: '16px',
-                    padding: '24px',
-                    textAlign: 'center',
-                    backdropFilter: 'blur(10px)',
-                    transition: 'all 0.3s ease',
-                    cursor: 'pointer'
+    {/* CARD CONTAINER */}
+    <div
+      style={{
+        background: "rgba(255, 255, 255, 0.03)",
+        backdropFilter: "blur(20px)",
+        borderRadius: "20px",
+        border: "1px solid rgba(255, 255, 255, 0.1)",
+        overflow: "hidden",
+        boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)",
+        padding: "50px 40px",
+        margin: "0 20px",
+      }}
+    >
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns:
+            "repeat(auto-fit, minmax(280px, 1fr))",
+          gap: "24px",
+        }}
+      >
+        {/* --- CROP CARD --- */}
+        <div
+          style={{
+            background: "rgba(34, 197, 94, 0.1)",
+            border: "1px solid rgba(34, 197, 94, 0.2)",
+            borderRadius: "16px",
+            padding: "24px",
+            textAlign: "center",
+            backdropFilter: "blur(10px)",
+            transition: "all 0.3s ease",
+            cursor: "pointer",
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.transform = "translateY(-4px)";
+            e.target.style.boxShadow =
+              "0 10px 30px rgba(34, 197, 94, 0.2)";
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.transform = "translateY(0)";
+            e.target.style.boxShadow = "none";
+          }}
+        >
+          <div
+            style={{
+              width: "60px",
+              height: "60px",
+              background: "rgba(34, 197, 94, 0.2)",
+              borderRadius: "50%",
+              margin: "0 auto 16px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "28px",
+            }}
+          >
+            ★
+          </div>
+
+          <h4
+            style={{
+              fontSize: "20px",
+              fontWeight: "700",
+              color: "#ffffff",
+              margin: "0 0 8px 0",
+            }}
+          >
+            {prediction.crop}
+          </h4>
+
+          <p
+            style={{
+              fontSize: "14px",
+              color: "rgba(255, 255, 255, 0.7)",
+              margin: 0,
+            }}
+          >
+            Top Recommended Crop
+          </p>
+        </div>
+
+        {/* --- MARKET PRICE CARD --- */}
+        {prediction.market && prediction.market.length > 0 && (
+          <div
+            style={{
+              background: "rgba(34, 197, 94, 0.1)",
+              border: "1px solid rgba(34, 197, 94, 0.2)",
+              borderRadius: "16px",
+              padding: "24px",
+              backdropFilter: "blur(10px)",
+            }}
+          >
+            <h3
+              style={{
+                fontSize: "20px",
+                color: "#22c55e",
+                textAlign: "center",
+                marginBottom: "15px",
+                fontWeight: "700",
+              }}
+            >
+              Market Prices
+            </h3>
+
+            {prediction.market.map((mkt, index) => (
+              <div
+                key={index}
+                style={{
+                  marginBottom: "12px",
+                  padding: "14px",
+                  borderRadius: "12px",
+                  background: "rgba(255,255,255,0.05)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                }}
+              >
+                <div
+                  style={{
+                    color: "white",
+                    fontSize: "16px",
+                    fontWeight: "600",
+                    marginBottom: "6px",
                   }}
-                  onMouseEnter={(e) => {
-                    e.target.style.transform = 'translateY(-4px)';
-                    e.target.style.boxShadow = '0 10px 30px rgba(34, 197, 94, 0.2)';
+                >
+                  {mkt.market}, {mkt.district}
+                </div>
+
+                <div
+                  style={{
+                    color: "rgba(255,255,255,0.8)",
+                    fontSize: "14px",
+                    lineHeight: "1.4",
                   }}
-                  onMouseLeave={(e) => {
-                    e.target.style.transform = 'translateY(0)';
-                    e.target.style.boxShadow = 'none';
-                  }}
-                  >
-                    <div style={{
-                      width: '60px',
-                      height: '60px',
-                      background: 'rgba(34, 197, 94, 0.2)',
-                      borderRadius: '50%',
-                      margin: '0 auto 16px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '28px'
-                    }}>
-                      {index === 0 ? '1st' : index === 1 ? '2nd' : index === 2 ? '3rd' : 'Alt'}
-                    </div>
-                    <h4 style={{
-                      fontSize: '20px',
-                      fontWeight: '700',
-                      color: '#ffffff',
-                      margin: '0 0 8px 0'
-                    }}>
-                      {crop}
-                    </h4>
-                    <p style={{
-                      fontSize: '14px',
-                      color: 'rgba(255, 255, 255, 0.7)',
-                      margin: 0
-                    }}>
-                      {index === 0 ? 'Top Recommendation' : 'Strong Alternative'}
-                    </p>
+                >
+                  <div>
+                    Min Price:{" "}
+                    <span style={{ color: "#22c55e" }}>
+                      ₹{mkt.min_price}
+                    </span>
                   </div>
-                ))}
+                  <div>
+                    Max Price:{" "}
+                    <span style={{ color: "#22c55e" }}>
+                      ₹{mkt.max_price}
+                    </span>
+                  </div>
+                  <div>
+                    Modal Price:{" "}
+                    <span style={{ color: "#22c55e" }}>
+                      ₹{mkt.modal_price}
+                    </span>
+                  </div>
+                </div>
               </div>
-            </div>
-
-            <div style={{
-              display: 'flex',
-              justifyContent: 'center',
-              gap: '16px',
-              marginTop: '40px',
-              padding: '0 20px'
-            }}>
-              <button style={{
-                padding: '14px 32px',
-                background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
-                color: '#ffffff',
-                border: 'none',
-                borderRadius: '12px',
-                fontSize: '16px',
-                fontWeight: '700',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                boxShadow: '0 0 30px rgba(34, 197, 94, 0.4)',
-                textTransform: 'uppercase',
-                letterSpacing: '0.5px'
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.transform = 'translateY(-2px)';
-                e.target.style.boxShadow = '0 0 40px rgba(34, 197, 94, 0.6)';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.transform = 'translateY(0)';
-                e.target.style.boxShadow = '0 0 30px rgba(34, 197, 94, 0.4)';
-              }}
-              >
-                Save Plan
-              </button>
-              <button style={{
-                padding: '14px 32px',
-                background: 'rgba(255, 255, 255, 0.1)',
-                color: '#ffffff',
-                border: '1px solid rgba(255, 255, 255, 0.2)',
-                borderRadius: '12px',
-                fontSize: '16px',
-                fontWeight: '700',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                backdropFilter: 'blur(10px)'
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.background = 'rgba(255, 255, 255, 0.15)';
-                e.target.style.transform = 'translateY(-2px)';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.background = 'rgba(255, 255, 255, 0.1)';
-                e.target.style.transform = 'translateY(0)';
-              }}
-              onClick={() => {
-                setPrediction(null);
-                setFormData({
-                  location: null,
-                  rainfall: "",
-                  ph: "",
-                  nitrogen: "",
-                  potassium: "",
-                  fieldSize: ""
-                });
-                setMapCenter([20.5937, 78.9629]);
-                setMarkerPosition(null);
-              }}
-              >
-                New Analysis
-              </button>
-            </div>
+            ))}
           </div>
         )}
+      </div>
+    </div>
+
+    {/* BUTTON ROW */}
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        gap: "16px",
+        marginTop: "40px",
+        padding: "0 20px",
+      }}
+    >
+      <button
+        style={{
+          padding: "14px 32px",
+          background:
+            "linear-gradient(135deg, #22c55e 0%, #16a34a 100%)",
+          color: "#ffffff",
+          border: "none",
+          borderRadius: "12px",
+          fontSize: "16px",
+          fontWeight: "700",
+          cursor: "pointer",
+          transition: "all 0.3s ease",
+          boxShadow: "0 0 30px rgba(34, 197, 94, 0.4)",
+          textTransform: "uppercase",
+          letterSpacing: "0.5px",
+        }}
+      >
+        Save Plan
+      </button>
+
+      <button
+        style={{
+          padding: "14px 32px",
+          background: "rgba(255, 255, 255, 0.1)",
+          color: "#ffffff",
+          border: "1px solid rgba(255, 255, 255, 0.2)",
+          borderRadius: "12px",
+          fontSize: "16px",
+          fontWeight: "700",
+          cursor: "pointer",
+          transition: "all 0.3s ease",
+          backdropFilter: "blur(10px)",
+        }}
+        onClick={() => {
+          setPrediction(null);
+          setFormData({
+            location: null,
+            rainfall: "",
+            ph: "",
+            nitrogen: "",
+            potassium: "",
+            fieldSize: "",
+          });
+          setMapCenter([20.5937, 78.9629]);
+          setMarkerPosition(null);
+        }}
+      >
+        New Analysis
+      </button>
+    </div>
+  </div>
+)}
+
+
       </div>
 
       {/* ANIMATIONS */}
