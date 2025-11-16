@@ -27,6 +27,58 @@ app.add_middleware(
 )
 
 # -------------------------
+# Regional Mapping for Indian States
+# -------------------------
+REGIONAL_MAPPING = {
+    # North India
+    'Delhi': 'Haryana',
+    'Himachal Pradesh': 'Punjab',
+    'Jammu and Kashmir': 'Punjab',
+    'Ladakh': 'Punjab',
+    'Chandigarh': 'Punjab',
+
+    # South India
+    'Andhra Pradesh': 'Tamil Nadu',
+    'Telangana': 'Karnataka',
+    'Kerala': 'Tamil Nadu',
+    'Puducherry': 'Tamil Nadu',
+
+    # East India
+    'Bihar': 'Uttar Pradesh',
+    'West Bengal': 'Uttar Pradesh',
+    'Jharkhand': 'Uttar Pradesh',
+    'Odisha': 'Uttar Pradesh',
+
+    # West India
+    'Gujarat': 'Maharashtra',
+    'Goa': 'Maharashtra',
+    'Dadra and Nagar Haveli and Daman and Diu': 'Maharashtra',
+
+    # Central India
+    'Chhattisgarh': 'Madhya Pradesh',
+
+    # Northeast India
+    'Assam': 'Uttar Pradesh',
+    'Arunachal Pradesh': 'Uttar Pradesh',
+    'Manipur': 'Uttar Pradesh',
+    'Meghalaya': 'Uttar Pradesh',
+    'Mizoram': 'Uttar Pradesh',
+    'Nagaland': 'Uttar Pradesh',
+    'Sikkim': 'Uttar Pradesh',
+    'Tripura': 'Uttar Pradesh',
+
+    # Already in dataset (map to self)
+    'Haryana': 'Haryana',
+    'Karnataka': 'Karnataka',
+    'Madhya Pradesh': 'Madhya Pradesh',
+    'Maharashtra': 'Maharashtra',
+    'Punjab': 'Punjab',
+    'Rajasthan': 'Rajasthan',
+    'Tamil Nadu': 'Tamil Nadu',
+    'Uttar Pradesh': 'Uttar Pradesh'
+}
+
+# -------------------------
 # Load Models and Encoders
 # -------------------------
 try:
@@ -70,6 +122,8 @@ class PriceResponse(BaseModel):
     unit: str
     model_name: str
     confidence: str
+    fallback_used: bool = False
+    fallback_info: Optional[str] = None
 
 
 # -------------------------
@@ -85,6 +139,30 @@ def get_season(month):
         return 'Monsoon'
     else:
         return 'Post-Monsoon'
+
+
+def get_fallback_state(state):
+    """Get fallback state for unknown states using regional mapping"""
+    if state in REGIONAL_MAPPING:
+        return REGIONAL_MAPPING[state]
+    # If state not in mapping, return a default state (Maharashtra as it's central)
+    return 'Maharashtra'
+
+
+def get_fallback_district(state, district, available_districts):
+    """Get fallback district for unknown districts"""
+    # Try to find districts from the same state
+    state_districts = df[df['State'] == state]['District'].unique()
+    if len(state_districts) > 0:
+        # Return the most common district for that state
+        return state_districts[0]
+    # Otherwise return a major city from available districts
+    major_cities = ['Mumbai', 'Bangalore', 'Chennai', 'Jaipur', 'Pune', 'Nagpur']
+    for city in major_cities:
+        if city in available_districts:
+            return city
+    # Last resort: return first available district
+    return available_districts[0]
 
 
 def get_lag_features(commodity, state, district, date_obj):
@@ -191,30 +269,43 @@ def model_info():
 @app.post("/predict", response_model=PriceResponse)
 def predict_price(request: PriceRequest):
     """
-    Predict crop price based on commodity, state, district, and date
+    Predict crop price based on commodity, state, district, and date.
+    Uses fallback predictions for unknown Indian states/districts.
     """
     try:
         if model is None or label_encoders is None:
             raise HTTPException(status_code=500, detail="Model not loaded")
 
-        # Validate inputs
+        # Track fallback usage
+        fallback_used = False
+        fallback_info = None
+        original_state = request.state
+        original_district = request.district
+
+        # Validate commodity (strict - must be in training data)
         if request.commodity not in label_encoders['Commodity'].classes_:
             raise HTTPException(
                 status_code=400,
-                detail=f"Invalid commodity. Available: {list(label_encoders['Commodity'].classes_)}"
+                detail=f"Commodity '{request.commodity}' not supported. Available: {list(label_encoders['Commodity'].classes_)}"
             )
 
+        # Handle unknown state with fallback
         if request.state not in label_encoders['State'].classes_:
-            raise HTTPException(
-                status_code=400,
-                detail=f"Invalid state. Available: {list(label_encoders['State'].classes_)}"
-            )
+            fallback_state = get_fallback_state(request.state)
+            fallback_used = True
+            fallback_info = f"Using regional proxy: {original_state} → {fallback_state}"
+            request.state = fallback_state
 
+        # Handle unknown district with fallback
         if request.district not in label_encoders['District'].classes_:
-            raise HTTPException(
-                status_code=400,
-                detail=f"Invalid district. Available: {list(label_encoders['District'].classes_)}"
-            )
+            available_districts = list(label_encoders['District'].classes_)
+            fallback_district = get_fallback_district(request.state, request.district, available_districts)
+            if not fallback_used:
+                fallback_info = f"Using nearby district: {original_district} → {fallback_district}"
+            else:
+                fallback_info += f", {original_district} → {fallback_district}"
+            fallback_used = True
+            request.district = fallback_district
 
         # Parse date
         try:
@@ -266,15 +357,25 @@ def predict_price(request: PriceRequest):
         # Round to 2 decimal places
         predicted_price = round(predicted_price, 2)
 
+        # Determine confidence based on fallback usage
+        if fallback_used:
+            confidence = "Low (using regional proxy)"
+        elif metadata['r2'] > 0.95:
+            confidence = "High"
+        else:
+            confidence = "Medium"
+
         return PriceResponse(
             commodity=request.commodity,
-            state=request.state,
-            district=request.district,
+            state=original_state,  # Return original state
+            district=original_district,  # Return original district
             date=request.date,
             predicted_price=predicted_price,
             unit="Rs/Kg",
             model_name=metadata['model_name'],
-            confidence="High" if metadata['r2'] > 0.95 else "Medium"
+            confidence=confidence,
+            fallback_used=fallback_used,
+            fallback_info=fallback_info
         )
 
     except HTTPException:
