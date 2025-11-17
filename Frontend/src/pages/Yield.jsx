@@ -909,23 +909,6 @@ const Yield = () => {
             }}>
               <button style={{
                 padding: '14px 32px',
-                background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
-                color: '#ffffff',
-                border: 'none',
-                borderRadius: '12px',
-                fontSize: '16px',
-                fontWeight: '700',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                boxShadow: '0 0 30px rgba(34, 197, 94, 0.4)',
-                textTransform: 'uppercase',
-                letterSpacing: '0.5px'
-              }}>
-                {t("export_forecast")}
-              </button>
-
-              <button style={{
-                padding: '14px 32px',
                 background: 'rgba(255, 255, 255, 0.1)',
                 color: '#ffffff',
                 border: '1px solid rgba(255, 255, 255, 0.2)',

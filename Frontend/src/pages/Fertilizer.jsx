@@ -852,31 +852,7 @@ const Fertilizer = () => {
               marginTop: '40px',
               padding: '0 20px'
             }}>
-              <button style={{
-                padding: '14px 32px',
-                background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
-                color: '#ffffff',
-                border: 'none',
-                borderRadius: '12px',
-                fontSize: '16px',
-                fontWeight: '700',
-                cursor: 'pointer',
-                transition: 'all 0.3s ease',
-                boxShadow: '0 0 30px rgba(34, 197, 94, 0.4)',
-                textTransform: 'uppercase',
-                letterSpacing: '0.5px'
-              }}
-              onMouseEnter={(e) => {
-                e.target.style.transform = 'translateY(-2px)';
-                e.target.style.boxShadow = '0 0 40px rgba(34, 197, 94, 0.6)';
-              }}
-              onMouseLeave={(e) => {
-                e.target.style.transform = 'translateY(0)';
-                e.target.style.boxShadow = '0 0 30px rgba(34, 197, 94, 0.4)';
-              }}
-              >
-                {t("save_report")}
-              </button>
+
               <button style={{
                 padding: '14px 32px',
                 background: 'rgba(255, 255, 255, 0.1)',

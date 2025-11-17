@@ -76,7 +76,7 @@ const Navbar = () => {
 
         <div className="navbar-links">
           <Link to="/">{t("home")}</Link>
-          <Link to="/crop">{t("crop")}</Link>
+          <Link to="/crop">{t("Disease")}</Link>
           <Link to="/croprecommendation">{t("cropRecommendation")}</Link>
           <Link to="/fertilizer">{t("fertilizer")}</Link>
           <Link to="/yield">{t("yield")}</Link>
@@ -133,17 +133,7 @@ const Navbar = () => {
                   />
                 </div>
 
-                <div className="input-group">
-                  <label>Language</label>
-                  <select value={language} onChange={(e) => setLanguage(e.target.value)}>
-                    <option value="english">English</option>
-                    <option value="hindi">Hindi</option>
-                    <option value="punjabi">Punjabi</option>
-                    <option value="bengali">Bengali</option>
-                    <option value="tamil">Tamil</option>
-                    <option value="telugu">Telugu</option>
-                  </select>
-                </div>
+
               </div>
 
               <button 
