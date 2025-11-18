@@ -124,13 +124,18 @@ const Navbar = () => {
 
               <div className="input-row">
                 <div className="input-group">
-                  <label>State (Optional)</label>
-                  <input
-                    type="text"
-                    placeholder="e.g., Punjab, Maharashtra"
+                  <label>State </label>
+                  <select
                     value={state}
                     onChange={(e) => setState(e.target.value)}
-                  />
+                  >
+                    <option value="">Select State</option>
+                    <option value="Punjab">Punjab</option>
+                    <option value="Haryana">Haryana</option>
+                    <option value="Delhi">Delhi</option>
+                    <option value="Uttar Pradesh">Uttar Pradesh</option>
+                  </select>
+
                 </div>
 
 

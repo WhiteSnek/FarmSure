@@ -43,19 +43,19 @@ const Home = () => {
 
   const features = [
     {
-      icon: "Microscope",
+      icon: "",
       title: t("feature_disease_detection"),
       description: t("feature_disease_desc"),
       color: "#ef4444",
     },
     {
-      icon: "Seedling",
+      icon: "",
       title: t("feature_fertilizer_recommendation"),
       description: t("feature_fertilizer_desc"),
       color: "#22c55e",
     },
     {
-      icon: "Wheat",
+      icon: "",
       title: t("feature_yield_optimization"),
       description: t("feature_yield_desc"),
       color: "#f59e0b",
