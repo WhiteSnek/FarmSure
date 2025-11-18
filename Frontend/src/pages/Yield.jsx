@@ -831,29 +831,7 @@ const Yield = () => {
                 </span>
               </div>
               
-              {/* MAIN YIELD */}
-              <h3 style={{
-                fontSize: '64px',
-                fontWeight: '900',
-                margin: '0 0 16px 0',
-                background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                lineHeight: '1'
-              }}>
-                {typeof prediction === "number" && !isNaN(prediction)
-                    ? prediction.toFixed(2)
-                    : "--"}
-              </h3>
 
-              <p style={{
-                fontSize: '20px',
-                color: 'rgba(255, 255, 255, 0.7)',
-                margin: '0 0 24px 0',
-                fontWeight: '500'
-              }}>
-                <span style={{ color: '#22c55e' }}>{t("tonnes")}</span> {t("per_hectare")}
-              </p>
 
               {/* YIELD STATS */}
               <div style={{ marginTop: "30px", textAlign: "left" }}>
@@ -864,10 +842,10 @@ const Yield = () => {
                 }}>Yield Details</h3>
 
                 <p style={{ color: "white", marginBottom: "8px" }}>
-                  <strong>Yield Per Unit Area:</strong> {fullResult.yield_per_unit_area}
+                  <strong>Yield Per Unit Area:</strong> {fullResult.yield_per_unit_area} Kg
                 </p>
                 <p style={{ color: "white", marginBottom: "8px" }}>
-                  <strong>Total Yield:</strong> {fullResult.total_yield}
+                  <strong>Total Yield:</strong> {fullResult.total_yield} tons
                 </p>
               </div>
 
